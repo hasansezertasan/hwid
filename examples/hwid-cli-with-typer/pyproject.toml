@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "hwid-cli-with-typer"
+version = "0.1.0"
+description = ""
+authors = ["hasansezertasan <hasansezertasan@gmail.com>"]
+
+[tool.poetry.scripts]
+hwid-cli = "main:app"
+
+[tool.poetry.dependencies]
+python = "^3"
+typer = "^0.9.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

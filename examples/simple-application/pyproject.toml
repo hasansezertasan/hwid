@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "simple-application"
+version = "0.1.0"
+description = ""
+authors = ["hasansezertasan <hasansezertasan@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3"
+pyinstaller = "^6.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
