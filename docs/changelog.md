@@ -14,12 +14,12 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ### Added
 
-- Project Structure
-- Hello World CLI Tool.
-- Pre Commit Hooks
+- Project Structure and modules
+- Console Script
+- Documentation
 - `CHANGELOG.md`
-- `README.md`
 - `LICENSE`
+- `README.md`
 
 <!-- Links -->
 [keep a changelog]: https://keepachangelog.com/en/1.1.0/
