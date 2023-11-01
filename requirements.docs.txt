@@ -1,4 +1,4 @@
 
 mkdocs[i18n]==1.5.3
-mkdocs-material==9.4.2
+mkdocs-material==9.4.7
 mkdocstrings[python]==0.23.0
