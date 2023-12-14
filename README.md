@@ -51,7 +51,7 @@ I do not recommend using this module for licensing purposes all alone. You can u
 
 If you are using server-client architecture, you can send the encrypted hwid to the server and check if it is valid. But keep in mind, It's easy to intercept the http requests with [mitmproxy](https://mitmproxy.org/) or other tools.
 
-If you are using a local licensing system, you can encrypt the hwid and store it in a file. Then you can check if the encrypted hwid is valid. You can use [pyarmor](https://github.com/dashingsoft/pyarmor) to obfuscate your code. It will make it harder to reverse engineer your code. Here is a [tutorial](https://www.youtube.com/watch?v=k4bLhDolLf0) from @NeuralNine using [Oxyry](https://pyob.oxyry.com/)
+If you are using a local licensing system, you can encrypt the hwid and store it in a file. Then you can check if the encrypted hwid is valid. You can use [pyarmor](https://github.com/dashingsoft/pyarmor) to obfuscate your code. It will make it harder to reverse engineer your code. Here is a [tutorial](https://www.youtube.com/watch?v=k4bLhDolLf0) from [@NeuralNine](https://github.com/NeuralNine) using [Oxyry](https://pyob.oxyry.com/)
 
 ## Disclaimer
 
