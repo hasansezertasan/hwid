@@ -8,7 +8,21 @@ version = "0.1.0"
 description = "Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection."
 authors = ["hasansezertasan <hasansezertasan@gmail.com>"]
 maintainers = ["hasansezertasan <hasansezertasan@gmail.com>"]
-keywords = ["hwid", "hardware", "id", "unique", "identifier", "machine", "fingerprint", "fingerprinting", "licensing", "license", "licensing",  "identification", "machine"]
+keywords = [
+  "hwid",
+  "hardware",
+  "id",
+  "unique",
+  "identifier",
+  "machine",
+  "fingerprint",
+  "fingerprinting",
+  "licensing",
+  "license",
+  "licensing",
+  "identification",
+  "machine",
+]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: MIT License",
@@ -36,6 +50,12 @@ repository = "https://github.com/hasansezertasan/hwid"
 homepage = "https://github.com/hasansezertasan/hwid"
 documentation = "https://hasansezertasan.github.io/hwid/"
 
+[tool.poetry.scripts]
+hwid = "hwid.__main__:app"
+
+
+[tool.poetry.dependencies]
+python = ">=3.0,<4.0"
 
 
 [tool.ruff]
@@ -59,10 +79,7 @@ ignore = [
   "E402", # module level import not at top of file
   "E712", # comparison to True should be 'if cond is True:' or 'if cond:'
 ]
-exclude = [
-  "alembic",
-  "migrations",
-]
+exclude = ["alembic", "migrations"]
 show-fixes = true
 
 [tool.isort]
@@ -105,10 +122,3 @@ black = "black ."
 isort = "isort ."
 ruff = "ruff ."
 bir = ["black", "isort", "ruff"]
-
-[tool.poetry.scripts]
-hwid = "hwid.__main__:app"
-
-
-[tool.poetry.dependencies]
-python = ">=3.0,<4.0"
