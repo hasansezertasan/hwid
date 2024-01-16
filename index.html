@@ -326,6 +326,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Warning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -434,6 +443,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Warning
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#disclaimer" class="md-nav__link">
     <span class="md-ellipsis">
       Disclaimer
@@ -496,7 +514,9 @@
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 </code></pre></div>
 <h2 id="why">Why?<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>TL;DR I don't want to copy and paste it again...</p>
 <p>I have created a bunch of desktop applications for Windows. I needed a way to license my applications for my users to use it without distributing to other people. I decided to use the hwid of the computer to license my applications. I needed a way to get the hwid of the computer, so I created this module. It has only one purpose: getting the hwid of the computer. It is cross-platform and does not require any external dependencies.</p>
+<h2 id="warning">Warning<a class="headerlink" href="#warning" title="Permanent link">&para;</a></h2>
 <p>I do not recommend using this module for licensing purposes all alone. You can use it as a part of your licensing system.</p>
 <p>If you are using server-client architecture, you can send the encrypted hwid to the server and check if it is valid. But keep in mind, It's easy to intercept the http requests with <a href="https://mitmproxy.org/">mitmproxy</a> or other tools.</p>
 <p>If you are using a local licensing system, you can encrypt the hwid and store it in a file. Then you can check if the encrypted hwid is valid. You can use <a href="https://github.com/dashingsoft/pyarmor">pyarmor</a> to obfuscate your code. It will make it harder to reverse engineer your code. Here is a <a href="https://www.youtube.com/watch?v=k4bLhDolLf0">tutorial</a> from <a href="https://github.com/NeuralNine">@NeuralNine</a> using <a href="https://pyob.oxyry.com/">Oxyry</a></p>
