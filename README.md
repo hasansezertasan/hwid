@@ -1,6 +1,5 @@
 # HWID
 
-[![CI](https://github.com/hasansezertasan/hwid/actions/workflows/ci.yml/badge.svg)](https://github.com/hasansezertasan/hwid/actions?query=event%3Apush+branch%3Amain+workflow%3ACI)
 [![Coverage](https://img.shields.io/codecov/c/github/hasansezertasan/hwid)](https://codecov.io/gh/hasansezertasan/hwid)
 [![PyPI - Version](https://img.shields.io/pypi/v/hwid.svg)](https://pypi.org/project/hwid)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hwid.svg)](https://pypi.org/project/hwid)
