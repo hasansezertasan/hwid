@@ -60,3 +60,7 @@ If you are using a local licensing system, you can encrypt the hwid and store it
 ## Disclaimer
 
 This module is not intended to be used for malicious purposes. The author is not responsible for any damage caused by this module. Use at your own risk.
+
+## License
+
+`hwid` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license.
