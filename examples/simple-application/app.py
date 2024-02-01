@@ -1,5 +1,6 @@
 import json
 import os
+
 from hwid import get_hwid
 
 if __name__ == "__main__":

@@ -1,13 +1,16 @@
+import re
 import subprocess
 from sys import platform
-import re
-from .exceptions import UnsupportedOS, InvalidHWID
+
+from .exceptions import InvalidHWID, UnsupportedOS
+
 
 def validate_hwid(hwid):
     if re.match(r"^[a-fA-F0-9]{8}-([a-fA-F0-9]{4}-){3}[a-fA-F0-9]{12}$", hwid):
         return True
     else:
         return False
+
 
 def get_hwid():
     """Gets the HWID."""
