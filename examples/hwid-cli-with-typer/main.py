@@ -1,6 +1,6 @@
 import typer
-from hwid import get_hwid
 
+from hwid import get_hwid
 
 app = typer.Typer()
 
@@ -18,6 +18,7 @@ def main():
 
     hwid = get_hwid()
     typer.echo(f"HWID: {hwid}")
+
 
 if __name__ == "__main__":
     app()
