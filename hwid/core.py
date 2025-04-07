@@ -19,10 +19,9 @@ def get_hwid():
         output = subprocess.check_output(command, shell=True)
         output = output.decode("utf-8").strip()
     elif platform in ["win32"]:
-        command = "wmic csproduct get uuid"
+        command = 'powershell -Command "(Get-CimInstance -ClassName Win32_ComputerSystemProduct).UUID"'
         output = subprocess.check_output(command, shell=True)
         output = output.decode("utf-8").strip()
-        output = output.split("\n")[1].strip()
     elif platform in ["darwin"]:
         command = "system_profiler SPHardwareDataType | grep 'UUID'"
         output = subprocess.check_output(command, shell=True)
