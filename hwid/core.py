@@ -4,13 +4,21 @@ from sys import platform
 
 from .exceptions import InvalidHWID, UnsupportedOS
 
+def get_android_hwid():
+    try:
+        import jnius
+        from jnius import autoclass
+
+        Build = autoclass('android.os.Build')
+        return Build.SERIAL
+    except ImportError:
+        raise UnsupportedOS("Unsupported OS: Android support requires Pyjnius")
 
 def validate_hwid(hwid):
     if re.match(r"^[a-fA-F0-9]{8}-([a-fA-F0-9]{4}-){3}[a-fA-F0-9]{12}$", hwid):
         return True
     else:
         return False
-
 
 def get_hwid():
     """Gets the HWID."""
@@ -28,6 +36,8 @@ def get_hwid():
         output = subprocess.check_output(command, shell=True)
         output = output.decode("utf-8").strip()
         output = output.split(":")[1].strip()
+    elif platform == "android":
+        output = get_android_hwid()
     else:
         raise UnsupportedOS("Unsupported OS")
     if validate_hwid(output):

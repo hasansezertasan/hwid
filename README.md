@@ -10,7 +10,7 @@
 [![Downloads/Month](https://pepy.tech/badge/hwid/month)](https://pepy.tech/project/hwid)
 [![Downloads/Week](https://pepy.tech/badge/hwid/week)](https://pepy.tech/project/hwid)
 
-Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection.
+Extract the `hwid` on Windows, Linux, Mac, Android. Cross-platform using Python, native OS detection.
 
 ---
 
@@ -48,6 +48,14 @@ CLI:
 ```bash
 hwid
 XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+```
+
+Android:
+
+```python
+import hwid
+print(hwid.get_hwid())
+# 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
 ```
 
 ## Motivation
