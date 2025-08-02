@@ -1,13 +1,18 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
+
+[project]
 name = "hwid"
 version = "0.1.0"
 description = "Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection."
-authors = ["hasansezertasan <hasansezertasan@gmail.com>"]
-maintainers = ["hasansezertasan <hasansezertasan@gmail.com>"]
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
+maintainers = [
+  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
+]
 keywords = [
   "hwid",
   "hardware",
@@ -26,7 +31,7 @@ keywords = [
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: MIT License",
-  'Environment :: Console',
+  "Environment :: Console",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
@@ -40,22 +45,18 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
 ]
-packages = [{ include = "hwid" }]
-include = ["CHANGELOG.md"]
-readme = "README.md"
-license = "MIT"
+requires-python = "<4.0,>=3.0"
+dependencies = []
 
-[tool.poetry.urls]
+
+[project.urls]
+documentation = "https://hasansezertasan.github.io/hwid"
 repository = "https://github.com/hasansezertasan/hwid"
 homepage = "https://github.com/hasansezertasan/hwid"
-documentation = "https://hasansezertasan.github.io/hwid/"
 
-[tool.poetry.scripts]
+
+[project.scripts]
 hwid = "hwid.__main__:app"
-
-
-[tool.poetry.dependencies]
-python = ">=3.0,<4.0"
 
 
 [tool.ruff]
@@ -81,6 +82,7 @@ ignore = [
 ]
 exclude = ["alembic", "migrations"]
 show-fixes = true
+
 
 [tool.isort]
 profile = "black"
