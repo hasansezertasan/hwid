@@ -1,4 +1,4 @@
-# HWID
+# hwid
 
 [![Coverage](https://img.shields.io/codecov/c/github/hasansezertasan/hwid)](https://codecov.io/gh/hasansezertasan/hwid)
 [![PyPI - Version](https://img.shields.io/pypi/v/hwid.svg)](https://pypi.org/project/hwid)
@@ -16,7 +16,7 @@ Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native O
 
 ## Table of Contents
 
-- [HWID](#hwid)
+- [hwid](#hwid)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -70,6 +70,33 @@ I do not recommend using this module for licensing purposes all alone. You can u
 If you are using server-client architecture, you can send the encrypted hwid to the server and check if it is valid. But keep in mind, It's easy to intercept the http requests with [mitmproxy] or other tools.
 
 If you are using a local licensing system, you can encrypt the hwid and store it in a file. Then you can check if the encrypted hwid is valid. You can use [pyarmor] to obfuscate your code. It will make it harder to reverse engineer your code. Here is a [NeuralNine Tutorial][neuralnine-tutorial] using [Oxyry][oxyry]
+
+<!-- xc-heading -->
+## Development
+
+Clone the repository and cd into the project directory:
+
+```sh
+git clone https://github.com/hasansezertasan/hwid
+cd hwid
+```
+
+The commands below can also be executed using the [xc task runner](https://xcfile.dev/), which combines the usage instructions with the actual commands. Simply run `xc`, it will popup an interactive menu with all available tasks.
+
+### `checks`
+
+Run all checks to ensure code quality:
+
+```sh
+uvx "validate-pyproject[all]" pyproject.toml
+uvx typos
+uvx vulture .
+uvx ruff check
+uvx taplo lint pyproject.toml
+uvx ruff format
+uvx taplo format pyproject.toml
+uvx mypy
+```
 
 ## Author
 
