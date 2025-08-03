@@ -4,11 +4,10 @@
 # Licensed under the MIT License
 
 import re
-import subprocess
 from sys import platform
 
 from hwid.exceptions import InvalidHWIDError, UnsupportedOSError
-from hwid.impl import linux, win32, darwin
+from hwid.impl import darwin, linux, win32
 
 
 def validate_hwid(value: str) -> bool:
