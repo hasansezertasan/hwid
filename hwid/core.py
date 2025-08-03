@@ -2,19 +2,16 @@ import re
 import subprocess
 from sys import platform
 
-from .exceptions import InvalidHWID, UnsupportedOS
+from hwid.exceptions import InvalidHWID, UnsupportedOS
 
 
-def validate_hwid(hwid):
-    if re.match(r"^[a-fA-F0-9]{8}-([a-fA-F0-9]{4}-){3}[a-fA-F0-9]{12}$", hwid):
-        return True
-    else:
-        return False
+def validate_hwid(hwid) -> bool:
+    return bool(re.match(r"^[a-fA-F0-9]{8}-([a-fA-F0-9]{4}-){3}[a-fA-F0-9]{12}$", hwid))
 
 
 def get_hwid():
     """Gets the HWID."""
-    if platform in ["linux", "linux2"]:
+    if platform in {"linux", "linux2"}:
         command = "sudo dmidecode -s system-uuid"
         output = subprocess.check_output(command, shell=True)
         output = output.decode("utf-8").strip()
@@ -28,8 +25,9 @@ def get_hwid():
         output = output.decode("utf-8").strip()
         output = output.split(":")[1].strip()
     else:
-        raise UnsupportedOS("Unsupported OS")
+        msg = "Unsupported OS"
+        raise UnsupportedOS(msg)
     if validate_hwid(output):
         return output
-    else:
-        raise InvalidHWID("Invalid HWID")
+    msg = "Invalid HWID"
+    raise InvalidHWID(msg)
