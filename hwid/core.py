@@ -19,7 +19,9 @@ def validate_hwid(value: str) -> bool:
     Returns:
         bool: True if valid, False otherwise.
     """
-    return bool(re.match(r"^[a-fA-F0-9]{8}-([a-fA-F0-9]{4}-){3}[a-fA-F0-9]{12}$", value))
+    return bool(
+        re.match(r"^[a-fA-F0-9]{8}-([a-fA-F0-9]{4}-){3}[a-fA-F0-9]{12}$", value)
+    )
 
 
 def get_hwid() -> str:
