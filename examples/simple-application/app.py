@@ -1,6 +1,4 @@
 import json
-import os
-import pathlib
 
 from hwid import get_hwid
 
