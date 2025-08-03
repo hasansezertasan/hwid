@@ -15,11 +15,11 @@ def get_hwid():
         command = "sudo dmidecode -s system-uuid"
         output = subprocess.check_output(command, shell=True)
         output = output.decode("utf-8").strip()
-    elif platform in ["win32"]:
+    elif platform == "win32":
         command = 'powershell -Command "(Get-CimInstance -ClassName Win32_ComputerSystemProduct).UUID"'
         output = subprocess.check_output(command, shell=True)
         output = output.decode("utf-8").strip()
-    elif platform in ["darwin"]:
+    elif platform == "darwin":
         command = "system_profiler SPHardwareDataType | grep 'UUID'"
         output = subprocess.check_output(command, shell=True)
         output = output.decode("utf-8").strip()
