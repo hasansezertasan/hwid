@@ -29,11 +29,16 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
       - name: Restore cache
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
       - name: Build the Package
         run: uv build --no-sources --quiet
+      - name: Let's see the Build Artifacts
+        run: ls -la ./dist/
       - name: Publish to PyPI
         run: uv publish --quiet --trusted-publishing always
       - name: Attach Build Artifacts to GitHub Release
