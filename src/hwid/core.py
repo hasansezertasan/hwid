@@ -4,10 +4,10 @@
 # Licensed under the MIT License
 
 import re
-import subprocess
 from sys import platform
 
 from hwid.exceptions import InvalidHWIDError, UnsupportedOSError
+from hwid.impl import darwin, linux, win32
 
 
 def validate_hwid(value: str) -> bool:
@@ -35,22 +35,17 @@ def get_hwid() -> str:
         InvalidHWIDError: If the retrieved hardware ID is invalid.
     """
     if platform in {"linux", "linux2"}:
-        command = "sudo dmidecode -s system-uuid"
-        output = subprocess.check_output(command, shell=True)
-        output = output.decode("utf-8").strip()
+        output = linux.extract_hwid()
     elif platform == "win32":
-        command = 'powershell -Command "(Get-CimInstance -ClassName Win32_ComputerSystemProduct).UUID"'
-        output = subprocess.check_output(command, shell=True)
-        output = output.decode("utf-8").strip()
+        output = win32.extract_hwid()
     elif platform == "darwin":
-        command = "system_profiler SPHardwareDataType | grep 'UUID'"
-        output = subprocess.check_output(command, shell=True)
-        output = output.decode("utf-8").strip()
-        output = output.split(":")[1].strip()
+        output = darwin.extract_hwid()
     else:
         msg = "Unsupported OS"
         raise UnsupportedOSError(msg)
-    if validate_hwid(value=output):
-        return output
-    msg = "Invalid HWID"
-    raise InvalidHWIDError(msg)
+
+    if not validate_hwid(value=output):
+        msg = "Invalid hardware ID"
+        raise InvalidHWIDError(msg)
+
+    return output

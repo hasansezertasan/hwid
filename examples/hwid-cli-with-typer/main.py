@@ -1,4 +1,10 @@
+"""Simple application example that saves HWID to a file."""
+
+# Copyright (c) 2023 Hasan Sezer Taşan
+# Licensed under the MIT License
+
 import typer
+
 from hwid import get_hwid
 
 app = typer.Typer()
