@@ -11,3 +11,4 @@ def app() -> None:
     """Get the HWID of the current machine."""
     msg = f"HWID: {get_hwid()}"
     logger.info(msg)
+    print(msg)  # Print the HWID to standard output for visibility
