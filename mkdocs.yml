@@ -1,9 +1,9 @@
-site_name: HWID
-site_description: HWID
+---
+site_name: hwid
+site_description: hwid
 site_url: https://hasansezertasan.github.io/hwid/
 repo_name: hasansezertasan/hwid
 repo_url: https://github.com/hasansezertasan/hwid
-
 theme:
   name: material
   language: en
@@ -12,14 +12,14 @@ theme:
       primary: teal
       accent: amber
       toggle:
-          icon: material/weather-sunny
-          name: Switch to dark mode
+        icon: material/weather-sunny
+        name: Switch to dark mode
     - scheme: slate
       primary: teal
       accent: amber
       toggle:
-          icon: material/weather-night
-          name: Switch to light mode
+        icon: material/weather-night
+        name: Switch to light mode
   features:
     - navigation.instant
     - navigation.top
@@ -28,7 +28,6 @@ theme:
     - search.highlight
     - content.tabs.link
     - content.code.annotate
-
 plugins:
   - search
   - mkdocstrings
@@ -45,18 +44,16 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+          format: "!!python/name:pymdownx.superfences.fence_code_format"
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_generator: "!!python/name:material.extensions.emoji.to_svg"
   - attr_list
   - tables
   - def_list
-
 nav:
   - Home: index.md
   - API Reference: reference.md

@@ -1,0 +1,33 @@
+---
+name: Deploy Docs
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}  # Grouping by workflow name and reference
+  cancel-in-progress: true  # Cancel any in-progress runs for the same group
+permissions:
+  contents: write  # Required for pushing changes to the repository
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Build and deploy docs
+        run: uvx --with-requirements requirements.docs.txt mkdocs gh-deploy --force
+
