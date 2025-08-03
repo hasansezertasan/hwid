@@ -16,7 +16,7 @@ template: |
 
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
 
-change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+change-template: '- $TITLE by @$AUTHOR in (#$NUMBER)'
 no-changes-template: '- No changes'
 exclude-contributors:
   - 'dependabot'
