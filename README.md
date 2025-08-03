@@ -16,38 +16,35 @@ Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native O
 
 ## Table of Contents
 
-- [hwid](#hwid)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Usage](#usage)
-  - [Motivation](#motivation)
-  - [Features](#features)
-  - [Warning](#warning)
-  - [Author](#author)
-  - [Disclaimer](#disclaimer)
-  - [License](#license)
+- [Table of Contents](#table-of-contents)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Motivation](#motivation)
+- [Features](#features)
+- [Warning](#warning)
+- [Author](#author)
+- [Disclaimer](#disclaimer)
+- [License](#license)
 
 ## Installation
 
-``` bash
+``` sh
 pip install hwid
 ```
 
 ## Usage
 
-Module:
+### As a Module
 
 ```python
 import hwid
 print(hwid.get_hwid())
-# 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
 ```
 
-CLI:
+### As a CLI Tool
 
-```bash
-hwid
-XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+```sh
+uvx hwid
 ```
 
 ## Motivation
@@ -96,6 +93,22 @@ uvx taplo lint pyproject.toml
 uvx ruff format
 uvx taplo format pyproject.toml
 uvx mypy
+```
+
+### `docs:serve`
+
+Serve the documentation locally:
+
+```sh
+uvx --with-requirements requirements.docs.txt mkdocs serve
+```
+
+### `docs:build`
+
+Build the documentation locally:
+
+```sh
+uvx --with-requirements requirements.docs.txt mkdocs build
 ```
 
 ## Author
