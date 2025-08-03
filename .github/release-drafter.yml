@@ -65,7 +65,6 @@ autolabeler:
   - label: 'chore'
     title:
       - '/^chore/i'
-prerelease-identifier: 'rc'
 version-resolver:
   major:
     labels:
