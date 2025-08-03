@@ -1,0 +1,25 @@
+---
+name: Release Drafter
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    types: [opened, reopened, synchronize]
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+permissions:
+  contents: read
+jobs:
+  update_release_draft:
+    permissions:
+      contents: write  # IMPORTANT: Mandatory for Release Drafter (release-drafter)
+      pull-requests: write  # IMPORTANT: Mandatory for Release Drafter (release-drafter)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Draft a Release
+        uses: release-drafter/release-drafter@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
