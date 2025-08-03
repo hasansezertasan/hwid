@@ -1,4 +1,5 @@
 import typer
+
 from hwid import get_hwid
 
 app = typer.Typer()
