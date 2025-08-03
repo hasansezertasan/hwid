@@ -1,7 +1,6 @@
 import typer
 from hwid import get_hwid
 
-
 app = typer.Typer()
 
 
@@ -11,13 +10,11 @@ app = typer.Typer()
     hidden=False,
     add_help_option=True,
 )
-def main():
-    """
-    HWID Extractor
-    """
-
+def main() -> None:
+    """HWID Extractor."""
     hwid = get_hwid()
     typer.echo(f"HWID: {hwid}")
+
 
 if __name__ == "__main__":
     app()
