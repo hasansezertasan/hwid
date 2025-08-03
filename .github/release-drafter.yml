@@ -8,8 +8,6 @@ template: |
 
   We are pleased to announce the release of hwid $RESOLVED_VERSION.
 
-  ## :green_book: What's Changed
-
   $CHANGES
 
   ## :bow: Credits
@@ -100,6 +98,13 @@ categories:
   - title: ':toolbox: Maintenance'
     labels:
       - maintenance
+  - title: ':lock: Security'
+    labels:
+      - security
+  - title: ':construction_worker: Continuous Integration'
+    labels:
+      - ci
+      - github_actions
   - title: ':memo: Documentation'
     labels:
       - docs
@@ -108,13 +113,6 @@ categories:
     collapse-after: 5
     labels:
       - dependencies
-  - title: ':lock: Security'
-    labels:
-      - security
-  - title: ':construction_worker: Continuous Integration'
-    labels:
-      - ci
-      - github_actions
   - title: ':wrench: Other changes'
     labels:
       - other
