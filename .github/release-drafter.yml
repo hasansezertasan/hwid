@@ -1,0 +1,120 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/release-drafter/release-drafter/refs/heads/master/schema.json
+# Configuration for Release Drafter: https://github.com/release-drafter/release-drafter
+name-template: '$RESOLVED_VERSION 🌈'
+tag-template: '$RESOLVED_VERSION'
+template: |
+  # :mega: hwid $RESOLVED_VERSION released!
+
+  We are pleased to announce the release of hwid $RESOLVED_VERSION.
+
+  ## :green_book: What's Changed
+
+  $CHANGES
+
+  ## :bow: Credits
+
+  Special thanks to the following contributors who helped with this release: $CONTRIBUTORS
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
+
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+no-changes-template: '- No changes'
+exclude-contributors:
+  - 'dependabot'
+  - 'pre-commit-ci'
+  - 'renovate'
+exclude-labels:
+  - 'skip-changelog'
+  - 'invalid'
+replacers:
+  # https://github.com/release-drafter/release-drafter/issues/569#issuecomment-645942909
+  - search: '/(?:and )?@(pre-commit-ci|dependabot|renovate)(?:\[bot\])?,?/g'
+    replace: ''
+autolabeler:
+  - label: 'metadata'
+    files:
+      - 'README.md'
+      - 'pyproject.toml'
+  - label: 'documentation'
+    files:
+      - '*.md'
+      - 'docs/**'
+    branch:
+      - '/docs{0,1}\/.+/'
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/^fix/i'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+    title:
+      - '/^feat/i'
+  - label: 'dependencies'
+    title:
+      - '/^chore\(deps\)/i'
+      - '/^fix\(deps\)/i'
+      - '/^chore:\s*bump/i'
+  - label: 'github_actions'
+    files:
+      - '.github/workflows/*.yml'
+  - label: 'chore'
+    title:
+      - '/^chore/i'
+prerelease-identifier: 'rc'
+version-resolver:
+  major:
+    labels:
+      - 'major'
+      - 'breaking'
+  minor:
+    labels:
+      - 'minor'
+      - 'feature'
+      - 'enhancement'
+  patch:
+    labels:
+      - 'patch'
+      - 'metadata'
+      - 'maintenance'
+      - 'bug'
+      - 'dependencies'
+      - 'security'
+  default: patch
+categories:
+  - title: ':boom: Breaking'
+    labels:
+      - breaking
+  - title: ':rocket: Features'
+    labels:
+      - feature
+      - enhancement
+  - title: ':beetle: Bug Fixes'
+    labels:
+      - fix
+      - bugfix
+      - bug
+  - title: ':toolbox: Maintenance'
+    labels:
+      - maintenance
+  - title: ':memo: Documentation'
+    labels:
+      - docs
+      - documentation
+  - title: ':package: Dependencies'
+    collapse-after: 5
+    labels:
+      - dependencies
+  - title: ':lock: Security'
+    labels:
+      - security
+  - title: ':construction_worker: Continuous Integration'
+    labels:
+      - ci
+      - github_actions
+  - title: ':wrench: Other changes'
+    labels:
+      - other
+      - chore
