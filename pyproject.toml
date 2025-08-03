@@ -1,13 +1,26 @@
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
+
+[tool.hatch.version]
+source = "vcs"
+
+
+[tool.hatch.build]
+hooks.vcs.version-file = "src/hwid/_version.py"
+
+
+[project]
 name = "hwid"
 version = "0.1.0"
 description = "Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection."
-authors = ["hasansezertasan <hasansezertasan@gmail.com>"]
-maintainers = ["hasansezertasan <hasansezertasan@gmail.com>"]
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
+maintainers = [
+  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
+]
 keywords = [
   "hwid",
   "hardware",
@@ -26,7 +39,7 @@ keywords = [
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "License :: OSI Approved :: MIT License",
-  'Environment :: Console',
+  "Environment :: Console",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
@@ -40,85 +53,73 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
 ]
-packages = [{ include = "hwid" }]
-include = ["CHANGELOG.md"]
-readme = "README.md"
-license = "MIT"
+requires-python = "<4.0,>=3.0"
+dependencies = []
 
-[tool.poetry.urls]
+
+[project.urls]
+documentation = "https://hasansezertasan.github.io/hwid"
 repository = "https://github.com/hasansezertasan/hwid"
 homepage = "https://github.com/hasansezertasan/hwid"
-documentation = "https://hasansezertasan.github.io/hwid/"
 
-[tool.poetry.scripts]
+
+[project.scripts]
 hwid = "hwid.__main__:app"
 
 
-[tool.poetry.dependencies]
-python = ">=3.0,<4.0"
-
-
 [tool.ruff]
-# Run `ruff linter` command to see all available linters and their descriptions
-target-version = "py311"
-line-length = 120
-select = [
-  # "B",
-  # "C",
-  "E",
-  "F",
-  "W",
-  "I",
-  "B9",
-]
-ignore = [
-  "B008", # do not perform function calls in argument defaults
-  "C901", # too complex
-  "E501", # line too long, handled by black
-  "F401", # imported but unused
-  "E402", # module level import not at top of file
-  "E712", # comparison to True should be 'if cond is True:' or 'if cond:'
-]
-exclude = ["alembic", "migrations"]
+fix = true
+line-length = 88
+output-format = "full"
+preview = true
 show-fixes = true
-
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-line_length = 120
-split_on_trailing_comma = true
-skip_glob = ["**/alembic/**", "**/migrations/**"]
+src = ["src", "tests"]
+target-version = "py38"
+unsafe-fixes = true
 
 
-[tool.black]
-line-length = 120
-target-version = ['py311']
-exclude = '''
-(
-  /(
-      \.eggs
-    | \.git
-    | \.hg
-    | \.mypy_cache
-    | \.nox
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-    | alembic
-  )/
-)
-'''
+[tool.ruff.analyze]
+detect-string-imports = true
+preview = true
 
 
-[tool.poe.tasks]
-black = "black ."
-isort = "isort ."
-ruff = "ruff ."
-bir = ["black", "isort", "ruff"]
+[tool.ruff.format]
+docstring-code-format = true
+line-ending = "lf"
+preview = true
+
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+ignore = ["S404", "S602", "COM812"]
+logger-objects = ["logging_setup.logger"]
+preview = true
+select = ["ALL"]
+
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["PLC0414", "TID252"]
+
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
+
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+
+[tool.ruff.lint.ruff]
+parenthesize-tuple-in-subscript = true
+
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
