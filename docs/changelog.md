@@ -17,13 +17,10 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 - feat(pyproject): migrate to uv and hatch from poetry by @hasansezertasan in (#23)
 - chore(gitignore): use more generic gitignore by @hasansezertasan in (#22)
 
-### :beetle: Bug Fixes
-
-- fix: update change-template format for clarity in release drafter by @hasansezertasan in (#34)
-
 ### :construction_worker: Continuous Integration
 
-- fix: update change-template format for clarity in release drafter by @hasansezertasan in (#34)
+- ci(release-drafter): disable prerelease by @hasansezertasan in (#41)
+- Configure Renovate by @[renovate[bot]](https://github.com/apps/renovate) in (#20)
 - feat(versioning): enhance CI/CD workflow with build artifact visibility and caching improvements; update README and pyproject.toml for clarity by @hasansezertasan in (#33)
 - refactor: update release drafter categories by removing 'What's Changed' section and reorganizing security and CI labels by @hasansezertasan in (#32)
 - refactor: remove prerelease identifier from Release Drafter configuration by @hasansezertasan in (#31)
@@ -43,8 +40,10 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 ### :package: Dependencies
 
 <details>
-<summary>6 changes</summary>
+<summary>8 changes</summary>
 
+- chore(deps): update marocchino/sticky-pull-request-comment action to v2.9.4 by @[renovate[bot]](https://github.com/apps/renovate) in (#37)
+- chore(deps): update dependency mkdocs-material to v9.6.16 by @[renovate[bot]](https://github.com/apps/renovate) in (#36)
 - [pre-commit.ci] pre-commit autoupdate by @[pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci) in (#6)
 - Bump peaceiris/actions-gh-pages from 3 to 4 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#12)
 - Bump actions/setup-python from 4 to 5 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#9)
