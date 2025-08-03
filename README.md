@@ -88,12 +88,12 @@ Run all checks to ensure code quality:
 ```sh
 uvx "validate-pyproject[all]" pyproject.toml
 uvx typos
-uvx vulture .
+uvx vulture src
 uvx ruff check
 uvx taplo lint pyproject.toml
 uvx ruff format
 uvx taplo format pyproject.toml
-uvx mypy
+uvx mypy src
 ```
 
 ### `docs:serve`
