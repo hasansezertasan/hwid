@@ -13,5 +13,5 @@ def extract_hwid() -> str:
     """
     command = "system_profiler SPHardwareDataType | grep 'UUID'"
     output = subprocess.check_output(command, shell=True, text=True)
-    output = output.decode("utf-8").strip()
+    output = output.strip()
     return output.split(":")[1].strip()

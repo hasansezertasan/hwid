@@ -13,4 +13,4 @@ def extract_hwid() -> str:
     """
     command = 'powershell -Command "(Get-CimInstance -ClassName Win32_ComputerSystemProduct).UUID"'
     output = subprocess.check_output(command, shell=True, text=True)
-    return output.decode("utf-8").strip()
+    return output.strip()

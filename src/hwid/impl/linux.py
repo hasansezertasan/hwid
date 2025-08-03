@@ -13,4 +13,4 @@ def extract_hwid() -> str:
     """
     command = "sudo dmidecode -s system-uuid"
     output = subprocess.check_output(command, shell=True, text=True)
-    return output.decode("utf-8").strip()
+    return output.strip()
