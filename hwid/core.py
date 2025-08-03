@@ -2,7 +2,7 @@ import re
 import subprocess
 from sys import platform
 
-from hwid.exceptions import InvalidHWID, UnsupportedOS
+from hwid.exceptions import InvalidHWIDError, UnsupportedOSError
 
 
 def validate_hwid(hwid) -> bool:
@@ -26,8 +26,8 @@ def get_hwid():
         output = output.split(":")[1].strip()
     else:
         msg = "Unsupported OS"
-        raise UnsupportedOS(msg)
+        raise UnsupportedOSError(msg)
     if validate_hwid(output):
         return output
     msg = "Invalid HWID"
-    raise InvalidHWID(msg)
+    raise InvalidHWIDError(msg)
