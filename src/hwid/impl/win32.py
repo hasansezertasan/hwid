@@ -11,6 +11,6 @@ def extract_hwid() -> str:
     Returns:
         str: The extracted hardware ID.
     """
-    command = 'powershell -Command "(Get-CimInstance -ClassName Win32_ComputerSystemProduct).UUID"'
+    command = 'powershell -Command "(Get-CimInstance -ClassName Win32_ComputerSystemProduct).UUID"'  # noqa: E501
     output = subprocess.check_output(command, shell=True, text=True)
     return output.strip()

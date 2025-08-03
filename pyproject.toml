@@ -100,6 +100,7 @@ select = ["ALL"]
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["PLC0414", "TID252"]
 "main.py" = ["T201"]
+"examples/**/*.py" = ["N999"]
 
 
 [tool.ruff.lint.pyupgrade]
