@@ -3,12 +3,12 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 
-[tool.hatch.version]
-source = "vcs"
+# [tool.hatch.version]
+# source = "vcs"
 
 
-[tool.hatch.build]
-hooks.vcs.version-file = "src/hwid/_version.py"
+# [tool.hatch.build]
+# hooks.vcs.version-file = "src/hwid/_version.py"
 
 
 [project]
@@ -99,6 +99,8 @@ select = ["ALL"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["PLC0414", "TID252"]
+"main.py" = ["T201"]
+"examples/**/*.py" = ["N999"]
 
 
 [tool.ruff.lint.pyupgrade]
@@ -122,4 +124,11 @@ parenthesize-tuple-in-subscript = true
 
 
 [tool.ruff.lint.mccabe]
-max-complexity = 12
+max-complexity = 5
+
+
+[tool.vulture]
+exclude = ["*/.venv/*.py"]
+min_confidence = 80
+paths = ["hwid"]
+sort_by_size = true
