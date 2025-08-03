@@ -1,30 +1,53 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+---
 repos:
+  # https://github.com/pre-commit/pre-commit-hooks#pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      - id: check-yaml
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
       - id: check-added-large-files
-  - repo: https://github.com/pycqa/isort
-    rev: 6.0.1
-    hooks:
-      - id: isort
-        name: isort (python)
-        files: "\\.(py)$"
-        exclude: ^(\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|alembic)/
-        args: [--settings-path=pyproject.toml]
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
-    hooks:
-      - id: black
-        language_version: python3.11
-        exclude: ^(\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|alembic)/
-        args: [--config=pyproject.toml]
+        name: Check added large files
+        args:
+          - --maxkb=1000
+      - id: check-toml
+        name: Check TOML
+      - id: check-yaml
+        name: Check YAML
+        args:
+          - --unsafe
+      - id: check-json
+        name: Check JSON
+      - id: end-of-file-fixer
+        name: End of file fixer
+      - id: trailing-whitespace
+        name: Trailing whitespace
+      - id: debug-statements
+        name: Debug Statements
+      - id: check-merge-conflict
+        name: Check merge conflict
+      - id: detect-private-key
+        name: Detect private key
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.5
+    rev: v0.12.7
     hooks:
       - id: ruff
-        name: ruff (python)
-        args : [--config=pyproject.toml]
-        exclude: ^(\.git|\.hg|\.mypy_cache|\.nox|\.tox|\.venv|_build|buck-out|build|dist|alembic)/
+        name: Ruff Linter
+      - id: ruff-format
+        name: Ruff Formatter
+  - repo: https://github.com/jendrikseipp/vulture
+    rev: "v2.14"
+    hooks:
+      - id: vulture
+        name: Vulture Linter
+        args: [.]
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.34.0
+    hooks:
+      - id: typos
+        name: Typos Linter
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+        name: Actionlint Linter
