@@ -131,8 +131,3 @@ exclude = ["*/.venv/*.py"]
 min_confidence = 80
 paths = ["hwid"]
 sort_by_size = true
-
-
-[tool.hatch.build.targets.sdist]
-[tool.hatch.build.targets.wheel]
-packages = ["hwid"]
