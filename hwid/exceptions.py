@@ -1,6 +1,6 @@
 class UnsupportedOS(Exception):
-    pass
+    """Raised when the operating system is not supported."""
 
 
 class InvalidHWID(Exception):
-    pass
+    """Raised when the hardware ID is invalid."""
