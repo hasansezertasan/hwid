@@ -30,4 +30,3 @@ jobs:
         run: echo "Cache was restored"
       - name: Build and deploy docs
         run: uvx --with-requirements requirements.docs.txt mkdocs gh-deploy --force
-
