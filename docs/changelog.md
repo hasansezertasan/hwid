@@ -6,10 +6,11 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ## [Unreleased]
 
-## [0.2.0] - 2025-08-03
+## [0.2.0] - 2026-07-01
 
 ### :rocket: Features
 
+- chore(pyproject): rearrange classifiers by @hasansezertasan in (#43)
 - feat(versioning): enhance CI/CD workflow with build artifact visibility and caching improvements; update README and pyproject.toml for clarity by @hasansezertasan in (#33)
 - feat: enable prerelease configuration with identifier for release drafter by @hasansezertasan in (#30)
 - feat: implement platform-specific HWID extraction for Linux, Darwin, and Win32 by @hasansezertasan in (#28)
@@ -19,6 +20,13 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ### :construction_worker: Continuous Integration
 
+- chore(deps): update release-drafter/release-drafter action to v7 by @[renovate[bot]](https://github.com/apps/renovate) in (#64)
+- chore(deps): update marocchino/sticky-pull-request-comment action to v3 by @[renovate[bot]](https://github.com/apps/renovate) in (#63)
+- chore(deps): update actions/checkout action to v6 by @[renovate[bot]](https://github.com/apps/renovate) in (#57)
+- chore(deps): bump actions/checkout from 5 to 6 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#60)
+- chore(deps): bump actions/setup-python from 5 to 6 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#52)
+- chore(deps): bump astral-sh/setup-uv from 6 to 7 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#56)
+- ci(renovate): add labels, enable semantic commits, enable dependency dashboard and add schema validation by @hasansezertasan in (#42)
 - ci(release-drafter): disable prerelease by @hasansezertasan in (#41)
 - Configure Renovate by @[renovate[bot]](https://github.com/apps/renovate) in (#20)
 - feat(versioning): enhance CI/CD workflow with build artifact visibility and caching improvements; update README and pyproject.toml for clarity by @hasansezertasan in (#33)
@@ -35,13 +43,34 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ### :memo: Documentation
 
+- chore(main): release 0.2.0 by @hasansezertasan in (#35)
 - feat: add issue templates, pull request template, and funding configuration; update documentation and workflows by @hasansezertasan in (#27)
 
 ### :package: Dependencies
 
 <details>
-<summary>8 changes</summary>
+<summary>28 changes</summary>
 
+- chore(deps): update actions/checkout action to v7 by @[renovate[bot]](https://github.com/apps/renovate) in (#71)
+- chore(deps): update astral-sh/setup-uv action to v8.2.0 by @[renovate[bot]](https://github.com/apps/renovate) in (#70)
+- chore(deps): update astral-sh/setup-uv action to v8 by @[renovate[bot]](https://github.com/apps/renovate) in (#69)
+- chore(deps): update dependency mkdocstrings to v1.0.4 by @[renovate[bot]](https://github.com/apps/renovate) in (#67)
+- chore(deps): update marocchino/sticky-pull-request-comment action to v3.0.4 by @[renovate[bot]](https://github.com/apps/renovate) in (#66)
+- chore(deps): update marocchino/sticky-pull-request-comment action to v3.0.3 by @[renovate[bot]](https://github.com/apps/renovate) in (#65)
+- chore(deps): bump mkdocstrings[python] from 0.30.0 to 0.30.1 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#50)
+- chore(deps): update dependency mkdocstrings to v1 by @[renovate[bot]](https://github.com/apps/renovate) in (#58)
+- chore(deps): update dependency mkdocs-material to v9.7.6 by @[renovate[bot]](https://github.com/apps/renovate) in (#48)
+- chore(deps): update release-drafter/release-drafter action to v7 by @[renovate[bot]](https://github.com/apps/renovate) in (#64)
+- chore(deps): update marocchino/sticky-pull-request-comment action to v3 by @[renovate[bot]](https://github.com/apps/renovate) in (#63)
+- chore(deps): update python docker tag to v3.14 by @[renovate[bot]](https://github.com/apps/renovate) in (#53)
+- chore(deps): update actions/checkout action to v6 by @[renovate[bot]](https://github.com/apps/renovate) in (#57)
+- chore(deps): bump actions/checkout from 5 to 6 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#60)
+- chore(deps): bump actions/setup-python from 5 to 6 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#52)
+- chore(deps): bump astral-sh/setup-uv from 6 to 7 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#56)
+- chore(deps): update amannn/action-semantic-pull-request action to v6 by @[renovate[bot]](https://github.com/apps/renovate) in (#45)
+- chore(deps): update dependency mkdocs-material to v9.6.18 by @[renovate[bot]](https://github.com/apps/renovate) in (#46)
+- chore(deps): update actions/checkout action to v5 by @[renovate[bot]](https://github.com/apps/renovate) in (#44)
+- chore(deps): update dependency mkdocstrings to v0.30.0 by @[renovate[bot]](https://github.com/apps/renovate) in (#39)
 - chore(deps): update marocchino/sticky-pull-request-comment action to v2.9.4 by @[renovate[bot]](https://github.com/apps/renovate) in (#37)
 - chore(deps): update dependency mkdocs-material to v9.6.16 by @[renovate[bot]](https://github.com/apps/renovate) in (#36)
 - [pre-commit.ci] pre-commit autoupdate by @[pre-commit-ci[bot]](https://github.com/apps/pre-commit-ci) in (#6)
