@@ -20,12 +20,6 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ### :construction_worker: Continuous Integration
 
-- chore(deps): update release-drafter/release-drafter action to v7 by @[renovate[bot]](https://github.com/apps/renovate) in (#64)
-- chore(deps): update marocchino/sticky-pull-request-comment action to v3 by @[renovate[bot]](https://github.com/apps/renovate) in (#63)
-- chore(deps): update actions/checkout action to v6 by @[renovate[bot]](https://github.com/apps/renovate) in (#57)
-- chore(deps): bump actions/checkout from 5 to 6 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#60)
-- chore(deps): bump actions/setup-python from 5 to 6 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#52)
-- chore(deps): bump astral-sh/setup-uv from 6 to 7 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#56)
 - ci(renovate): add labels, enable semantic commits, enable dependency dashboard and add schema validation by @hasansezertasan in (#42)
 - ci(release-drafter): disable prerelease by @hasansezertasan in (#41)
 - Configure Renovate by @[renovate[bot]](https://github.com/apps/renovate) in (#20)
@@ -37,9 +31,6 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 - feat(ci): add PR title linting workflow to enforce Conventional Commits by @hasansezertasan in (#25)
 - feat(ci): add GitHub Actions CI workflow for testing across multiple OS by @hasansezertasan in (#24)
 - feat(pyproject): migrate to uv and hatch from poetry by @hasansezertasan in (#23)
-- Bump peaceiris/actions-gh-pages from 3 to 4 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#12)
-- Bump actions/setup-python from 4 to 5 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#9)
-- Bump actions/checkout from 3 to 4 by @[dependabot[bot]](https://github.com/apps/dependabot) in (#8)
 
 ### :memo: Documentation
 
