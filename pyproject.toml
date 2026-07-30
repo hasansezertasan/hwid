@@ -3,31 +3,48 @@ name = "hwid"
 description = "Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection."
 license = "MIT"
 readme = "README.md"
-authors = [
-  { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
-]
+authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
 maintainers = [
   { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
 ]
 dynamic = ["version"]
 keywords = [
-    "hwid",
-    "hardware",
-    "id",
-    "unique",
-    "identifier",
-    "machine",
-    "fingerprint",
-    "fingerprinting",
-    "licensing",
-    "license",
-    "identification",
-    "command-line", "cli", "package", "metadata", "pypi", "python",
-    "uv", "hatch",
-    "tox", "pytest", "ruff", "mypy", "basedpyright",
-    "type-hints", "typed", "modern-python",
-    "ci-cd", "github-actions", "automation", "sphinx",
-    "prek", "linting", "testing", "coverage", "release-automation",
+  "hwid",
+  "hardware",
+  "id",
+  "unique",
+  "identifier",
+  "machine",
+  "fingerprint",
+  "fingerprinting",
+  "licensing",
+  "license",
+  "identification",
+  "command-line",
+  "cli",
+  "package",
+  "metadata",
+  "pypi",
+  "python",
+  "uv",
+  "hatch",
+  "tox",
+  "pytest",
+  "ruff",
+  "mypy",
+  "basedpyright",
+  "type-hints",
+  "typed",
+  "modern-python",
+  "ci-cd",
+  "github-actions",
+  "automation",
+  "sphinx",
+  "prek",
+  "linting",
+  "testing",
+  "coverage",
+  "release-automation",
 ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -54,8 +71,6 @@ classifiers = [
   "Typing :: Typed",
 
 
-
-
 ]
 requires-python = ">=3.10"
 dependencies = []
@@ -63,12 +78,7 @@ dependencies = []
 [project.optional-dependencies]
 
 
-
-
-
-
-all = [
-]
+all = []
 
 
 [project.urls]
@@ -82,9 +92,6 @@ source = "https://github.com/hasansezertasan/hwid.git"
 
 [project.scripts]
 hwid = "hwid.__main__:app"
-
-
-
 
 
 [dependency-groups]
@@ -135,15 +142,15 @@ test = [
   "inline-snapshot",
 ]
 docs = [
-    "sphinx==8.1.3",
-    "shibuya==2026.5.19",
-    "sphinx-autobuild==2024.10.3",  # 2025.x drops Python 3.10 (requires-python >= 3.11)
-    "sphinx-copybutton==0.5.2",
-    "sphinx-design==0.6.1",  # 0.7.0 drops Python 3.10 (requires-python >= 3.11)
-    "sphinx-togglebutton==0.4.5",
-    "sphinx-paramlinks==0.6.0",
-    "auto-pytabs[sphinx]==0.5.0",
-    "myst-parser==4.0.1",
+  "sphinx==8.1.3",
+  "shibuya==2026.5.19",
+  "sphinx-autobuild==2024.10.3", # 2025.x drops Python 3.10 (requires-python >= 3.11)
+  "sphinx-copybutton==0.5.2",
+  "sphinx-design==0.6.1",        # 0.7.0 drops Python 3.10 (requires-python >= 3.11)
+  "sphinx-togglebutton==0.4.5",
+  "sphinx-paramlinks==0.6.0",
+  "auto-pytabs[sphinx]==0.5.0",
+  "myst-parser==4.0.1",
 ]
 tool = [
   "commitizen==4.10.0",
@@ -151,9 +158,7 @@ tool = [
   # "inflection==0.5.1",
   # "copier==9.11.0",
 ]
-prek = [
-    "prek==0.4.3",
-]
+prek = ["prek==0.4.3"]
 
 
 [build-system]
@@ -208,9 +213,7 @@ name = "cz_conventional_commits"
 # addopts = "-rXs --strict-config --strict-markers"
 addopts = "-v --tb=short"
 asyncio_mode = "auto"
-filterwarnings = [
-  "error",
-]
+filterwarnings = ["error"]
 testpaths = ["tests"]
 xfail_strict = true
 
@@ -243,11 +246,7 @@ hwid = ["src/hwid", "*/site-packages/hwid"]
 # so a pattern like `def main\(` would silently un-measure any future `main()`
 # with real logic (and did mask the tested GUI/TUI entrypoints). Pragmas carry the
 # exclusion decision next to the code it affects. See ADR-008.
-exclude_lines = [
-  "no cov",
-  "if __name__ == .__main__.:",
-  "if TYPE_CHECKING:",
-]
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
 fail_under = 99
 # Patterns match both the `src/` (editable) and installed (`site-packages`)
 # layouts (see [tool.coverage.run] omit).
@@ -321,8 +320,6 @@ author = "Hasan Sezer Taşan <hasansezertasan@gmail.com>"
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
-
-
 
 
 [tool.ruff.lint.mccabe]
@@ -403,14 +400,7 @@ project-includes = ["src"]
 # and would hang/fail under ``tox run`` in CI (where no broker is available).
 # The worker is covered by its pytest TestBroker suite; run it on demand with
 # ``tox -e worker`` when a broker is up (e.g. inside the devcontainer).
-env_list = [
-    "style",
-    "3.14",
-    "3.13",
-    "3.12",
-    "3.11",
-    "3.10"
-]
+env_list = ["style", "3.14", "3.13", "3.12", "3.11", "3.10"]
 requires = ["tox>=4"]
 
 
@@ -448,75 +438,23 @@ wheel_build_env = ".pkg"
 [tool.tox.env.style]
 base_python = ["3.10"]
 commands = [
-  [
-    "ruff",
-    "check",
-  ],
-  [
-    "ruff",
-    "format",
-  ],
-  [
-    "mypy",
-    "--python-version",
-    "3.10",
-  ],
-  [
-    "mypy",
-    "--python-version",
-    "3.14",
-  ],
-  [
-    "basedpyright",
-  ],
-  [
-    "ty",
-    "check",
-  ],
-  [
-    "pyrefly",
-    "check",
-  ],
-  [
-    "zuban",
-    "check",
-    "src",
-  ],
-  [
-    "vulture",
-  ],
-  [
-    "python",
-    "-m",
-    "slotscheck",
-    "src",
-  ],
-  [
-    "taplo",
-    "lint",
-  ],
-  [
-    "taplo",
-    "format",
-  ],
-  [
-    "validate-pyproject",
-    "pyproject.toml",
-  ],
-  [
-    "typos",
-    "--diff",
-  ],
-  [
-    "actionlint",
-  ],
-  [
-    "ec",
-  ],
-  [
-    "sphinx-lint",
-    "docs",
-  ],
+  ["ruff", "check"],
+  ["ruff", "format"],
+  ["mypy", "--python-version", "3.10"],
+  ["mypy", "--python-version", "3.14"],
+  ["basedpyright"],
+  ["ty", "check"],
+  ["pyrefly", "check"],
+  ["zuban", "check", "src"],
+  ["vulture"],
+  ["python", "-m", "slotscheck", "src"],
+  ["taplo", "lint"],
+  ["taplo", "format"],
+  ["validate-pyproject", "pyproject.toml"],
+  ["typos", "--diff"],
+  ["actionlint"],
+  ["ec"],
+  ["sphinx-lint", "docs"],
   # ["yamlfmt", "."],
 ]
 # `test` is included so the type checkers that scope tests (e.g. ty) can
@@ -552,7 +490,15 @@ runner = "uv-venv-runner"
 [tool.tox.env.docs-linkcheck]
 # On-demand link checker. Also run weekly (non-blocking) by docs-linkcheck.yml.
 # Hits the network, so it is deliberately not part of the `style` env or PR CI.
-commands = [["sphinx-build", "-b", "linkcheck", "docs", "docs/_build/linkcheck"]]
+commands = [
+  [
+    "sphinx-build",
+    "-b",
+    "linkcheck",
+    "docs",
+    "docs/_build/linkcheck",
+  ],
+]
 extras = ["all"]
 dependency_groups = ["docs"]
 description = "Check documentation for broken links"
