@@ -1,6 +1,5 @@
----
-title: "Pull Request Template"
----
+<!-- omit in toc -->
+# Pull Request
 
 ## Description
 
@@ -14,10 +13,13 @@ title: "Pull Request Template"
 ## Types of changes
 
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
+<!--- This list is categorical, not a completion checklist, so it is excluded from the Task Completed Check. -->
 
+<!-- ignore-task-list-start -->
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
+<!-- ignore-task-list-end -->
 
 ## Usage examples
 
@@ -38,4 +40,4 @@ title: "Pull Request Template"
 
 ## Which issue(s) this PR fixes
 
-<!--- If this PR fixes an issue, please add the issue number here likes this: Fixes #1 -->
+<!--- If this PR fixes an issue, please add the issue number here like this: Fixes #1 -->

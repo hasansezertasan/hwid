@@ -1,0 +1,21 @@
+---
+name: Task Completed Check
+on:
+  # pull_request_target is required so the check run posts on PRs from forks with
+  # a least-privilege `checks: write` token. It is safe here: no PR code is checked
+  # out or executed — the pinned action only reads the PR description's task list.
+  pull_request_target:  # zizmor: ignore[dangerous-triggers]
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  task-check:
+    name: Check PR task list
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      checks: write
+      pull-requests: read
+    steps:
+      - name: Check completed tasks
+        uses: kentaro-m/task-completed-checker-action@2ddb65fdd5577bae4a8e82e0564e459677aec893  # v0.1.2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}

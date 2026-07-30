@@ -39,6 +39,7 @@ pip install hwid
 
 ```python
 import hwid
+
 print(hwid.get_hwid())
 ```
 

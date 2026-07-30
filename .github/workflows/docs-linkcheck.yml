@@ -1,0 +1,43 @@
+---
+name: Docs Link Check
+# Runs Sphinx's linkcheck builder over the documentation to catch dead links and
+# moved anchors. Link checking hits the network and is inherently flaky
+# (transient 5xx, rate limits, CI-blocking sites), so it runs on a weekly
+# schedule and on demand — never on pull_request, and it is not part of the
+# `check` aggregation gate. A failure here is a maintenance signal, not a merge
+# blocker. See ADR-011.
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly, Monday 07:00 UTC.
+    - cron: "0 7 * * 1"
+permissions: {}
+jobs:
+  linkcheck:
+    name: Check documentation links
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Check documentation links
+        run: uv run --no-default-groups --extra all --group docs sphinx-build -b linkcheck docs docs/_build/linkcheck

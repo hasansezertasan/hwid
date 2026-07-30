@@ -1,0 +1,68 @@
+min_version = "2024.9.5"
+
+[env]
+PROJECT_NAME = "{{ config_root | basename }}"
+_.python.venv = { path = ".venv", create = true }
+
+[tools]
+python = "{{ get_env(name='PYTHON_VERSION', default='3.10') }}"
+# ghalint (GitHub Actions workflow security-policy linter) is delivered via mise
+# because it ships no PyPI wrapper or pre-commit hook. The aqua backend is named
+# explicitly so resolution does not depend on the mise registry short name. The
+# prek `ghalint` hook and the CI `hooks` job invoke this binary.
+"aqua:suzuki-shunsuke/ghalint" = "1.5.6"
+
+[tasks.install]
+description = "Install dependencies"
+alias = "i"
+run = "uv sync"
+
+[tasks.test]
+description = "Run tests"
+alias = "t"
+run = "uv run --locked tox run"
+
+[tasks.style]
+description = "Run style checks"
+alias = "s"
+run = "uv run --locked tox run -e style"
+
+[tasks.lint]
+description = "Lint the code with ruff"
+alias = "l"
+run = "uv run --locked ruff check"
+
+[tasks.format]
+description = "Format the code with ruff"
+alias = "f"
+run = "uv run --locked ruff format"
+
+[tasks.docs-build]
+description = "Build documentation"
+run = "uv run --locked tox run -e docs-build"
+
+[tasks.docs-serve]
+description = "Serve documentation locally"
+run = "uv run --locked tox run -e docs-server"
+
+[tasks.prek]
+description = "Run prek hooks"
+alias = "pc"
+run = "uv run --locked tox run -e prek"
+
+[tasks.build]
+description = "Build the package"
+alias = "b"
+run = "uv build"
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = "rm -rf dist/ build/ *.egg-info/ .tox/ .pytest_cache/ .mypy_cache/ .ruff_cache/"
+
+[tasks.info]
+description = "Print project information"
+run = '''
+echo "Project: $PROJECT_NAME"
+echo "Python: $(python --version)"
+echo "Virtual Environment: $VIRTUAL_ENV"
+'''
