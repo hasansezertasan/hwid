@@ -163,11 +163,15 @@ Common tasks are exposed as mise tasks (`mise run test`, `mise run style`,
 lint/type-check suite is `uv run --locked tox run -e style`, and the fast git
 hook gate is `uv run --locked tox run -e prek`.
 
-<!-- TODO @hasansezertasan: add any project-specific setup (IDE, services, env vars) -->
+`hwid` has no runtime dependencies and needs no external services or environment
+variables — the steps above are all the setup required.
 
 ### Improving The Documentation
 
-<!-- TODO @hasansezertasan: Updating, improving and correcting the documentation -->
+The documentation lives under `docs/` (Sphinx + Shibuya). Build it locally with
+`uv run --locked tox run -e docs-build`, or preview it with live reload via
+`uv run --locked tox run -e docs-server`. Improvements to the reference pages,
+usage examples, and source docstrings are all welcome.
 
 ## Styleguides
 
@@ -368,7 +372,10 @@ receiving update PRs.
 
 ## Join The Project Team
 
-<!-- TODO @hasansezertasan: Work in progress. -->
+`hwid` is maintained by [@hasansezertasan](https://github.com/hasansezertasan).
+If you would like to help maintain the project, open a
+[discussion](https://github.com/hasansezertasan/hwid/discussions) or reach out
+after a few merged contributions.
 
 <!-- omit in toc -->
 ## Attribution

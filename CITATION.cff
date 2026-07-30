@@ -1,10 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
-# TODO @hasansezertasan: verify the author name split below. given-names and
-# family-names are guessed from author_full_name (everything before the final
-# space vs. the final word) and may be wrong for compound surnames such as
-# "van der Berg" or for "Last, First" ordering.
 authors:
   - given-names: "Hasan Sezer"
     family-names: "Taşan"

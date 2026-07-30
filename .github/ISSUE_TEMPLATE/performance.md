@@ -25,8 +25,7 @@ A clear and concise description of what you expected to happen.
 - hwid version: [e.g. 0.1.2]
 - Python version: [e.g. 3.10]
 - OS: [e.g. Ubuntu 20.04]
-- Installation method: [e.g. pip, conda, from source]
-- Other relevant software versions: [e.g. Django 3.2, PostgreSQL 13]
+- Installation method: [e.g. pip, uv, uvx, from source]
 
 ## Additional context
 
