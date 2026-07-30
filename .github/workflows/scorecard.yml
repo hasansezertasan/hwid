@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
+      # Job-level permissions replace the workflow's read-all, so re-grant the
+      # repository read that actions/checkout needs.
+      contents: read
       # Needed to upload the SARIF results to the code-scanning dashboard.
       security-events: write
       # Needed to publish the results and mint the OpenSSF Scorecard badge.
