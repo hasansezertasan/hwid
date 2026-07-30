@@ -90,7 +90,7 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 <!-- omit in toc -->
 #### How Do I Submit a Good Bug Report?
 
-> You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by email to <hasansezertasan@gmail.com>.
+> You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead, report them privately using GitHub's [private vulnerability reporting](https://github.com/hasansezertasan/hwid/security/advisories/new) (Security tab → "Report a vulnerability"), or by email to <hasansezertasan@gmail.com>. See [SECURITY.md](SECURITY.md) for details.
 
 <!-- You may add a PGP key to allow the messages to be sent encrypted as well. -->
 

@@ -5,7 +5,7 @@ on:
   # PR's linked-issue relationship and post on fork PRs. It is safe here: no PR
   # code is checked out or executed — the pinned action only reads PR metadata.
   pull_request_target:  # zizmor: ignore[dangerous-triggers]
-    types: [opened, edited, reopened, synchronize]
+    types: [opened, edited, reopened, synchronize, labeled, unlabeled]
 jobs:
   check-linked-issues:
     name: Verify linked issue

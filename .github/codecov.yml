@@ -3,8 +3,8 @@ coverage:
   status:
     project:
       default:
-        target: auto
-        threshold: 99
+        target: 99%
+        threshold: 0.5%
         base: auto
         flags:
           - unit

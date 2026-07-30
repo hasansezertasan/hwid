@@ -17,7 +17,7 @@
       "type": "debugpy",
       "request": "launch",
       "module": "pytest",
-      "args": ["-v", "--tb=short", "${input:testArgs}"],
+      "args": ["-v", "--tb=short"],
       "console": "integratedTerminal",
       "justMyCode": true
     },
@@ -30,25 +30,6 @@
         "port": 5678
       },
       "justMyCode": false
-    },
-    
-    
-    
-    
-    
-  ],
-  "inputs": [
-    {
-      "id": "args",
-      "type": "promptString",
-      "default": "version",
-      "description": "CLI arguments (e.g., version, info)"
-    },
-    {
-      "id": "testArgs",
-      "type": "promptString",
-      "default": "",
-      "description": "Test arguments (e.g., tests/test_cli.py -v)"
     }
   ]
 }
