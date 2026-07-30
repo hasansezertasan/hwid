@@ -448,7 +448,7 @@ commands = [
   ["vulture"],
   ["python", "-m", "slotscheck", "src"],
   ["taplo", "lint"],
-  ["taplo", "format"],
+  ["taplo", "format", "--check"],
   ["validate-pyproject", "pyproject.toml"],
   ["typos", "--diff"],
   ["actionlint"],
