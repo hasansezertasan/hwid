@@ -18,6 +18,11 @@ def test_win32_strips_powershell_output(mocker: MockerFixture) -> None:
         "hwid.impl.win32.subprocess.check_output", return_value=f"{VALID_HWID}\r\n"
     )
 
+    expected = (
+        "powershell -Command "
+        '"(Get-CimInstance -ClassName Win32_ComputerSystemProduct).UUID"'
+    )
     assert win32.extract_hwid() == VALID_HWID
     check_output.assert_called_once()
+    assert check_output.call_args.args == (expected,)
     assert check_output.call_args.kwargs == {"shell": True, "text": True}

@@ -20,4 +20,8 @@ def test_darwin_parses_system_profiler_line(mocker: MockerFixture) -> None:
     )
 
     assert darwin.extract_hwid() == VALID_HWID
+    check_output.assert_called_once()
+    assert check_output.call_args.args == (
+        "system_profiler SPHardwareDataType | grep 'UUID'",
+    )
     assert check_output.call_args.kwargs == {"shell": True, "text": True}

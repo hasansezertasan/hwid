@@ -19,4 +19,6 @@ def test_linux_strips_dmidecode_output(mocker: MockerFixture) -> None:
     )
 
     assert linux.extract_hwid() == VALID_HWID
+    check_output.assert_called_once()
+    assert check_output.call_args.args == ("sudo dmidecode -s system-uuid",)
     assert check_output.call_args.kwargs == {"shell": True, "text": True}
