@@ -25,7 +25,5 @@ include_tui: false
 include_vpn: false
 include_web: false
 include_worker: false
-package_keywords: hwid, hardware, id, unique, identifier, machine, fingerprint, fingerprinting,
-    licensing, license, identification
-short_description: Extract the `hwid` on Windows, Linux, Mac. Cross-platform using
-    Python, native OS detection.
+package_keywords: hwid, hardware, id, unique, identifier, machine, fingerprint, fingerprinting, licensing, license, identification
+short_description: Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection.

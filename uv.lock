@@ -598,7 +598,6 @@ dev = [
     { name = "pyrefly" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
-    { name = "pytest-dependency" },
     { name = "pytest-mock" },
     { name = "pytest-rerunfailures" },
     { name = "pytest-sugar" },
@@ -652,7 +651,6 @@ test = [
     { name = "inline-snapshot" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
-    { name = "pytest-dependency" },
     { name = "pytest-mock" },
     { name = "pytest-rerunfailures" },
     { name = "pytest-sugar" },
@@ -680,7 +678,6 @@ dev = [
     { name = "pyrefly", specifier = "==1.1.1" },
     { name = "pytest", specifier = "==8.4.2" },
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
-    { name = "pytest-dependency", specifier = "==0.6.0" },
     { name = "pytest-mock", specifier = "==3.15.1" },
     { name = "pytest-rerunfailures", specifier = "==16.1" },
     { name = "pytest-sugar" },
@@ -732,7 +729,6 @@ test = [
     { name = "inline-snapshot" },
     { name = "pytest", specifier = "==8.4.2" },
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
-    { name = "pytest-dependency", specifier = "==0.6.0" },
     { name = "pytest-mock", specifier = "==3.15.1" },
     { name = "pytest-rerunfailures", specifier = "==16.1" },
     { name = "pytest-sugar" },
@@ -1295,16 +1291,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/43/7c/d36d04db312ecf429
 wheels = [
     { url = "https://files.pythonhosted.org/packages/03/e2/08a497ef684b88559c9cc5f4ad53a37e7b99e727094a86d6ea32536d5d3c/pytest_asyncio-1.4.0-py3-none-any.whl", hash = "sha256:933ca923a23075a87fb7070c0ec272a6848489824d887c85c812670932835aa1", size = 16930, upload-time = "2026-05-26T09:56:02.576Z" },
 ]
-
-[[package]]
-name = "pytest-dependency"
-version = "0.6.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pytest" },
-    { name = "setuptools" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/7e/3b/317cc04e77d707d338540ca67b619df8f247f3f4c9f40e67bf5ea503ad94/pytest-dependency-0.6.0.tar.gz", hash = "sha256:934b0e6a39d95995062c193f7eaeed8a8ffa06ff1bcef4b62b0dc74a708bacc1", size = 19499, upload-time = "2023-12-31T20:38:54.991Z" }
 
 [[package]]
 name = "pytest-mock"

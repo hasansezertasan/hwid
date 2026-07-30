@@ -14,4 +14,3 @@ allowCompoundWords: true
 words:
   - codespell
   - MYENVPREFIX
-  - stefanzweifel
