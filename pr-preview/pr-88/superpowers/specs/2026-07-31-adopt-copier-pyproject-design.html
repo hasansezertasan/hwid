@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="amber" data-content_root="../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Design: Adopt copier-pyproject into hwid - hwid</title><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx_paramlinks.css" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    
+  <meta property="og:type" content="website"/><meta property="og:title" content="Design: Adopt copier-pyproject into hwid"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../index.html">
+      
+      
+      <strong>hwid</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials">
+  <a href="https://github.com/hasansezertasan/hwid" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Modules</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#goal">Goal</a></li>
+<li><a class="reference internal" href="#non-goals">Non-goals</a></li>
+<li><a class="reference internal" href="#mechanics-establishing-the-copier-link-on-an-existing-repo">Mechanics &#8212; establishing the copier link on an existing repo</a></li>
+<li><a class="reference internal" href="#copier-answer-set">Copier answer set</a></li>
+<li><a class="reference internal" href="#reconciliation-plan">Reconciliation plan</a><ul>
+<li><a class="reference internal" href="#release-wiring-verify-during-implementation">Release wiring (verify during implementation)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#breaking-changes-versioning">Breaking changes &amp; versioning</a></li>
+<li><a class="reference internal" href="#deferred-future-copier-update-toggles-flipped-on">Deferred (future <code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code>, toggles flipped on)</a></li>
+<li><a class="reference internal" href="#verification">Verification</a></li>
+<li><a class="reference internal" href="#risks-rollback">Risks &amp; rollback</a></li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">hwid</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">Design: Adopt <code class="docutils literal notranslate"><span class="pre">copier-pyproject</span></code> into <code class="docutils literal notranslate"><span class="pre">hwid</span></code></strong>
+        <meta itemprop="position" content="2" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+  <article class="yue" role="main">
+          <section id="design-adopt-copier-pyproject-into-hwid">
+<h1>Design: Adopt <code class="docutils literal notranslate"><span class="pre">copier-pyproject</span></code> into <code class="docutils literal notranslate"><span class="pre">hwid</span></code><a class="headerlink" href="#design-adopt-copier-pyproject-into-hwid" title="Link to this heading">¶</a></h1>
+<ul class="simple">
+<li><p><strong>Date:</strong> 2026-07-31</p></li>
+<li><p><strong>Branch:</strong> <code class="docutils literal notranslate"><span class="pre">hasansezertasan/greenling</span></code></p></li>
+<li><p><strong>Template:</strong> <code class="docutils literal notranslate"><span class="pre">gh:hasansezertasan/copier-pyproject</span></code></p></li>
+<li><p><strong>Status:</strong> Approved (pending written-spec review)</p></li>
+</ul>
+<section id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Link to this heading">¶</a></h2>
+<p>Migrate <code class="docutils literal notranslate"><span class="pre">hwid</span></code> fully onto the <code class="docutils literal notranslate"><span class="pre">copier-pyproject</span></code> toolchain <strong>and</strong> establish a
+persistent copier link so future template improvements can be pulled in with
+<code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hwid</span></code> is a Production/Stable, <strong>zero-dependency</strong>, cross-platform
+library + CLI published on PyPI. The template is opinionated and built for <em>new</em>
+projects, so this is a migration-with-reconciliation, not a clean scaffold.</p>
+</section>
+<section id="non-goals">
+<h2>Non-goals<a class="headerlink" href="#non-goals" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>No changes to <code class="docutils literal notranslate"><span class="pre">hwid</span></code>’s runtime source behavior (<code class="docutils literal notranslate"><span class="pre">src/hwid/**</span></code> is preserved).</p></li>
+<li><p>No standalone-binary build pipeline in this migration (compilers/freezers are
+explicitly deferred — see Deferred).</p></li>
+<li><p>No web/GUI/TUI/MCP/worker/Cython/profiling/DB-service components.</p></li>
+</ul>
+</section>
+<section id="mechanics-establishing-the-copier-link-on-an-existing-repo">
+<h2>Mechanics — establishing the copier link on an existing repo<a class="headerlink" href="#mechanics-establishing-the-copier-link-on-an-existing-repo" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">hwid</span></code> was not generated from the template, so there is no <code class="docutils literal notranslate"><span class="pre">.copier-answers.yml</span></code>.
+We create one and reconcile:</p>
+<ol class="arabic simple">
+<li><p>Work on branch <code class="docutils literal notranslate"><span class="pre">hasansezertasan/greenling</span></code> (<code class="docutils literal notranslate"><span class="pre">main</span></code> stays untouched until merge).</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">copy</span> <span class="pre">--trust</span> <span class="pre">gh:hasansezertasan/copier-pyproject</span> <span class="pre">.</span></code> into the repo,
+feeding the answer set below. This writes template files and records
+<code class="docutils literal notranslate"><span class="pre">.copier-answers.yml</span></code>, including the template <code class="docutils literal notranslate"><span class="pre">_commit</span></code> — the anchor that makes
+<code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code> work later. <code class="docutils literal notranslate"><span class="pre">--trust</span></code> is required because the template’s
+<code class="docutils literal notranslate"><span class="pre">_tasks</span></code> runs <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">init</span></code> (harmless on an existing repo).</p></li>
+<li><p><strong>Reconcile via <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span></code>:</strong> keep <code class="docutils literal notranslate"><span class="pre">hwid</span></code>’s real source and identity, take the
+template’s tooling/CI/docs/config scaffolding (see Reconciliation plan).</p></li>
+<li><p>Commit as a single “adoption baseline.” Future template releases then flow in
+via <code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code> (git-merge-style conflicts, expected and manageable).</p></li>
+</ol>
+</section>
+<section id="copier-answer-set">
+<h2>Copier answer set<a class="headerlink" href="#copier-answer-set" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Rationale</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">github_user</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hasansezertasan</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">github_repo_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hwid</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">author_full_name</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Hasan</span> <span class="pre">Sezer</span> <span class="pre">Taşan</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">author_email</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">hasansezertasan&#64;gmail.com</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">short_description</span></code></p></td>
+<td><p>existing hwid description</p></td>
+<td><p>preserve identity</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">package_keywords</span></code></p></td>
+<td><p>existing hwid keywords</p></td>
+<td><p>preserve identity</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_cli</span></code></p></td>
+<td><p><strong>false</strong></p></td>
+<td><p>stay zero-dependency (no Typer)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_pydantic_settings</span></code></p></td>
+<td><p><strong>false</strong></p></td>
+<td><p>stay zero-dependency</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_web</span></code> / <code class="docutils literal notranslate"><span class="pre">web_framework</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_gui</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_tui</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_mcp</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_worker</span></code> / <code class="docutils literal notranslate"><span class="pre">worker_broker</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_c_extensions</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_profiling</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_launcher</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_compiler</span></code></p></td>
+<td><p><strong>false</strong></p></td>
+<td><p><strong>deferred</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_freezer</span></code></p></td>
+<td><p><strong>false</strong></p></td>
+<td><p><strong>deferred</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_sourcery</span></code></p></td>
+<td><p>false</p></td>
+<td><p>external-service setup, skip</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_sonarcloud</span></code></p></td>
+<td><p>false</p></td>
+<td><p>external-service setup, skip</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_all_contributors</span></code></p></td>
+<td><p>false</p></td>
+<td><p>external-service setup, skip</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_postgres</span></code> / <code class="docutils literal notranslate"><span class="pre">include_redis</span></code></p></td>
+<td><p>false</p></td>
+<td><p>no DB services in devcontainer</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">include_pgadmin</span></code> / <code class="docutils literal notranslate"><span class="pre">include_adminer</span></code> / <code class="docutils literal notranslate"><span class="pre">include_dbeaver</span></code></p></td>
+<td><p>false</p></td>
+<td><p>no DB tooling</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">include_vpn</span></code></p></td>
+<td><p>false</p></td>
+<td><p>not applicable</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Baseline components (no toggle) that ship with every generation and we keep:</strong>
+Sphinx + Shibuya docs, mypy + basedpyright, security scans (CodeQL, gitleaks,
+pip-audit, Trivy, OpenSSF Scorecard), release-please, devcontainer (no DB
+services).</p>
+</section>
+<section id="reconciliation-plan">
+<h2>Reconciliation plan<a class="headerlink" href="#reconciliation-plan" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Area</p></th>
+<th class="head"><p>Today</p></th>
+<th class="head"><p>After</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Runtime source</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">src/hwid/**</span></code></p></td>
+<td><p>unchanged</p></td>
+<td><p><strong>preserve as-is</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Tests / examples</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">tests/</span></code>, <code class="docutils literal notranslate"><span class="pre">examples/</span></code></p></td>
+<td><p>unchanged</p></td>
+<td><p>preserve, adjust only for typing/lint</p></td>
+</tr>
+<tr class="row-even"><td><p>Python floor</p></td>
+<td><p>3.6–3.13 (<code class="docutils literal notranslate"><span class="pre">&gt;=3.0</span></code>)</p></td>
+<td><p><strong>3.10+</strong></p></td>
+<td><p>breaking; major bump + CHANGELOG</p></td>
+</tr>
+<tr class="row-odd"><td><p>Releases</p></td>
+<td><p>release-drafter + hatch-vcs</p></td>
+<td><p><strong>release-please</strong></p></td>
+<td><p>replace <code class="docutils literal notranslate"><span class="pre">release-drafter.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">cd.yml</span></code>; verify version wiring during impl</p></td>
+</tr>
+<tr class="row-even"><td><p>Docs</p></td>
+<td><p>mkdocs-material</p></td>
+<td><p><strong>Sphinx + Shibuya</strong></p></td>
+<td><p>port <code class="docutils literal notranslate"><span class="pre">docs/</span></code> content; swap <code class="docutils literal notranslate"><span class="pre">docs-deploy.yml</span></code>; retire <code class="docutils literal notranslate"><span class="pre">mkdocs.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">requirements.docs.txt</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Commit hooks</p></td>
+<td><p>pre-commit (ruff/vulture/typos/actionlint)</p></td>
+<td><p><strong>prek + commitizen</strong></p></td>
+<td><p>replace <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> wholesale</p></td>
+</tr>
+<tr class="row-even"><td><p>Type checking</p></td>
+<td><p>none</p></td>
+<td><p><strong>mypy + basedpyright</strong></p></td>
+<td><p>add config; fix any errors surfaced</p></td>
+</tr>
+<tr class="row-odd"><td><p>CI</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ci.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">check-pr-title.yml</span></code></p></td>
+<td><p>template CI (tox 3.10–3.14)</p></td>
+<td><p>replace</p></td>
+</tr>
+<tr class="row-even"><td><p>Identity files</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">LICENSE</span></code>, <code class="docutils literal notranslate"><span class="pre">README.md</span></code>, keywords, <code class="docutils literal notranslate"><span class="pre">CHANGELOG.md</span></code></p></td>
+<td><p>preserved / merged</p></td>
+<td><p>keep hwid content, reconcile structure</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="release-wiring-verify-during-implementation">
+<h3>Release wiring (verify during implementation)<a class="headerlink" href="#release-wiring-verify-during-implementation" title="Link to this heading">¶</a></h3>
+<p>Adopt release-please as the template ships it, but <strong>confirm the exact version
+source before the first release</strong>: whether release-please tags and <code class="docutils literal notranslate"><span class="pre">hatch-vcs</span></code>
+derives the version from the tag, or release-please bumps a version file
+directly. <code class="docutils literal notranslate"><span class="pre">hwid</span></code> currently uses <code class="docutils literal notranslate"><span class="pre">hatch-vcs</span></code> with
+<code class="docutils literal notranslate"><span class="pre">version_scheme</span> <span class="pre">=</span> <span class="pre">&quot;only-version&quot;</span></code> / <code class="docutils literal notranslate"><span class="pre">local_scheme</span> <span class="pre">=</span> <span class="pre">&quot;no-local-version&quot;</span></code>. Flag and
+resolve any conflict between the two mechanisms rather than assuming.</p>
+</section>
+</section>
+<section id="breaking-changes-versioning">
+<h2>Breaking changes &amp; versioning<a class="headerlink" href="#breaking-changes-versioning" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">requires-python</span></code> → <code class="docutils literal notranslate"><span class="pre">&gt;=3.10</span></code> is a <strong>breaking change</strong>. Justified: Python &lt;3.10
+accounts for <strong>0.6%</strong> of downloads (32 of ~5,142 over ~180 days; 3.6 = zero).
+Land as a <strong>major version bump</strong> with an explicit CHANGELOG entry.</p></li>
+<li><p>Release mechanism moves from tag-driven to the release-please PR flow. The first
+post-migration release requires the template’s documented one-time setup:
+PyPI Trusted Publishing, <code class="docutils literal notranslate"><span class="pre">CODECOV_TOKEN</span></code> secret, and GitHub Pages enablement
+after the first <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> build.</p></li>
+</ul>
+</section>
+<section id="deferred-future-copier-update-toggles-flipped-on">
+<h2>Deferred (future <code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code>, toggles flipped on)<a class="headerlink" href="#deferred-future-copier-update-toggles-flipped-on" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">include_compiler</span></code> (Nuitka) and <code class="docutils literal notranslate"><span class="pre">include_freezer</span></code> (PyInstaller) for standalone
+<code class="docutils literal notranslate"><span class="pre">hwid</span></code> binaries runnable without Python. Real use case (fits the licensing /
+desktop-app motivation) but the highest-maintenance components in the template
+(multi-OS build matrices, artifact plumbing). Adding them later as a focused,
+independently-validated <code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code> is exactly what the copier link enables.</p></li>
+</ul>
+</section>
+<section id="verification">
+<h2>Verification<a class="headerlink" href="#verification" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">sync</span></code>, <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">pytest</span></code>, <code class="docutils literal notranslate"><span class="pre">ruff</span> <span class="pre">check</span></code>, <code class="docutils literal notranslate"><span class="pre">mypy</span></code> / <code class="docutils literal notranslate"><span class="pre">basedpyright</span></code>,
+<code class="docutils literal notranslate"><span class="pre">prek</span> <span class="pre">run</span> <span class="pre">--all-files</span></code> all green.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.copier-answers.yml</span></code> present and valid; a dry-run <code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code> reports
+“up to date.”</p></li>
+<li><p>Sphinx docs build locally.</p></li>
+<li><p>CLI still runs zero-dependency (<code class="docutils literal notranslate"><span class="pre">uvx</span> <span class="pre">hwid</span></code> / <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">hwid</span></code>).</p></li>
+</ul>
+</section>
+<section id="risks-rollback">
+<h2>Risks &amp; rollback<a class="headerlink" href="#risks-rollback" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>All work on <code class="docutils literal notranslate"><span class="pre">hasansezertasan/greenling</span></code>; <code class="docutils literal notranslate"><span class="pre">main</span></code> untouched until merge.
+Rollback = discard the branch.</p></li>
+<li><p>Highest-risk reconciliation areas: docs content port (mkdocs → Sphinx) and
+release wiring (hatch-vcs vs. release-please version source).</p></li>
+<li><p>Divergences to re-apply on each <code class="docutils literal notranslate"><span class="pre">copier</span> <span class="pre">update</span></code>: <code class="docutils literal notranslate"><span class="pre">include_cli=false</span></code>,
+<code class="docutils literal notranslate"><span class="pre">include_pydantic_settings=false</span></code> (zero-dependency guarantees).</p></li>
+</ul>
+</section>
+</section>
+
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2026, Hasan Sezer Taşan</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials">
+<a href="https://github.com/hasansezertasan/hwid" aria-label="GitHub">
+  <iconify-icon icon="simple-icons:github"></iconify-icon>
+</a></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script>let toggleHintShow = 'Click to show';</script>
+      <script>let toggleHintHide = 'Click to hide';</script>
+      <script>let toggleOpenOnPrint = 'true';</script>
+      <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+      <script src="../../_static/shibuya.js?v=50760d75"></script>
+      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script></body>
+</html>
