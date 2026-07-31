@@ -2,7 +2,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
 $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
 version: "0.2"
-language: en
+# The template docs (Code of Conduct, Contributing) use British spelling, so
+# enable both US and GB dictionaries via the language locale.
+language: en,en-GB
 dictionaries:
   - softwareTerms
   - companies
@@ -12,6 +14,42 @@ dictionaries:
   - en_US
 allowCompoundWords: true
 words:
+  # Tooling
   - codespell
   - megalinter
   - MYENVPREFIX
+  - basedpyright
+  - ghalint
+  - Nuitka
+  - Oxyry
+  - prek
+  - pyarmor
+  - pyupgrade
+  - sourcery
+  - taplo
+  - xdist
+  - zizmor
+  - zuban
+  # Project / package identifiers
+  - hwid
+  - unticked
+  # Author / handle
+  - Hasan
+  - hasansezertasan
+  - Sezer
+  - Taşan
+  # Sphinx / docs vocabulary
+  - nojekyll
+  - paramlinks
+  - pytabs
+  - Shibuya
+  - toctree
+  # Misc technical terms
+  - bysource
+  - capsys
+  - dbeaver
+  - envname
+  - pgadmin
+  - pkgs
+  - reimplementations
+  - sunos
