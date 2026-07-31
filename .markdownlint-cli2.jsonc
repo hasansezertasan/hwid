@@ -1,10 +1,6 @@
 {
   "config": {
-    "default": true,
-    "MD003": { "style": "atx" },
-    "MD004": { "style": "dash" },
-    "MD007": { "indent": 2 },
-    "MD013": false,
+    "extends": ".github/linters/.markdownlint.yml",
   },
   "fix": true,
   "globs": ["**/*.md", "**/*.markdown"],

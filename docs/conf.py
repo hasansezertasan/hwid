@@ -57,6 +57,7 @@ auto_pytabs_max_version = (3, 14)
 # -- Intersphinx -------------------------------------------------------------
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
+
 # -- HTML output (Shibuya theme) ---------------------------------------------
 # https://shibuya.lepture.com/
 html_theme = "shibuya"

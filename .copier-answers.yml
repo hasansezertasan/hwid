@@ -1,9 +1,11 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
-_commit: 30b1531
+_commit: c254dc8
 _src_path: gh:hasansezertasan/copier-pyproject
 author_email: hasansezertasan@gmail.com
+author_family_names: Taşan
 author_full_name: Hasan Sezer Taşan
+author_given_names: Hasan Sezer
 github_repo_name: hwid
 github_user: hasansezertasan
 include_all_contributors: false
@@ -25,5 +27,7 @@ include_tui: false
 include_vpn: false
 include_web: false
 include_worker: false
-package_keywords: hwid, hardware, id, unique, identifier, machine, fingerprint, fingerprinting, licensing, license, identification
-short_description: Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection.
+package_keywords: hwid, hardware, id, unique, identifier, machine, fingerprint, fingerprinting,
+    licensing, license, identification
+short_description: Extract the `hwid` on Windows, Linux, Mac. Cross-platform using
+    Python, native OS detection.
