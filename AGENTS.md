@@ -20,9 +20,9 @@ Guidance for AI coding agents working in this repository.
 
 | Need | File |
 |------|------|
-| Contributor setup & workflow | `CONTRIBUTING.md` |
-| Getting help | `SUPPORT.md` |
-| Security policy | `SECURITY.md` |
+| Contributor setup & workflow | `.github/CONTRIBUTING.md` |
+| Getting help | `.github/SUPPORT.md` |
+| Security policy | `.github/SECURITY.md` |
 | Changelog (owned by release-please) | `CHANGELOG.md` |
 
 ## Key Conventions
