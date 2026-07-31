@@ -105,7 +105,7 @@ dev = [
 ]
 style = [
   "actionlint-py==1.7.12.24",
-  "basedpyright==1.39.8",
+  "basedpyright==1.39.9",
   "editorconfig-checker==3.6.1",
   "mypy==2.3.0",
   "pyrefly==1.1.1",
