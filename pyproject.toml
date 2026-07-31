@@ -1,13 +1,13 @@
 [project]
 name = "hwid"
-dynamic = ["version"]
 description = "Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection."
+license = "MIT"
 readme = "README.md"
-license = { text = "MIT" }
 authors = [{ name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" }]
 maintainers = [
   { name = "Hasan Sezer Taşan", email = "hasansezertasan@gmail.com" },
 ]
+dynamic = ["version"]
 keywords = [
   "hwid",
   "hardware",
@@ -19,50 +19,162 @@ keywords = [
   "fingerprinting",
   "licensing",
   "license",
-  "licensing",
   "identification",
-  "machine",
+  "command-line",
+  "cli",
+  "package",
+  "metadata",
+  "pypi",
+  "python",
+  "uv",
+  "hatch",
+  "tox",
+  "pytest",
+  "ruff",
+  "mypy",
+  "basedpyright",
+  "type-hints",
+  "typed",
+  "modern-python",
+  "ci-cd",
+  "github-actions",
+  "automation",
+  "sphinx",
+  "prek",
+  "linting",
+  "testing",
+  "coverage",
+  "release-automation",
 ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
   "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "Intended Audience :: System Administrators",
   "License :: OSI Approved :: MIT License",
+  "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: 3.6",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
   "Programming Language :: Python",
   "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development",
+  "Typing :: Typed",
+
+
 ]
-requires-python = "<4.0,>=3.0"
+requires-python = ">=3.10"
 dependencies = []
+
+[project.optional-dependencies]
+
+
+all = []
 
 
 [project.urls]
+changelog = "https://github.com/hasansezertasan/hwid/blob/main/CHANGELOG.md"
 documentation = "https://hasansezertasan.github.io/hwid"
-repository = "https://github.com/hasansezertasan/hwid"
 homepage = "https://github.com/hasansezertasan/hwid"
+issues = "https://github.com/hasansezertasan/hwid/issues"
+releasenotes = "https://github.com/hasansezertasan/hwid/releases"
+source = "https://github.com/hasansezertasan/hwid.git"
 
 
 [project.scripts]
 hwid = "hwid.__main__:app"
 
 
+[dependency-groups]
+dev = [
+  "hwid[all]",
+  "tox==4.31.0",
+  "tox-uv==1.29.0",
+  "debugpy==1.8.0",
+  { include-group = "style" },
+  { include-group = "test" },
+]
+style = [
+  "actionlint-py==1.7.12.24",
+  "basedpyright==1.39.8",
+  "editorconfig-checker==3.6.1",
+  "mypy==2.1.0",
+  "pyrefly==1.1.1",
+  "ruff==0.15.19",
+  "slotscheck==0.20.0",
+  "sphinx-lint==1.0.2",
+  "taplo==0.9.3",
+  "ty==0.0.53",
+  "typos==1.47.2",
+  "validate-pyproject[all]==0.25",
+  "vulture==2.16",
+  "zuban==0.9.0",
+  # "google-yamlfmt",
+  # "shellcheck-makefile>=1.27.3",
+  # "shellcheck-py>=0.10.0.1",
+  # "types-PyYAML",
+  # "types-setuptools",
+  # "types-ujson",
+  # "yamlfix>=1.18.0",
+  # "yamlfmt>=1.1.1",
+  # "yamllint>=1.37.1",
+]
+test = [
+  "coverage-enable-subprocess==1.0",
+  "coverage[toml]==7.11.0",
+  "pytest-mock==3.15.1",
+  "pytest-rerunfailures==16.1",
+  "pytest-xdist[psutil]==3.8.0",
+  "pytest==8.4.2",
+  "pytest-sugar",
+  "pytest-asyncio>=0.23.0",
+  "dirty-equals",
+  "inline-snapshot",
+]
+docs = [
+  "sphinx==8.1.3",
+  "shibuya==2026.5.19",
+  "sphinx-autobuild==2024.10.3", # 2025.x drops Python 3.10 (requires-python >= 3.11)
+  "sphinx-copybutton==0.5.2",
+  "sphinx-design==0.6.1",        # 0.7.0 drops Python 3.10 (requires-python >= 3.11)
+  "sphinx-togglebutton==0.4.5",
+  "sphinx-paramlinks==0.6.0",
+  "auto-pytabs[sphinx]==0.5.0",
+  "myst-parser==4.0.1",
+]
+tool = [
+  "commitizen==4.10.0",
+  # "marimo==0.15.2",
+  # "inflection==0.5.1",
+  # "copier==9.11.0",
+]
+prek = ["prek==0.4.3"]
+
+
 [build-system]
+
 requires = ["hatchling", "hatch-vcs"]
+
 build-backend = "hatchling.build"
 
 
-[tool.hatch.build]
-hooks.vcs.version-file = "src/hwid/_version.py"
+[tool.uv]
+add-bounds = "exact"
+cache-keys = [
+  { file = "pyproject.toml" },
+  { git = { commit = true, tags = true } },
+]
+package = true
+trusted-publishing = "always"
 
 
 [tool.hatch.version]
@@ -70,27 +182,110 @@ source = "vcs"
 fallback-version = "0.1.0"
 
 
+[tool.hatch.build]
+hooks.vcs.version-file = "src/hwid/_version.py"
+
+
 [tool.hatch.version.raw-options]
 version_scheme = "only-version"
 local_scheme = "no-local-version"
 
+[tool.hatch.metadata]
+allow-direct-references = true
 
-[tool.uv]
-cache-keys = [
-  { file = "pyproject.toml" },
-  { git = { commit = true, tags = true } },
+
+[tool.hatch.build.targets.sdist]
+# The package uses a src layout, so the source tree lives under /src (not
+# /hwid); including /src ships the actual modules -- and, for
+# C-extension projects, the .pyx/.pxd sources needed to compile from the sdist.
+include = ["/README.md", "LICENSE", "/src", "/tests"]
+
+
+[tool.commitizen]
+# Commit-authoring and message linting only. release-please owns version
+# bumping, git tagging, and CHANGELOG.md (see .github/release-please-config.json),
+# so the bump/tag/changelog settings are intentionally omitted here to avoid two
+# tools competing over the same tags and changelog file.
+name = "cz_conventional_commits"
+
+[tool.pytest.ini_options]
+# addopts = "-rXs --strict-config --strict-markers"
+addopts = "-v --tb=short"
+asyncio_mode = "auto"
+filterwarnings = ["error"]
+testpaths = ["tests"]
+xfail_strict = true
+
+
+[tool.coverage.run]
+branch = true
+# Match `_version.py` wherever it resolves: `src/...` in editable dev installs and
+# `.../site-packages/...` when tox/CI installs the built wheel or sdist. A
+# `src/**`-only pattern silently misses the installed copy and reports it at 0%.
+omit = ["*/_version.py"]
+parallel = true
+source_pkgs = ["hwid", "tests"]
+
+
+[tool.coverage.paths]
+# Unify coverage data across environments. tox installs the built wheel/sdist into
+# each env's site-packages, so the same source file is measured under a different
+# `.tox/<env>/.../site-packages/hwid` path per interpreter. Without
+# remapping those back to the canonical `src/` tree, `coverage combine` keeps a
+# separate copy per env and a version-gated line covered in one interpreter but not
+# another is wrongly counted as missed — silently failing the `fail_under` gate.
+# `tests` needs no remapping: it is never installed, so every environment measures
+# it at the same repo-local path.
+hwid = ["src/hwid", "*/site-packages/hwid"]
+
+
+[tool.coverage.report]
+# Untestable code is excluded per site with `# pragma: no cover`, not with blanket
+# patterns here: a regex matching a `def` line excludes the *whole function body*,
+# so a pattern like `def main\(` would silently un-measure any future `main()`
+# with real logic (and did mask the tested GUI/TUI entrypoints). Pragmas carry the
+# exclusion decision next to the code it affects. See ADR-008.
+exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
+fail_under = 99
+# Patterns match both the `src/` (editable) and installed (`site-packages`)
+# layouts (see [tool.coverage.run] omit).
+omit = ["*/_version.py"]
+show_missing = true
+skip_covered = true
+
+
+[tool.vulture]
+# Framework-invoked handlers: Typer commands, FastAPI routes, FastStream
+# lifecycle hooks, and the MCP tool dispatcher.
+ignore_decorators = [
+  "@app.command",
+  "@app.get",
+  "@app.after_startup",
+  "@app.after_shutdown",
+  "@server.call_tool",
 ]
-trusted-publishing = "always"
+# Public API surfaces vulture cannot see being used: ``main`` entry points are
+# referenced only via pyproject scripts, ``model_config`` is consumed by
+# pydantic-settings, ``logger`` is imported only by optional components, the MCP
+# ``arguments`` parameter is mandated by the call_tool signature, the Textual
+# names (CSS/compose/on_mount/title/BINDINGS) are invoked by the TUI framework,
+# and ``pytestmark`` is consumed by pytest at collection time.
+ignore_names = ["CONFIG_FILE_PATH", "logger", "main", "model_config"]
+min_confidence = 60
+paths = ["src", "tests"]
+
+
+[tool.slotscheck]
+strict-imports = false
 
 
 [tool.ruff]
 fix = true
-line-length = 88
 output-format = "full"
 preview = true
 show-fixes = true
-src = ["src", "tests"]
-target-version = "py38"
+src = ["src", "tests", "examples"]
+target-version = "py310"
 unsafe-fixes = true
 
 
@@ -103,48 +298,207 @@ preview = true
 docstring-code-format = true
 line-ending = "lf"
 preview = true
+skip-magic-trailing-comma = true
 
 
 [tool.ruff.lint]
 fixable = ["ALL"]
-ignore = ["S404", "S602", "COM812"]
+ignore = ["COM812", "CPY", "FIX", "TD"]
 logger-objects = ["logging_setup.logger"]
 preview = true
 select = ["ALL"]
 
+[tool.ruff.lint.isort]
+combine-as-imports = true
+# skip-magic-trailing-comma = true
+split-on-trailing-comma = false
 
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["PLC0414", "TID252"]
-"main.py" = ["T201"]
-"examples/**/*.py" = ["N999"]
-
-
-[tool.ruff.lint.pyupgrade]
-keep-runtime-typing = true
-
-
-[tool.ruff.lint.pycodestyle]
-ignore-overlong-task-comments = true
+[tool.ruff.lint.flake8-copyright]
+author = "Hasan Sezer Taşan <hasansezertasan@gmail.com>"
 
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
 
+[tool.ruff.lint.mccabe]
+max-complexity = 5
+
+
+[tool.ruff.lint.pycodestyle]
+ignore-overlong-task-comments = true
+
+
 [tool.ruff.lint.pydocstyle]
-convention = "google"
+convention = "pep257"
+
+
+[tool.ruff.lint.per-file-ignores]
+# Recursive glob so nested test packages (tests/cli, tests/gui, ...) are covered.
+# Tests legitimately use asserts/magic values, reach into package internals, and
+# don't need return-value documentation on their fixtures and helpers.
+"tests/**/*.py" = ["S101", "PLR2004", "PLC2701", "DOC201"]
+# hwid's examples are standalone scripts in dash-named directories (not importable
+# packages), so the package-name and implicit-namespace rules do not apply.
+"examples/**/*.py" = ["N999", "INP001"]
+# The CLI entrypoint deliberately writes the HWID to stdout for visibility.
+"src/hwid/main.py" = ["T201"]
+# The platform backends shell out to native OS tools (powershell, system_profiler,
+# dmidecode) to read the hardware UUID -- subprocess with a shell command is the
+# intended mechanism here, not an oversight.
+"src/hwid/impl/*.py" = ["S404", "S602"]
+# The Sphinx config is a standalone module, not part of an importable package.
+"docs/conf.py" = ["INP001"]
+
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true
 
 
 [tool.ruff.lint.ruff]
 parenthesize-tuple-in-subscript = true
 
 
-[tool.ruff.lint.mccabe]
-max-complexity = 5
+[tool.mypy]
+files = ["src"]
+pretty = true
+python_version = "3.10"
+strict = true
 
 
-[tool.vulture]
-exclude = ["*/.venv/*.py"]
-min_confidence = 80
-paths = ["hwid"]
-sort_by_size = true
+[tool.basedpyright]
+exclude = [".venv"]
+include = ["src/hwid"]
+pythonVersion = "3.10"
+venv = ".venv"
+# venvPath is the directory *containing* the venv, not the venv itself; ".venv"
+# here would make basedpyright look for ".venv/.venv". Use "." so both the venv
+# and basedpyright's strict ruleset resolve the project's installed deps.
+venvPath = "."
+
+
+[tool.ty.src]
+include = ["src", "tests"]
+respect-ignore-files = false
+
+
+[tool.ty.environment]
+python-version = "3.10"
+
+
+[tool.ty.terminal]
+error-on-warning = true
+
+
+[tool.pyrefly]
+python-version = "3.10"
+project-includes = ["src"]
+
+[tool.tox]
+# The ``worker`` env is intentionally omitted: it starts a broker-bound process
+# and would hang/fail under ``tox run`` in CI (where no broker is available).
+# The worker is covered by its pytest TestBroker suite; run it on demand with
+# ``tox -e worker`` when a broker is up (e.g. inside the devcontainer).
+env_list = ["style", "3.14", "3.13", "3.12", "3.11", "3.10"]
+requires = ["tox>=4"]
+
+
+[tool.tox.env_run_base]
+commands = [
+  [
+    "coverage",
+    "run",
+    "--module",
+    "pytest",
+    "-v",
+    "--tb=short",
+    "--basetemp={env_tmp_dir}",
+    { replace = "posargs", default = [
+    ], extend = true },
+  ],
+]
+constrain_package_deps = true
+dependency_groups = ["test"]
+description = "Run the tests under {base_python}"
+env_tmp_dir = "{toxworkdir}/tmp/{envname}"
+# Arms coverage-enable-subprocess so xdist/subprocess workers are measured too;
+# `coverage run` plus `parallel = true` writes per-env data files that the CI
+# `coverage combine` step merges.
+set_env = { COVERAGE_PROCESS_START = "{tox_root}/pyproject.toml" }
+extras = ["all"]
+
+package = "wheel"
+
+runner = "uv-venv-runner"
+use_frozen_constraints = true
+wheel_build_env = ".pkg"
+
+
+[tool.tox.env.style]
+base_python = ["3.10"]
+commands = [
+  ["ruff", "check", "--no-fix"],
+  ["ruff", "format", "--check", "--diff"],
+  ["mypy", "--python-version", "3.10"],
+  ["mypy", "--python-version", "3.14"],
+  ["basedpyright"],
+  ["ty", "check"],
+  ["pyrefly", "check"],
+  ["zuban", "check", "src"],
+  ["vulture"],
+  ["python", "-m", "slotscheck", "src"],
+  ["taplo", "lint"],
+  ["taplo", "format", "--check"],
+  ["validate-pyproject", "pyproject.toml"],
+  ["typos", "--diff"],
+  ["actionlint"],
+  ["ec"],
+  ["sphinx-lint", "docs"],
+  # ["yamlfmt", "."],
+]
+# `test` is included so the type checkers that scope tests (e.g. ty) can
+# resolve pytest and other test-only imports.
+dependency_groups = ["style", "test"]
+description = "Run Checkers, Linters and Formatters"
+runner = "uv-venv-runner"
+
+
+[tool.tox.env.prek]
+commands = [["prek", "run", "--all-files"]]
+dependency_groups = ["prek"]
+description = "Run prek hooks"
+runner = "uv-venv-runner"
+
+
+[tool.tox.env.docs-build]
+commands = [["sphinx-build", "-b", "html", "docs", "docs/_build/html"]]
+extras = ["all"]
+dependency_groups = ["docs"]
+description = "Build Docs"
+runner = "uv-venv-runner"
+
+
+[tool.tox.env.docs-server]
+commands = [["sphinx-autobuild", "docs", "docs/_build/html"]]
+extras = ["all"]
+dependency_groups = ["docs"]
+description = "Start the live-reloading docs server"
+runner = "uv-venv-runner"
+
+
+[tool.tox.env.docs-linkcheck]
+# On-demand link checker. Also run weekly (non-blocking) by docs-linkcheck.yml.
+# Hits the network, so it is deliberately not part of the `style` env or PR CI.
+commands = [
+  [
+    "sphinx-build",
+    "-b",
+    "linkcheck",
+    "docs",
+    "docs/_build/linkcheck",
+  ],
+]
+extras = ["all"]
+dependency_groups = ["docs"]
+description = "Check documentation for broken links"
+runner = "uv-venv-runner"

@@ -1,0 +1,52 @@
+---
+name: Github Pages
+# Automatic docs deployment on release lives in the `deploy-docs` job of
+# release-please.yml, because a `release: published` event fired by that
+# workflow's GITHUB_TOKEN cannot trigger a separate workflow. This workflow is
+# kept for manual, on-demand docs redeploys via the Actions tab.
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: Deploy Docs
+    permissions:
+      contents: write  # IMPORTANT: Mandatory for GitHub Pages
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Build docs
+        run: uv run --no-default-groups --extra all --group docs sphinx-build -b html docs docs/_build/html
+      - name: Deploy to GitHub Pages
+        # Publishes the built HTML to the gh-pages branch. The action does its own
+        # git auth from the token input (default github.token) without writing it
+        # to .git/config, so the checkout above keeps persist-credentials: false.
+        # sphinx.ext.githubpages emits .nojekyll so _static/ is served.
+        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f  # v4.8.0
+        with:
+          folder: docs/_build/html
+          # Preserve the PR preview tree (pr-preview/**) that docs-preview.yml
+          # maintains — the action's default clean: true would otherwise wipe it —
+          # and disable the default force-push so a concurrent preview deploy is
+          # not clobbered.
+          clean-exclude: pr-preview/**
+          force: false

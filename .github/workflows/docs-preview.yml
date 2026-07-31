@@ -1,0 +1,68 @@
+---
+name: Docs Preview
+# Deploys a live documentation preview for each pull request to a
+# pr-preview/pr-<N>/ subfolder of the gh-pages branch and maintains a sticky
+# comment with the preview URL. The preview is removed when the PR closes. The
+# release docs deploy (release-please.yml `deploy-docs`) and the manual
+# gh-pages.yml publish to the branch *root* and set `clean-exclude: pr-preview/**`
+# so a release never wipes live previews. See ADR-010.
+#
+# Same-repo PRs only: a fork PR's GITHUB_TOKEN is read-only and cannot deploy, so
+# the `if` guard skips forks cleanly rather than failing (fork-preview support is
+# planned for rossjrw/pr-preview-action v2). Plain `pull_request` (not
+# pull_request_target) means untrusted PR code never runs with the write token,
+# so no `dangerous-triggers` exception is needed.
+on:
+  pull_request:
+    branches: [main, master]
+    types: [opened, synchronize, reopened, closed]
+permissions: {}
+# Serialize preview deploys per PR so rapid pushes (synchronize) can't race or
+# land out of order on gh-pages. Do not cancel in-flight runs: a cancelled deploy
+# could leave the preview half-updated, so let each finish.
+concurrency:
+  group: docs-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  docs-preview:
+    name: Deploy docs preview
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write  # IMPORTANT: deploy the preview to the gh-pages branch
+      pull-requests: write  # IMPORTANT: maintain the sticky preview comment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        if: github.event.action != 'closed'
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        if: github.event.action != 'closed'
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Build docs
+        if: github.event.action != 'closed'
+        # sphinx.ext.githubpages emits .nojekyll so _static/ is served.
+        run: uv run --no-default-groups --extra all --group docs sphinx-build -b html docs docs/_build/html
+      - name: Deploy preview
+        # action: auto deploys on opened/synchronize/reopened and removes the
+        # pr-preview/pr-<N>/ subfolder on closed; the sticky comment is updated
+        # in both cases. The action authenticates from its `token` input
+        # (default github.token) via github-pages-deploy-action, so the checkout
+        # above keeps persist-credentials: false.
+        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9  # v1.8.1
+        with:
+          source-dir: docs/_build/html
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          action: auto

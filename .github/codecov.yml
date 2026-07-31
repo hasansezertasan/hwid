@@ -1,0 +1,18 @@
+---
+coverage:
+  status:
+    project:
+      default:
+        target: 99%
+        threshold: 0.5%
+        base: auto
+        flags:
+          - unit
+        paths:
+          - src
+        branches:
+          - main
+        if_ci_failed: error
+        informational: false
+        only_pulls: false
+comment: true

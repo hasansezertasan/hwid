@@ -1,0 +1,10 @@
+# Scope taplo to the project's own TOML. Without this, `taplo lint`/`format`
+# also walk vendored TOML under .tox/.venv/site-packages/node_modules, which makes
+# `taplo format --check` fail on files this project doesn't own.
+exclude = [
+  ".tox/**",
+  ".venv/**",
+  "**/site-packages/**",
+  "**/node_modules/**",
+  "docs/_build/**",
+]

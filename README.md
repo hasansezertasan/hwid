@@ -39,6 +39,7 @@ pip install hwid
 
 ```python
 import hwid
+
 print(hwid.get_hwid())
 ```
 
@@ -101,7 +102,7 @@ uvx mypy src
 Serve the documentation locally:
 
 ```sh
-uvx --with-requirements requirements.docs.txt mkdocs serve
+uv run --locked tox run -e docs-server
 ```
 
 ### `docs:build`
@@ -109,7 +110,7 @@ uvx --with-requirements requirements.docs.txt mkdocs serve
 Build the documentation locally:
 
 ```sh
-uvx --with-requirements requirements.docs.txt mkdocs build
+uv run --locked tox run -e docs-build
 ```
 
 ## Author

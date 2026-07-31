@@ -1,23 +1,20 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
-title: "Enhancement: "
+about: Suggest a new feature for the project
+title: 'Enhancement: '
 labels: enhancement
-assignees: "hasansezertasan"
+assignees: 'hasansezertasan'
 ---
+## Feature Description
 
-## Is your feature request related to a problem? Please describe
+<!--
+Replace this comment with a description of what the feature should do.
+Include details such as links to relevant specs or previous discussions.
+-->
 
-<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
+## Use Case
 
-## Describe the solution you'd like
-
-<!-- A clear and concise description of what you want to happen. -->
-
-## Describe alternatives you've considered
-
-<!-- A clear and concise description of any alternative solutions or features you've considered. -->
-
-## Additional context
-
-<!-- Add any other context or screenshots about the feature request here. -->
+<!--
+Replace this comment with an example of the problem which this feature
+would resolve.
+-->

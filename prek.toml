@@ -1,0 +1,187 @@
+# Configuration file for `prek`, a fast Rust-native pre-commit replacement.
+# See https://prek.j178.dev for more information.
+#:schema https://www.schemastore.org/prek.json
+#
+# Hook revisions are kept current by Renovate (see the customManagers block in
+# .github/renovate.json). There is no pre-commit.ci integration and no sync-with-uv
+# hook — Renovate owns every `rev` bump, including the tools shared with the uv
+# `style` dependency group.
+default_language_version.python = "python3.10"
+default_stages = ["pre-commit", "pre-push"]
+exclude = '''(?x)^(
+    # Editor/debugger JSON configs that carry comments or trailing commas
+    \.devcontainer/devcontainer\.json$
+    |\.vscode/launch\.json$
+
+    # VCS and Python build/virtualenv directories
+    |\.git
+    |\.hg
+    |\.mypy_cache
+    |\.nox
+    |\.tox
+    |\.venv
+    |_build
+    |buck-out
+    |build
+    |dist
+    |alembic
+)$'''
+
+# Fast Rust-native reimplementations of common pre-commit-hooks. No git clone.
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "check-added-large-files", name = "Check added large files", args = [
+    "--maxkb=1000",
+  ] },
+  { id = "check-toml", name = "Check TOML" },
+  { id = "check-json", name = "Check JSON" },
+  { id = "end-of-file-fixer", name = "End of file fixer" },
+  { id = "trailing-whitespace", name = "Trailing whitespace" },
+  { id = "check-merge-conflict", name = "Check Merge Conflict", args = [
+    "--assume-in-merge",
+  ] },
+  { id = "check-case-conflict", name = "Check case conflict" },
+  { id = "detect-private-key", name = "Detect Private Key" },
+]
+
+# check-yaml, debug-statements and check-ast have no Rust builtin (they need a
+# YAML loader / the Python AST), so they stay on the upstream repo. prek runs
+# them correctly, just without the builtin fast path.
+[[repos]]
+repo = "https://github.com/pre-commit/pre-commit-hooks"
+rev = "v6.0.0"
+hooks = [
+  { id = "check-yaml", name = "Check YAML" },
+  { id = "debug-statements", name = "Debug Statements" },
+  { id = "check-ast", name = "Check AST" },
+]
+
+[[repos]]
+repo = "https://github.com/astral-sh/uv-pre-commit"
+rev = "0.9.15"
+hooks = [{ id = "uv-lock", name = "Update the uv lockfile" }]
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.19"
+hooks = [
+  { id = "ruff", name = "Ruff Linter" },
+  { id = "ruff-format", name = "Ruff Formatter" },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+  { id = "basedpyright", name = "basedpyright Type Checker", entry = "uv run --locked --group style basedpyright", language = "system", types = [
+    "python",
+  ], pass_filenames = false },
+  # editorconfig-checker is run via the uv `style` group (not an upstream prek
+  # repo) so its version has a single source of truth: its PyPI wrapper lags the
+  # Go release tags, so a separate `rev` pin would drift permanently out of sync
+  # with the `style` group. It reads `.editorconfig-checker.json` and scans the
+  # whole tree (respecting .gitignore), so filenames are not passed.
+  { id = "editorconfig-checker", name = "EditorConfig Checker", entry = "uv run --locked --group style ec", language = "system", pass_filenames = false },
+  # sphinx-lint is run via the uv `style` group (not an upstream prek repo) so its
+  # version has a single source of truth shared with the tox `style` env — the
+  # same drift-free rationale as editorconfig-checker above. It statically lints
+  # the reStructuredText docs sources (it does not import the project or Sphinx).
+  { id = "sphinx-lint", name = "Sphinx Lint", entry = "uv run --locked --group style sphinx-lint docs", language = "system", files = '\.rst$', pass_filenames = false },
+]
+
+[[repos]]
+repo = "https://github.com/pre-commit/mirrors-mypy"
+rev = "v2.1.0"
+hooks = [
+  # Scope the hook to src/ to match tox's canonical mypy (which type-checks only
+  # src/). Without this, the hook passes every changed .py file, which (a) trips
+  # mypy's duplicate-module check on the sibling examples/*/main.py demo scripts
+  # and (b) surfaces strict-decorator errors in tests/ that the canonical run
+  # never checks — neither is part of the shipped, type-checked surface.
+  { id = "mypy", name = "Mypy Type Checker", files = "^src/", additional_dependencies = [
+  ] },
+]
+
+[[repos]]
+repo = "https://github.com/jendrikseipp/vulture"
+rev = "v2.16"
+hooks = [{ id = "vulture", name = "Vulture Linter" }]
+
+[[repos]]
+repo = "https://github.com/crate-ci/typos"
+rev = "v1.47.2"
+hooks = [{ id = "typos", name = "Typos Linter" }]
+
+[[repos]]
+repo = "https://github.com/python-jsonschema/check-jsonschema"
+rev = "0.35.0"
+hooks = [
+  { id = "check-github-actions", name = "Validate GitHub Actions", args = [
+    "--verbose",
+  ] },
+]
+
+[[repos]]
+repo = "https://github.com/rhysd/actionlint"
+rev = "v1.7.12"
+hooks = [{ id = "actionlint", name = "Actionlint Linter" }]
+
+# zizmor statically audits the GitHub Actions workflows for security issues
+# (credential persistence, excessive permissions, template injection, ...). This
+# hook is the blocking gate — it runs in the CI `hooks` job and locally; the
+# .github/workflows/zizmor.yml workflow additionally uploads findings to the
+# Security tab as a non-blocking dashboard. Default (regular) persona.
+[[repos]]
+repo = "https://github.com/zizmorcore/zizmor-pre-commit"
+rev = "v1.9.0"
+hooks = [{ id = "zizmor", name = "Zizmor GitHub Actions Auditor" }]
+
+[[repos]]
+repo = "https://github.com/adrienverge/yamllint.git"
+rev = "v1.37.1"
+hooks = [
+  { id = "yamllint", name = "YAML Linter", args = [
+    "-c",
+    ".github/yamllint.yaml",
+  ] },
+]
+
+[[repos]]
+repo = "https://github.com/DavidAnson/markdownlint-cli2"
+rev = "v0.18.1"
+hooks = [{ id = "markdownlint-cli2", name = "Markdown Linter" }]
+
+[[repos]]
+repo = "https://github.com/google/yamlfmt"
+rev = "v0.17.2"
+hooks = [
+  { id = "yamlfmt", name = "YAML Formatter", exclude = "^\\.copier-answers\\.yml$", args = [
+    "-conf",
+    ".github/yamlfmt.yml",
+  ] },
+]
+
+[[repos]]
+repo = "https://github.com/commitizen-tools/commitizen"
+rev = "v4.10.0"
+hooks = [
+  { id = "commitizen", name = "Commitizen" },
+  { id = "commitizen-branch", name = "Commitizen Branch", stages = [
+    "pre-push",
+  ] },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+  # ghalint (GitHub Actions workflow security-policy linter) has neither a PyPI
+  # wrapper nor a pre-commit hook, so it cannot join the uv `style` group or be a
+  # standard prek repo hook. It is installed via mise (aqua backend, see
+  # mise.toml) and invoked here through `mise exec` — this resolves the
+  # mise-managed binary deterministically after `mise install`, without needing
+  # an activated mise shell environment (shims on PATH). It only requires `mise`
+  # itself on PATH, which local contributors have and the CI `hooks` job supplies
+  # via jdx/mise-action.
+  { id = "ghalint", name = "ghalint", entry = "mise exec -- ghalint run", language = "system", pass_filenames = false, always_run = true },
+  { id = "pytest", name = "Pytest Test Runner", entry = "uv run --locked pytest tests", language = "system", pass_filenames = false, always_run = true },
+]

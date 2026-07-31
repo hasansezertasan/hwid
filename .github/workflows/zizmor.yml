@@ -1,0 +1,35 @@
+---
+# zizmor security dashboard: runs the GitHub Actions static analysis and uploads
+# the findings to the repository's Security tab (code scanning) for stateful,
+# incremental triage. This is the NON-BLOCKING half of the two-layer setup — it
+# never fails the build on findings (that is the job of the blocking `zizmor`
+# prek hook in the CI `hooks` job). Use branch protection / rulesets on the
+# code-scanning results if you want the dashboard to gate merges too.
+#
+# Advanced Security / code scanning is free on public repositories; on private
+# repositories it requires GitHub Advanced Security. The SARIF upload step is
+# best-effort and simply no-ops if code scanning is unavailable.
+name: zizmor
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+# Least-privilege default; the single job elevates only what it needs.
+permissions: {}
+jobs:
+  zizmor:
+    name: Audit workflows with zizmor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      security-events: write  # upload SARIF to the code-scanning dashboard
+      contents: read  # only needed for private/internal repos
+      actions: read  # only needed for private/internal repos
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@6fc4b006235f201fdab3722e17240ab420d580e5  # v0.6.1
