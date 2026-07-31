@@ -167,7 +167,12 @@ hook gate is `uv run --locked tox run -e prek`.
 
 ### Improving The Documentation
 
-<!-- TODO @hasansezertasan: Updating, improving and correcting the documentation -->
+The documentation lives under [`docs/`](../docs) and is built with
+[Sphinx](https://www.sphinx-doc.org/); prose pages accept both reStructuredText
+and Markdown (via MyST). Build the HTML locally with `mise run docs-build` (or
+`uv run --locked tox run -e docs-build`), or start a live-reloading preview with
+`mise run docs-serve`. `sphinx-lint` runs as part of the `style` gate, so keep
+your changes lint-clean before opening a pull request.
 
 ## Styleguides
 
@@ -368,7 +373,7 @@ receiving update PRs.
 
 ## Join The Project Team
 
-<!-- TODO @hasansezertasan: Work in progress. -->
+_Work in progress._
 
 <!-- omit in toc -->
 ## Attribution
