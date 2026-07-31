@@ -30,7 +30,7 @@ extensions = [
 
 # Both reStructuredText and (via MyST) Markdown source files are supported.
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "superpowers/**"]
 
 # autosectionlabel can emit duplicate-label warnings across documents; the
 # document prefix keeps them unique, so no blanket suppression is needed.
