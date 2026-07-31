@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
 authors:
-  - given-names: "Hasan Sezer"
-    family-names: "Taşan"
+  - family-names: "Taşan"
+    given-names: "Hasan Sezer"
     email: "hasansezertasan@gmail.com"
 title: "hwid"
 abstract: "Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native OS detection."

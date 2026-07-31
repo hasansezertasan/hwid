@@ -13,4 +13,5 @@ dictionaries:
 allowCompoundWords: true
 words:
   - codespell
+  - megalinter
   - MYENVPREFIX

@@ -30,7 +30,7 @@ extensions = [
 
 # Both reStructuredText and (via MyST) Markdown source files are supported.
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "superpowers/**"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # autosectionlabel can emit duplicate-label warnings across documents; the
 # document prefix keeps them unique, so no blanket suppression is needed.
@@ -56,6 +56,7 @@ auto_pytabs_max_version = (3, 14)
 
 # -- Intersphinx -------------------------------------------------------------
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
+
 
 # -- HTML output (Shibuya theme) ---------------------------------------------
 # https://shibuya.lepture.com/
