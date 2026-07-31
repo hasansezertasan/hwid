@@ -16,6 +16,10 @@ jobs:
       pull-requests: read
     steps:
       - name: Check completed tasks
+        # Skip automated PRs (Renovate, Dependabot, etc.) — bots leave task
+        # checkboxes (e.g. Renovate's rebase box) unticked. Keyed on the PR
+        # author, not github.actor, so a human editing a bot PR still skips.
+        if: ${{ !endsWith(github.event.pull_request.user.login, '[bot]') }}
         uses: kentaro-m/task-completed-checker-action@2ddb65fdd5577bae4a8e82e0564e459677aec893  # v0.1.2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}

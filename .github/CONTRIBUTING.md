@@ -323,7 +323,7 @@ tokens or secrets to manage). Register the publisher once at
 - **PyPI Project Name:** `hwid`
 - **Owner:** `hasansezertasan`
 - **Repository name:** `hwid`
-- **Workflow name:** `release-please.yml` — the publish step lives inline in this
+- **Workflow name:** `release.yml` — the publish step lives inline in this
   workflow, so this is the filename PyPI's OIDC check matches.
 - **Environment name:** `publish`
 

@@ -2,8 +2,8 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
 $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
 version: "0.2"
-# The template docs (Code of Conduct, Contributing) use British spelling, so
-# enable both US and GB dictionaries via the language locale.
+# The generated Code of Conduct and Contributing guide use British spelling
+# (behaviour, licence, apologising, …), so enable both US and GB dictionaries.
 language: en,en-GB
 dictionaries:
   - softwareTerms
@@ -16,13 +16,14 @@ allowCompoundWords: true
 words:
   # Tooling
   - codespell
+  - ghalint
   - megalinter
+  - prek
+  - unticked
   - MYENVPREFIX
   - basedpyright
-  - ghalint
   - Nuitka
   - Oxyry
-  - prek
   - pyarmor
   - pyupgrade
   - sourcery
@@ -30,12 +31,13 @@ words:
   - xdist
   - zizmor
   - zuban
-  # Project / package identifiers
-  - hwid
-  - unticked
+  # Project / package identifiers, so a project never trips on its own name/handle.
+  # Quoted so a name that is a YAML boolean/null token (e.g. a repo literally
+  # named "off" or "null") still renders as a string, which cspell requires.
+  - "hwid"
+  - "hasansezertasan"
   # Author / handle
   - Hasan
-  - hasansezertasan
   - Sezer
   - Taşan
   # Sphinx / docs vocabulary

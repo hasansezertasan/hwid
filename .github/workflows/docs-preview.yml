@@ -3,7 +3,7 @@ name: Docs Preview
 # Deploys a live documentation preview for each pull request to a
 # pr-preview/pr-<N>/ subfolder of the gh-pages branch and maintains a sticky
 # comment with the preview URL. The preview is removed when the PR closes. The
-# release docs deploy (release-please.yml `deploy-docs`) and the manual
+# release docs deploy (release.yml `deploy-docs`) and the manual
 # gh-pages.yml publish to the branch *root* and set `clean-exclude: pr-preview/**`
 # so a release never wipes live previews. See ADR-010.
 #

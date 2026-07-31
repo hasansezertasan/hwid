@@ -5,6 +5,10 @@ SHOW_ELAPSED_TIME: true
 CLEAR_REPORT_FOLDER: true
 OUTPUT_DETAIL: detailed
 REPORT_OUTPUT_FOLDER: megalinter-reports
+# CHANGELOG.md is generated and owned by release-please (double blank lines
+# between sections, commit-hash links, etc.); exclude it from all linters so
+# release PRs don't fail markdownlint/cspell on machine-generated content.
+FILTER_REGEX_EXCLUDE: (^|/)CHANGELOG\.md$
 # MegaLinter is an additional CI quality layer. tox/prek remain the canonical
 # local and blocking style runners, so MegaLinter avoids auto-fixes and Python
 # type/lint duplication.
