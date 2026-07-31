@@ -37,7 +37,8 @@ Or download the
 
 .. code-block:: sh
 
-   curl -OJL https://github.com/hasansezertasan/hwid/tarball/main
+   mkdir hwid
+   curl -fL https://github.com/hasansezertasan/hwid/tarball/main | tar -xz --strip-components=1 -C hwid
 
 Once you have a copy of the source, you can install it with:
 

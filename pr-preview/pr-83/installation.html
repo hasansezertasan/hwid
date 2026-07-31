@@ -138,7 +138,8 @@ data-aria-dark="Switch to auto color mode">
 </div>
 <p>Or download the
 <a class="reference external" href="https://github.com/hasansezertasan/hwid/tarball/main">tarball</a>:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">curl<span class="w"> </span>-OJL<span class="w"> </span>https://github.com/hasansezertasan/hwid/tarball/main
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">mkdir<span class="w"> </span>hwid
+</span><span data-line="2">curl<span class="w"> </span>-fL<span class="w"> </span>https://github.com/hasansezertasan/hwid/tarball/main<span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>-xz<span class="w"> </span>--strip-components<span class="o">=</span><span class="m">1</span><span class="w"> </span>-C<span class="w"> </span>hwid
 </span></pre></div>
 </div>
 <p>Once you have a copy of the source, you can install it with:</p>
