@@ -108,7 +108,7 @@ style = [
   "basedpyright==1.39.9",
   "editorconfig-checker==3.6.1",
   "mypy==2.3.0",
-  "pyrefly==1.1.1",
+  "pyrefly==1.2.0",
   "ruff==0.15.19",
   "slotscheck==0.20.0",
   "sphinx-lint==1.0.2",
