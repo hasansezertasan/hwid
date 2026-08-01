@@ -37,7 +37,11 @@ hooks = [
   { id = "check-toml", name = "Check TOML" },
   { id = "check-json", name = "Check JSON" },
   { id = "end-of-file-fixer", name = "End of file fixer" },
-  { id = "trailing-whitespace", name = "Trailing whitespace" },
+  # `.gitignore` is a cobo-sealed block (hash-verified); its bytes must stay
+  # verbatim, but upstream github/gitignore ships trailing whitespace on some
+  # comment lines. Exclude it so the hook does not break the seal (cobo owns
+  # this file — see ADR-012).
+  { id = "trailing-whitespace", name = "Trailing whitespace", exclude = '^\.gitignore$' },
   { id = "check-merge-conflict", name = "Check Merge Conflict", args = [
     "--assume-in-merge",
   ] },

@@ -9,7 +9,7 @@ Guidance for AI coding agents working in this repository.
 ## Commands
 
 | Task | Command |
-|------|---------|
+| ---- | ------- |
 | Run one test file | `uv run --locked pytest tests/test_smoke.py -v` |
 | Full test matrix | `uv run --locked tox run` |
 | Lint + type-check | `uv run --locked tox run -e style` |
@@ -19,7 +19,7 @@ Guidance for AI coding agents working in this repository.
 ## External References
 
 | Need | File |
-|------|------|
+| ---- | ---- |
 | Contributor setup & workflow | `.github/CONTRIBUTING.md` |
 | Getting help | `.github/SUPPORT.md` |
 | Security policy | `.github/SECURITY.md` |

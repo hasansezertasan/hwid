@@ -328,17 +328,19 @@ tokens or secrets to manage). Register the publisher once at
 - **Environment name:** `publish`
 
 **6. Codecov coverage reporting.** CI uploads coverage to
-[Codecov](https://about.codecov.io/) after the test suite runs. Link the
-repository once at [Codecov](https://app.codecov.io/), copy its upload token,
-and set it as a repository secret:
+[Codecov](https://about.codecov.io/) after the test suite runs. **On a public
+repository no setup is required** — the upload is tokenless, so owner pushes and
+fork PRs both report coverage out of the box. A `CODECOV_TOKEN` is only needed
+for a **private** repository (or to avoid tokenless rate-limits); set it once as
+a repository secret:
 
 ```sh
 gh secret set CODECOV_TOKEN --repo hasansezertasan/hwid
 ```
 
-The upload is opt-in and best-effort: with the secret unset, CI records a
-`::notice::` and skips the upload — the build still passes — so coverage
-reporting stays off until you configure it, rather than failing every run.
+The upload is best-effort either way: on a private repo with no token CI records
+a `::notice::` and skips the upload — the build still passes — rather than
+failing every run.
 
 **7. Documentation site (GitHub Pages).** On release, the `deploy-docs` job
 builds the Sphinx docs and pushes the HTML to a `gh-pages` branch with
