@@ -52,6 +52,9 @@ jobs:
       # CODECOV_TOKEN as a presence flag — never expose the value job-wide.
       # Codecov upload is opt-in: unset means a visible skip, not a build failure.
       CODECOV_TOKEN_SET: ${{ secrets.CODECOV_TOKEN != '' }}
+      # On a public repo the codecov-action uploads tokenless, so the token is
+      # only needed for private repos (or to avoid tokenless rate-limits).
+      REPO_IS_PUBLIC: ${{ !github.event.repository.private }}
     steps:
       - name: System Info
         shell: bash
@@ -104,18 +107,20 @@ jobs:
           uv run coverage report --show-missing
           uv run coverage xml
       - name: Upload coverage
-        # Upload when the token is set, or on a forked PR (which never receives
-        # secrets) so the codecov-action's tokenless fallback still reports
-        # coverage for external contributors on a public repo. Same-repo runs
-        # with no token fall through to the visible skip below.
-        if: ${{ env.CODECOV_TOKEN_SET == 'true' || github.event.pull_request.head.repo.fork }}
+        # Upload when the token is set, or whenever the repo is public — the
+        # codecov-action uploads tokenless on public repos, so owner pushes and
+        # fork PRs alike report coverage with no secret. Only a private repo with
+        # no token falls through to the visible skip below (a tokenless upload
+        # there would fail). The step is best-effort (fail_ci_if_error defaults to
+        # false), so a tokenless rate-limit never breaks the build.
+        if: ${{ env.CODECOV_TOKEN_SET == 'true' || env.REPO_IS_PUBLIC == 'true' }}
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v6.0.2
         with:
           files: ./coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Note skipped coverage upload
-        if: ${{ env.CODECOV_TOKEN_SET != 'true' && !github.event.pull_request.head.repo.fork && matrix.os == 'ubuntu-latest' }}
-        run: echo "::notice::CODECOV_TOKEN secret is not set — skipping the Codecov upload. See .github/CONTRIBUTING.md (Repository setup) to enable coverage reporting."
+        if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' && matrix.os == 'ubuntu-latest' }}
+        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See .github/CONTRIBUTING.md (Repository setup) to enable coverage reporting."
   check:
     if: always()
     needs: [ci, hooks]

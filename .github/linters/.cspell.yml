@@ -15,11 +15,14 @@ dictionaries:
 allowCompoundWords: true
 words:
   # Tooling
+  - cobo
   - codespell
   - ghalint
   - megalinter
   - prek
   - unticked
+  - zizmor
+  - zuban
   - MYENVPREFIX
   - basedpyright
   - Nuitka
