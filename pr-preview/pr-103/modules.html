@@ -6,7 +6,7 @@
     function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
     setColorMode(localStorage._theme||"auto");
   </script><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=e1a1ceaf" />
-    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=9454f7d5" />
+    <link rel="stylesheet" type="text/css" href="_static/shibuya.css?v=2ceb65ce" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=9c3e77be" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
@@ -79,17 +79,17 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#public-api-hwid-core">Public API (<code class="docutils literal notranslate">core</span></code>)</a><ul>
+<li><a class="reference internal" href="#public-api-hwid-core">Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core</span></code>)</a><ul>
 <li><a class="reference internal" href="#hwid.core.validate_hwid"><code class="docutils literal notranslate"><span class="pre">validate_hwid()</span></code></a></li>
 <li><a class="reference internal" href="#hwid.core.get_hwid"><code class="docutils literal notranslate"><span class="pre">get_hwid()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-hwid.exceptions">Exceptions (<code class="docutils literal notranslate">exceptions</span></code>)</a><ul>
+<li><a class="reference internal" href="#module-hwid.exceptions">Exceptions (<code class="docutils literal notranslate"><span class="pre">hwid.exceptions</span></code>)</a><ul>
 <li><a class="reference internal" href="#hwid.exceptions.UnsupportedOSError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOSError</span></code></a></li>
 <li><a class="reference internal" href="#hwid.exceptions.InvalidHWIDError"><code class="docutils literal notranslate"><span class="pre">InvalidHWIDError</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-hwid.logger">Logging (<code class="docutils literal notranslate">logger</span></code>)</a></li>
+<li><a class="reference internal" href="#module-hwid.logger">Logging (<code class="docutils literal notranslate"><span class="pre">hwid.logger</span></code>)</a></li>
 </ul>
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
@@ -121,16 +121,16 @@ data-aria-dark="Switch to auto color mode">
       <div class="relative min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
   <article class="yue" role="main">
           <section id="modules">
-<h1>Modules<a class="headerlink" href="#modules" title="Link to this heading">¶</a></h1>
+<h1>Modules<a class="headerlink" href="#modules" title="Link to this heading">#</a></h1>
 <p>An overview of the modules that make up <code class="docutils literal notranslate"><span class="pre">hwid</span></code>.
 The API reference below is generated automatically from the source docstrings.</p>
 <section id="public-api-hwid-core">
-<h2>Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core</span></code>)<a class="headerlink" href="#public-api-hwid-core" title="Link to this heading">¶</a></h2>
+<h2>Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core</span></code>)<a class="headerlink" href="#public-api-hwid-core" title="Link to this heading">#</a></h2>
 <p>The package exposes <code class="xref py py-func docutils literal notranslate"><span class="pre">hwid.get_hwid()</span></code> at the top level.</p>
 <p id="module-hwid.core">Core functionality for getting hardware IDs.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="hwid.core.validate_hwid">
-<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">validate_hwid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core.html#validate_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.validate_hwid" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">validate_hwid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core.html#validate_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.validate_hwid" title="Link to this definition">#</a></dt>
 <dd><p>Validate if a string matches the HWID format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -150,7 +150,7 @@ The API reference below is generated automatically from the source docstrings.</
 
 <dl class="py function">
 <dt class="sig sig-object py" id="hwid.core.get_hwid">
-<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">get_hwid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core.html#get_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.get_hwid" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">get_hwid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core.html#get_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.get_hwid" title="Link to this definition">#</a></dt>
 <dd><p>Get the hardware ID of the current machine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -170,25 +170,25 @@ The API reference below is generated automatically from the source docstrings.</
 
 </section>
 <section id="module-hwid.exceptions">
-<span id="exceptions-hwid-exceptions"></span><h2>Exceptions (<code class="docutils literal notranslate"><span class="pre">hwid.exceptions</span></code>)<a class="headerlink" href="#module-hwid.exceptions" title="Link to this heading">¶</a></h2>
+<span id="exceptions-hwid-exceptions"></span><h2>Exceptions (<code class="docutils literal notranslate"><span class="pre">hwid.exceptions</span></code>)<a class="headerlink" href="#module-hwid.exceptions" title="Link to this heading">#</a></h2>
 <p>Exceptions for the HWID package.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="hwid.exceptions.UnsupportedOSError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOSError</span></span><a class="reference internal" href="_modules/hwid/exceptions.html#UnsupportedOSError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.exceptions.UnsupportedOSError" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOSError</span></span><a class="reference internal" href="_modules/hwid/exceptions.html#UnsupportedOSError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.exceptions.UnsupportedOSError" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Raised when the operating system is not supported.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="hwid.exceptions.InvalidHWIDError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidHWIDError</span></span><a class="reference internal" href="_modules/hwid/exceptions.html#InvalidHWIDError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.exceptions.InvalidHWIDError" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidHWIDError</span></span><a class="reference internal" href="_modules/hwid/exceptions.html#InvalidHWIDError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.exceptions.InvalidHWIDError" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Raised when the hardware ID is invalid.</p>
 </dd></dl>
 
 </section>
 <section id="module-hwid.logger">
-<span id="logging-hwid-logger"></span><h2>Logging (<code class="docutils literal notranslate"><span class="pre">hwid.logger</span></code>)<a class="headerlink" href="#module-hwid.logger" title="Link to this heading">¶</a></h2>
+<span id="logging-hwid-logger"></span><h2>Logging (<code class="docutils literal notranslate"><span class="pre">hwid.logger</span></code>)<a class="headerlink" href="#module-hwid.logger" title="Link to this heading">#</a></h2>
 <p>Logging module for HWID.</p>
 </section>
 </section>
@@ -222,9 +222,9 @@ The API reference below is generated automatically from the source docstrings.</
   </p>
 </div>
       <div class="sy-foot-socials">
-<a href="https://github.com/hasansezertasan/hwid" aria-label="GitHub">
-  <iconify-icon icon="simple-icons:github"></iconify-icon>
-</a></div>
+  <a href="https://github.com/hasansezertasan/hwid" aria-label="GitHub">
+    <iconify-icon icon="simple-icons:github"></iconify-icon>
+  </a></div>
     </div>
   </div>
 </footer>
