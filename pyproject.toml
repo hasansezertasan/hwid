@@ -134,7 +134,7 @@ test = [
   "pytest-mock==3.15.1",
   "pytest-rerunfailures==16.4",
   "pytest-xdist[psutil]==3.8.0",
-  "pytest==8.4.2",
+  "pytest==9.0.3",
   "pytest-sugar",
   "pytest-asyncio>=0.23.0",
   "dirty-equals",
