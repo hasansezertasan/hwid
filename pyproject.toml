@@ -99,7 +99,7 @@ dev = [
   "hwid[all]",
   "tox==4.58.0",
   "tox-uv==1.36.0",
-  "debugpy==1.8.0",
+  "debugpy==1.8.21",
   { include-group = "style" },
   { include-group = "test" },
 ]
