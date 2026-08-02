@@ -153,7 +153,7 @@ hooks = [{ id = "markdownlint-cli2", name = "Markdown Linter" }]
 
 [[repos]]
 repo = "https://github.com/google/yamlfmt"
-rev = "v0.17.2"
+rev = "v0.21.0"
 hooks = [
   { id = "yamlfmt", name = "YAML Formatter", exclude = "^\\.copier-answers\\.yml$", args = [
     "-conf",
