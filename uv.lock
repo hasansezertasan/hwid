@@ -486,9 +486,9 @@ wheels = [
 
 [[package]]
 name = "editorconfig-checker"
-version = "3.6.1"
+version = "3.8.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8d/c0/44142a174310c63f2e36ec288fc02df3d1572e00ed1bb87de7d49d65e412/editorconfig_checker-3.6.1.tar.gz", hash = "sha256:7b6285cfa0797c1f4e1ecae6ec218ff440cdbd77a2e0aa95d9ee3e113e79fd5e", size = 4772, upload-time = "2026-03-04T20:04:36.125Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/c2/c339599dc6bdf9fdd3eb21789ddd979d7cf38b46925e358fe7868fb8e44b/editorconfig_checker-3.8.0.tar.gz", hash = "sha256:aad0e967cf9e72399ff862188e36b43dbfc480918c36e21d2751dd0e32b1e6fb", size = 4771, upload-time = "2026-08-02T14:25:47.861Z" }
 
 [[package]]
 name = "exceptiongroup"
@@ -639,7 +639,7 @@ dev = [
     { name = "coverage-enable-subprocess", specifier = "==1.0" },
     { name = "debugpy", specifier = "==1.8.21" },
     { name = "dirty-equals" },
-    { name = "editorconfig-checker", specifier = "==3.6.1" },
+    { name = "editorconfig-checker", specifier = "==3.8.0" },
     { name = "hwid", extras = ["all"] },
     { name = "inline-snapshot" },
     { name = "mypy", specifier = "==2.3.0" },
@@ -677,7 +677,7 @@ prek = [{ name = "prek", specifier = "==0.4.11" }]
 style = [
     { name = "actionlint-py", specifier = "==1.7.12.24" },
     { name = "basedpyright", specifier = "==1.39.9" },
-    { name = "editorconfig-checker", specifier = "==3.6.1" },
+    { name = "editorconfig-checker", specifier = "==3.8.0" },
     { name = "mypy", specifier = "==2.3.0" },
     { name = "pyrefly", specifier = "==1.2.0" },
     { name = "ruff", specifier = "==0.15.19" },
