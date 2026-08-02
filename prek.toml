@@ -91,7 +91,7 @@ hooks = [
 
 [[repos]]
 repo = "https://github.com/pre-commit/mirrors-mypy"
-rev = "v2.1.0"
+rev = "v2.3.0"
 hooks = [
   # Scope the hook to src/ to match tox's canonical mypy (which type-checks only
   # src/). Without this, the hook passes every changed .py file, which (a) trips
