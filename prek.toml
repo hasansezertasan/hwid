@@ -118,7 +118,7 @@ hooks = [{ id = "typos", name = "Typos Linter" }]
 
 [[repos]]
 repo = "https://github.com/python-jsonschema/check-jsonschema"
-rev = "0.35.0"
+rev = "0.37.4"
 hooks = [
   { id = "check-github-actions", name = "Validate GitHub Actions", args = [
     "--verbose",
