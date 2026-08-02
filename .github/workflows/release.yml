@@ -63,7 +63,7 @@ jobs:
       - name: Build the Package
         run: uv build --no-sources --quiet
       - name: Upload package
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
         with:
           name: package-distributions
           path: dist/
@@ -81,7 +81,7 @@ jobs:
       url: https://pypi.org/project/hwid/${{ needs.release-please.outputs.version }}
     steps:
       - name: Download package
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
         with:
           name: package-distributions
           path: dist/
@@ -119,7 +119,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: uvx --from cyclonedx-bom cyclonedx-py requirements requirements-sbom.txt --output-format JSON --output-file hwid-sbom.cdx.json
       - name: Upload SBOM
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
         with:
           name: hwid-sbom
           path: hwid-sbom.cdx.json
@@ -133,14 +133,14 @@ jobs:
       contents: write  # IMPORTANT: Mandatory for GitHub Release
     steps:
       - name: Download package
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
         with:
           name: package-distributions
           path: dist/
       - name: Download SBOM
         # Lands in dist/ so the CycloneDX SBOM is attached to the release
         # alongside the distributions by the upload step below.
-        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093  # v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
         with:
           name: hwid-sbom
           path: dist/
