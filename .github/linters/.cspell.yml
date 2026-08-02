@@ -15,11 +15,14 @@ dictionaries:
 allowCompoundWords: true
 words:
   # Tooling
+  - cobo
   - codespell
   - ghalint
   - megalinter
   - prek
   - unticked
+  - zizmor
+  - zuban
   - MYENVPREFIX
   - basedpyright
   - Nuitka
@@ -36,10 +39,13 @@ words:
   # named "off" or "null") still renders as a string, which cspell requires.
   - "hwid"
   - "hasansezertasan"
-  # Author / handle
-  - Hasan
-  - Sezer
-  - Taşan
+  # Author display-name tokens, derived from author_full_name so an author never
+  # trips on their own name in the generated README/CITATION/CODE_OF_CONDUCT.
+  # `tojson` emits a YAML-safe double-quoted scalar (escaping any `"`/`\` in the
+  # free-form name, and keeping a YAML boolean/null token like "off" a string).
+  - "Hasan"
+  - "Sezer"
+  - "Taşan"
   # Sphinx / docs vocabulary
   - nojekyll
   - paramlinks

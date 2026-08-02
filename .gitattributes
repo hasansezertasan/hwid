@@ -28,6 +28,7 @@
 src/hwid/_version.py linguist-generated=true
 CHANGELOG.md linguist-generated=true
 uv.lock linguist-generated=true
+cobo.lock linguist-generated=true
 docs/** linguist-documentation
 
 # Keep `git archive` tarballs lean (development-only paths are excluded).

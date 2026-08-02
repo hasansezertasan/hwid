@@ -39,6 +39,13 @@ indent_size = 2
 [.all-contributorsrc]
 indent_size = 2
 
+# cobo.lock is a generated TOML lockfile (2-space subtable indent, like the
+# other 2-space TOML above); the `.lock` extension is outside the TOML glob, so
+# it needs its own stanza. taplo does not lint it (its glob is `*.toml`), leaving
+# editorconfig-checker as the sole indent authority here.
+[cobo.lock]
+indent_size = 2
+
 # Ignore binary or generated files
 [*.{png,jpg,gif,ico,woff,woff2,ttf,eot,svg,pdf}]
 charset = unset
