@@ -163,7 +163,9 @@ Common tasks are exposed as mise tasks (`mise run test`, `mise run style`,
 lint/type-check suite is `uv run --locked tox run -e style`, and the fast git
 hook gate is `uv run --locked tox run -e prek`.
 
-<!-- TODO @hasansezertasan: add any project-specific setup (IDE, services, env vars) -->
+hwid is a zero-dependency, cross-platform library, so there is no additional
+project-specific setup — no services to run, no environment variables, and no
+credentials to configure.
 
 ### Improving The Documentation
 
