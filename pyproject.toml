@@ -107,6 +107,7 @@ style = [
   "actionlint-py==1.7.12.24",
   "basedpyright==1.39.9",
   "editorconfig-checker==3.8.0",
+  "import-linter==2.13",
   "mypy==2.3.0",
   "pyrefly==1.2.0",
   "ruff==0.15.19",
@@ -279,6 +280,28 @@ paths = ["src", "tests"]
 strict-imports = false
 
 
+[tool.importlinter]
+root_package = "hwid"
+
+
+[[tool.importlinter.contracts]]
+name = "Layered architecture with independent components"
+type = "layers"
+# Layers are listed high -> low: a layer may import lower layers but never a
+# higher one. Modules joined by ` | ` on one line are independent SIBLINGS that
+# may not import each other. `main` is the orchestrator/CLI layer; it sits above
+# `core` (the HWID resolution logic), which sits above `impl` (the per-platform
+# backends darwin/linux/win32). `exceptions` and `logger` are independent leaf
+# utilities imported from above but never importing each other. `__main__` is
+# left outside the contract as an unconstrained entry point.
+layers = [
+  "hwid.main",
+  "hwid.core",
+  "hwid.impl",
+  "hwid.exceptions | hwid.logger",
+]
+
+
 [tool.ruff]
 fix = true
 output-format = "full"
@@ -447,8 +470,16 @@ commands = [
   ["zuban", "check", "src"],
   ["vulture"],
   ["python", "-m", "slotscheck", "src"],
-  ["taplo", "lint"],
-  ["taplo", "format", "--check"],
+  ["lint-imports"],
+  ["taplo", "lint", "*.toml"],
+  # NOTE: kept in fix mode (not `--check`) because the rendered TOML is not yet
+  # guaranteed taplo-formatted across every component combination. The `*.toml`
+  # glob is non-recursive, so it scopes taplo to this project's own root TOML
+  # (pyproject/prek/mise) without walking vendored `.tox`/`.venv`/site-packages
+  # trees — no `.taplo.toml` exclude config needed. Making this a strict
+  # `--check` gate is a follow-up that first requires the generated
+  # pyproject/prek to be clean.
+  ["taplo", "format", "*.toml"],
   ["validate-pyproject", "pyproject.toml"],
   ["typos", "--diff"],
   ["actionlint"],

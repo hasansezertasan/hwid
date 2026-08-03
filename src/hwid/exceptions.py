@@ -1,5 +1,8 @@
 """Exceptions for the HWID package."""
 
+__all__ = ["InvalidHWIDError", "UnsupportedOSError"]
+
+
 # Copyright (c) 2023 Hasan Sezer Taşan
 # Licensed under the MIT License
 

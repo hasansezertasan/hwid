@@ -163,7 +163,9 @@ Common tasks are exposed as mise tasks (`mise run test`, `mise run style`,
 lint/type-check suite is `uv run --locked tox run -e style`, and the fast git
 hook gate is `uv run --locked tox run -e prek`.
 
-<!-- TODO @hasansezertasan: add any project-specific setup (IDE, services, env vars) -->
+hwid is a zero-dependency, cross-platform library, so there is no additional
+project-specific setup — no services to run, no environment variables, and no
+credentials to configure.
 
 ### Improving The Documentation
 
@@ -372,6 +374,24 @@ config is inert until the app is installed: install it once from
 [github.com/apps/renovate](https://github.com/apps/renovate) and grant it access
 to this repository. Renovate then opens an onboarding PR; merge it to start
 receiving update PRs.
+
+**9. Template updates (Renovate copier manager).** This project was scaffolded
+from a [Copier](https://copier.readthedocs.io/) template, and `.copier-answers.yml`
+records the template source (`_src_path`) and the revision it is pinned to
+(`_commit`). Renovate's built-in **copier manager** keeps it current: once the
+Renovate App (step 8) is installed, Renovate watches the template repository for
+new **version tags**, and when one lands it runs `copier update` and opens a PR
+with the re-rendered diff — no extra workflow, secret, or token to configure
+(Renovate's App credential can update `.github/workflows/*`, which a plain
+`GITHUB_TOKEN` cannot). This relies on the template publishing tags; if it only
+ever pushes to its default branch without tagging, no update PR is produced.
+
+Review these PRs carefully. `copier update` does a 3-way merge, so where your
+local edits diverged from the template the diff can contain conflict markers
+(`<<<<<<<`) or `.rej` files — and Renovate does **not** currently fail its check
+on them ([renovate#31600](https://github.com/renovatebot/renovate/issues/31600)),
+so a copier PR can look mergeable while carrying conflicts. Reconcile before
+merging: keep your project identity, adopt the template's tooling/config changes.
 
 ## Join The Project Team
 
