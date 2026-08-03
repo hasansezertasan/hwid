@@ -1,6 +1,6 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
-_commit: 082f641
+_commit: v1.0.0
 _src_path: gh:hasansezertasan/copier-pyproject
 author_email: hasansezertasan@gmail.com
 author_family_names: Taşan
@@ -17,6 +17,7 @@ include_freezer: false
 include_gui: false
 include_launcher: false
 include_mcp: false
+include_megalinter: false
 include_postgres: false
 include_profiling: false
 include_pydantic_settings: false

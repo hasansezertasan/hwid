@@ -6,6 +6,8 @@
 from hwid.core import get_hwid
 from hwid.logger import logger
 
+__all__ = ["app"]
+
 
 def app() -> None:
     """Get the HWID of the current machine."""

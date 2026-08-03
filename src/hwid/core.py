@@ -9,6 +9,8 @@ from sys import platform
 from hwid.exceptions import InvalidHWIDError, UnsupportedOSError
 from hwid.impl import darwin, linux, win32
 
+__all__ = ["get_hwid", "validate_hwid"]
+
 
 def validate_hwid(value: str) -> bool:
     """Validate if a string matches the HWID format.

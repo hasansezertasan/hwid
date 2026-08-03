@@ -4,6 +4,8 @@
 # Licensed under the MIT License
 import subprocess
 
+__all__ = ["extract_hwid"]
+
 
 def extract_hwid() -> str:
     """Extract the hardware ID from the output string.
