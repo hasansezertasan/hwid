@@ -115,7 +115,7 @@ style = [
   "sphinx-lint==1.0.2",
   "taplo==0.9.3",
   "ty==0.0.65",
-  "typos==1.48.0",
+  "typos==1.49.0",
   "validate-pyproject[all]==0.25",
   "vulture==2.16",
   "zuban==0.9.1",
