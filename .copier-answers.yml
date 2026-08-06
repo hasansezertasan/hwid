@@ -1,7 +1,7 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
 _commit: v1.0.0
-_src_path: gh:hasansezertasan/copier-pyproject
+_src_path: https://github.com/hasansezertasan/copier-pyproject.git
 author_email: hasansezertasan@gmail.com
 author_family_names: Taşan
 author_full_name: Hasan Sezer Taşan
