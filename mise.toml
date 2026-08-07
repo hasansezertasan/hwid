@@ -58,7 +58,7 @@ run = "uv run --locked tox run -e prek"
 
 [tasks.gitignore-check]
 description = "Check .gitignore for drift from the github/gitignore templates"
-run = "mise exec -- cobo update && mise exec -- cobo check"
+run = "mise exec -- cobo update && mise exec -- cobo check --strict"
 
 [tasks.build]
 description = "Build the package"
