@@ -1,14 +1,13 @@
 Installation
 ============
 
-Possible extras:
-
-- ``all``: Installs all extras if available.
+``hwid`` is a library. Add it to your project as a dependency.
 
 Stable release
 --------------
 
-To install ``hwid``, run this command in your terminal:
+To add ``hwid`` to your project, run this command in your
+terminal:
 
 .. code-block:: sh
 

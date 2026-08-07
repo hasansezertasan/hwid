@@ -112,9 +112,10 @@ jobs:
             pyproject.toml
             uv.lock
       - name: Export locked runtime dependencies
-        # SBOM describes what ships: resolved deps for every optional extra
-        # (--all-extras; this project keeps its dependencies under extras, so
-        # without it the SBOM is empty), excluding dev tooling and the project.
+        # SBOM describes what ships: the resolved runtime tree, excluding dev
+        # tooling and the project. Component/settings deps are core
+        # `dependencies`, so a plain export already covers them; `--all-extras`
+        # is retained as a harmless safeguard should a future extra ship deps.
         run: uv export --frozen --all-extras --no-dev --no-emit-project --format requirements.txt --output-file requirements-sbom.txt
       - name: Generate CycloneDX SBOM
         run: uvx --from cyclonedx-bom cyclonedx-py requirements requirements-sbom.txt --output-format JSON --output-file hwid-sbom.cdx.json
@@ -170,6 +171,17 @@ jobs:
       actions: write  # IMPORTANT: Mandatory to re-dispatch this workflow
     steps:
       - name: Publish the draft release
+        # KNOWN COSMETIC LIMITATION (accepted, see ADR-002): while the release is
+        # a draft it has no public tag page, so its URL is a transient
+        # `/releases/tag/untagged-<hash>` slug. release-please writes its
+        # "🤖 Created releases:" comment on the merged release PR once, at
+        # draft-creation time, capturing that slug — and never rewrites it. When
+        # this step un-drafts the release GitHub moves it to
+        # `/releases/tag/<TAG_NAME>` and the `untagged-…` link 404s. This is a
+        # dead link on an already-merged PR, not a broken release: the release,
+        # its tag, artifacts, and SBOM are all correct. Left as-is on purpose —
+        # `draft: false` would fix the link but reintroduce a window where a
+        # public release exists with no artifacts/SBOM attached (a worse trade).
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ needs.release-please.outputs.tag_name }}

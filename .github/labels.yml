@@ -10,12 +10,48 @@
   # Apply to a pull request to bypass the "Check Linked Issues" workflow when the
   # change legitimately has no associated issue (e.g. a chore or dependency bump).
   description: PR intentionally has no linked issue
-- name: Documentation
-  color: 0075ca
-  description: Improvements or additions to documentation
 - name: release
   color: 0e8a16
   description: Automated release pull request
 - name: bug
   color: d73a4a
   description: Something isn't working
+- name: documentation
+  color: 0075ca
+  description: Improvements or additions to documentation
+- name: duplicate
+  color: cfd3d7
+  description: This issue or pull request already exists
+- name: enhancement
+  color: a2eeef
+  description: New feature or request
+- name: good first issue
+  color: 7057ff
+  description: Good for newcomers
+- name: help wanted
+  color: "008672"
+  description: Extra attention is needed
+- name: invalid
+  color: e4e669
+  description: This doesn't seem right
+- name: question
+  color: d876e3
+  description: Further information is requested
+- name: wontfix
+  color: ffffff
+  description: This will not be worked on
+- name: automated
+  color: ededed
+  description: Opened by automation (e.g. Renovate)
+- name: dependencies
+  color: "0366d6"
+  description: Updates to project dependencies
+- name: github_actions
+  color: 1d76db
+  description: GitHub Actions workflows and labeler config
+- name: tests
+  color: 8a63d2
+  description: Test suite changes
+- name: examples
+  color: b392f0
+  description: Example application changes
