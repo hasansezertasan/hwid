@@ -80,13 +80,13 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#public-api-hwid-core">Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core</span></code>)</a><ul>
-<li><a class="reference internal" href="#hwid.core.validate_hwid"><code class="docutils literal notranslate"><span class="pre">validate_hwid()</span></code></a></li>
 <li><a class="reference internal" href="#hwid.core.get_hwid"><code class="docutils literal notranslate"><span class="pre">get_hwid()</span></code></a></li>
+<li><a class="reference internal" href="#hwid.core.validate_hwid"><code class="docutils literal notranslate"><span class="pre">validate_hwid()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-hwid.exceptions">Exceptions (<code class="docutils literal notranslate"><span class="pre">hwid.exceptions</span></code>)</a><ul>
-<li><a class="reference internal" href="#hwid.exceptions.UnsupportedOSError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOSError</span></code></a></li>
 <li><a class="reference internal" href="#hwid.exceptions.InvalidHWIDError"><code class="docutils literal notranslate"><span class="pre">InvalidHWIDError</span></code></a></li>
+<li><a class="reference internal" href="#hwid.exceptions.UnsupportedOSError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOSError</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-hwid.logger">Logging (<code class="docutils literal notranslate"><span class="pre">hwid.logger</span></code>)</a></li>
@@ -129,26 +129,6 @@ The API reference below is generated automatically from the source docstrings.</
 <p>The package exposes <code class="xref py py-func docutils literal notranslate"><span class="pre">hwid.get_hwid()</span></code> at the top level.</p>
 <p id="module-hwid.core">Core functionality for getting hardware IDs.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="hwid.core.validate_hwid">
-<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">validate_hwid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core.html#validate_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.validate_hwid" title="Link to this definition">#</a></dt>
-<dd><p>Validate if a string matches the HWID format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="hwid.core.validate_hwid.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#hwid.core.validate_hwid.params.value">¶</a> – The string to validate.</p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if valid, False otherwise.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="hwid.core.get_hwid">
 <span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">get_hwid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core.html#get_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.get_hwid" title="Link to this definition">#</a></dt>
 <dd><p>Get the hardware ID of the current machine.</p>
@@ -168,22 +148,42 @@ The API reference below is generated automatically from the source docstrings.</
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="hwid.core.validate_hwid">
+<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">validate_hwid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core.html#validate_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.validate_hwid" title="Link to this definition">#</a></dt>
+<dd><p>Validate if a string matches the HWID format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span class="target" id="hwid.core.validate_hwid.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#hwid.core.validate_hwid.params.value">¶</a> – The string to validate.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if valid, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-hwid.exceptions">
 <span id="exceptions-hwid-exceptions"></span><h2>Exceptions (<code class="docutils literal notranslate"><span class="pre">hwid.exceptions</span></code>)<a class="headerlink" href="#module-hwid.exceptions" title="Link to this heading">#</a></h2>
 <p>Exceptions for the HWID package.</p>
 <dl class="py exception">
-<dt class="sig sig-object py" id="hwid.exceptions.UnsupportedOSError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOSError</span></span><a class="reference internal" href="_modules/hwid/exceptions.html#UnsupportedOSError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.exceptions.UnsupportedOSError" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
-<p>Raised when the operating system is not supported.</p>
-</dd></dl>
-
-<dl class="py exception">
 <dt class="sig sig-object py" id="hwid.exceptions.InvalidHWIDError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidHWIDError</span></span><a class="reference internal" href="_modules/hwid/exceptions.html#InvalidHWIDError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.exceptions.InvalidHWIDError" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Raised when the hardware ID is invalid.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="hwid.exceptions.UnsupportedOSError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOSError</span></span><a class="reference internal" href="_modules/hwid/exceptions.html#UnsupportedOSError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.exceptions.UnsupportedOSError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Raised when the operating system is not supported.</p>
 </dd></dl>
 
 </section>
