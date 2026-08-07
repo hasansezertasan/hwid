@@ -114,21 +114,24 @@ data-aria-dark="Switch to auto color mode">
           <h1>Source code for hwid.exceptions</h1><div class="highlight"><pre>
 <span></span><span data-line="1"><span class="sd">&quot;&quot;&quot;Exceptions for the HWID package.&quot;&quot;&quot;</span>
 </span><span data-line="2">
-</span><span data-line="3"><span class="c1"># Copyright (c) 2023 Hasan Sezer Taşan</span>
-</span><span data-line="4"><span class="c1"># Licensed under the MIT License</span>
+</span><span data-line="3"><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;InvalidHWIDError&quot;</span><span class="p">,</span> <span class="s2">&quot;UnsupportedOSError&quot;</span><span class="p">]</span>
+</span><span data-line="4">
 </span><span data-line="5">
-</span><span data-line="6">
+</span><span data-line="6"><span class="c1"># Copyright (c) 2023 Hasan Sezer Taşan</span>
+</span><span data-line="7"><span class="c1"># Licensed under the MIT License</span>
+</span><span data-line="8">
+</span><span data-line="9">
 <div class="viewcode-block" id="UnsupportedOSError">
 <a class="viewcode-back" href="../../modules.html#hwid.exceptions.UnsupportedOSError">[docs]</a>
-</span><span data-line="7"><span class="k">class</span><span class="w"> </span><span class="nc">UnsupportedOSError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span data-line="8"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the operating system is not supported.&quot;&quot;&quot;</span></div>
+</span><span data-line="10"><span class="k">class</span><span class="w"> </span><span class="nc">UnsupportedOSError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span data-line="11"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the operating system is not supported.&quot;&quot;&quot;</span></div>
 
-</span><span data-line="9">
-</span><span data-line="10">
+</span><span data-line="12">
+</span><span data-line="13">
 <div class="viewcode-block" id="InvalidHWIDError">
 <a class="viewcode-back" href="../../modules.html#hwid.exceptions.InvalidHWIDError">[docs]</a>
-</span><span data-line="11"><span class="k">class</span><span class="w"> </span><span class="nc">InvalidHWIDError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-</span><span data-line="12"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the hardware ID is invalid.&quot;&quot;&quot;</span></div>
+</span><span data-line="14"><span class="k">class</span><span class="w"> </span><span class="nc">InvalidHWIDError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+</span><span data-line="15"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the hardware ID is invalid.&quot;&quot;&quot;</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">

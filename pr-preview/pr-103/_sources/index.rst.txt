@@ -26,10 +26,31 @@ computer. It is cross-platform and does not require any external dependencies.
 Features
 --------
 
-- Cross-platform
-- No external dependencies
-- CLI
-- Module
+Library:
+
+- Cross-platform (Windows, Linux, macOS) with native OS detection
+- No external runtime dependencies
+- Usable as a module or a CLI
+
+Engineering:
+
+- **Type Safety**: Full type hints checked by mypy, basedpyright, ty, pyrefly,
+  and zuban
+- **Code Quality**: Comprehensive linting and formatting with ruff, plus
+  architecture-contract enforcement with import-linter
+- **Testing**: pytest with coverage reporting and parallel execution
+- **Documentation**: Sphinx documentation with the Shibuya theme, GitHub Pages
+  deployment, and live per-PR documentation previews
+- **CI/CD**: Automated testing, building, and publishing across multiple
+  platforms
+- **Security**: CodeQL, OpenSSF Scorecard, dependency review, secret scanning
+  (gitleaks), dependency auditing (pip-audit), GitHub Actions static analysis
+  (zizmor — a blocking prek/CI gate plus a Security-tab dashboard, over hardened
+  least-privilege workflows), and a CycloneDX SBOM attached to every release
+- **Managed** ``.gitignore``: kept in sync with the upstream
+  `github/gitignore <https://github.com/github/gitignore>`_ templates by
+  `cobo <https://github.com/hasansezertasan/cobo>`_, with a weekly drift check
+- **Modern Python**: uv for dependency management, hatch for building
 
 Warning
 -------
