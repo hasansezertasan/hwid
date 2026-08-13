@@ -150,7 +150,7 @@ docs = [
   "sphinx-togglebutton==0.4.5",
   "sphinx-paramlinks==0.6.0",
   "auto-pytabs[sphinx]==0.5.0",
-  "myst-parser==4.0.1",
+  "myst-parser==5.1.0",
 ]
 tool = [
   "commitizen==4.17.0",
