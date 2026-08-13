@@ -41,7 +41,7 @@ jobs:
         # git auth from the token input (default github.token) without writing it
         # to .git/config, so the checkout above keeps persist-credentials: false.
         # sphinx.ext.githubpages emits .nojekyll so _static/ is served.
-        uses: JamesIves/github-pages-deploy-action@d92aa235d04922e8f08b40ce78cc5442fcfbfa2f  # v4.8.0
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445  # v4.9.0
         with:
           folder: docs/_build/html
           # Preserve the PR preview tree (pr-preview/**) that docs-preview.yml
