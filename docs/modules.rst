@@ -8,12 +8,13 @@ Modules
 An overview of the modules that make up ``hwid``.
 The API reference below is generated automatically from the source docstrings.
 
-Public API (``hwid.core.resolution``)
--------------------------------------
+Public API (``hwid.core``)
+--------------------------
 
 The package exposes :func:`hwid.get_hwid` at the top level.
 
-.. automodule:: hwid.core.resolution
+.. automodule:: hwid.core
+   :imported-members:
 
 Exceptions (``hwid.core.exceptions``)
 -------------------------------------
