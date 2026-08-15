@@ -68,6 +68,14 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Maintainer guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintaining/setup.html">Repository setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="packaging/homebrew-tap/README.html">Homebrew tap setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging/scoop-bucket/README.html">Scoop bucket setup</a></li>
+</ul>
+</li>
+</ul>
 
         </div>
       </div>
@@ -113,18 +121,31 @@ data-aria-dark="Switch to auto color mode">
   <article class="yue" role="main">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p>Possible extras:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">all</span></code>: Installs all extras if available.</p></li>
-</ul>
+<p><code class="docutils literal notranslate"><span class="pre">hwid</span></code> is both an importable library and a command-line tool. To use it as a
+dependency, add it to your project (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">add</span> <span class="pre">hwid</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">hwid</span></code>) and
+call <code class="xref py py-func docutils literal notranslate"><span class="pre">hwid.get_hwid()</span></code> from Python. To use the <code class="docutils literal notranslate"><span class="pre">hwid</span></code> command directly,
+install it as a standalone tool as shown below.</p>
 <section id="stable-release">
 <h2>Stable release<a class="headerlink" href="#stable-release" title="Link to this heading">#</a></h2>
-<p>To install <code class="docutils literal notranslate"><span class="pre">hwid</span></code>, run this command in your terminal:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>add<span class="w"> </span>hwid
+<p>Install <code class="docutils literal notranslate"><span class="pre">hwid</span></code> into an isolated environment with your
+preferred tool installer:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>hwid
 </span></pre></div>
 </div>
-<p>Or if you prefer to use <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">pip<span class="w"> </span>install<span class="w"> </span>hwid
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">pipx<span class="w"> </span>install<span class="w"> </span>hwid
+</span></pre></div>
+</div>
+<p>Or run it without installing:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">uvx<span class="w"> </span>hwid
+</span></pre></div>
+</div>
+<p>Homebrew (macOS/Linux):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">brew<span class="w"> </span>install<span class="w"> </span>hasansezertasan/tap/hwid
+</span></pre></div>
+</div>
+<p>Scoop (Windows):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">scoop<span class="w"> </span>bucket<span class="w"> </span>add<span class="w"> </span>hasansezertasan<span class="w"> </span>https://github.com/hasansezertasan/scoop-bucket
+</span><span data-line="2">scoop<span class="w"> </span>install<span class="w"> </span>hasansezertasan/hwid
 </span></pre></div>
 </div>
 </section>
@@ -144,7 +165,7 @@ data-aria-dark="Switch to auto color mode">
 </div>
 <p>Once you have a copy of the source, you can install it with:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nb">cd</span><span class="w"> </span>hwid
-</span><span data-line="2">uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
+</span><span data-line="2">uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>.
 </span></pre></div>
 </div>
 </section>

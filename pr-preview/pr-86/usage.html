@@ -68,6 +68,14 @@ data-aria-dark="Switch to auto color mode">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Modules</a></li>
 </ul>
+<p class="caption" role="heading" aria-level="3"><span class="caption-text">Maintainer guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintaining/setup.html">Repository setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="packaging/homebrew-tap/README.html">Homebrew tap setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="packaging/scoop-bucket/README.html">Scoop bucket setup</a></li>
+</ul>
+</li>
+</ul>
 
         </div>
       </div>
@@ -80,7 +88,7 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#as-a-library">As a library</a></li>
-<li><a class="reference internal" href="#as-a-cli-tool">As a CLI tool</a></li>
+<li><a class="reference internal" href="#as-a-command-line-tool">As a command-line tool</a></li>
 </ul>
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
@@ -122,14 +130,21 @@ data-aria-dark="Switch to auto color mode">
 </span></pre></div>
 </div>
 </section>
-<section id="as-a-cli-tool">
-<h2>As a CLI tool<a class="headerlink" href="#as-a-cli-tool" title="Link to this heading">#</a></h2>
+<section id="as-a-command-line-tool">
+<h2>As a command-line tool<a class="headerlink" href="#as-a-command-line-tool" title="Link to this heading">#</a></h2>
 <p>Run it without installing, straight from PyPI:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">uvx<span class="w"> </span>hwid
 </span></pre></div>
 </div>
-<p>Or, once installed, invoke the console script:</p>
+<p>Or, once installed, invoke the console script. The bare command prints the
+machine’s hardware ID:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">hwid
+</span></pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">version</span></code> and <code class="docutils literal notranslate"><span class="pre">info</span></code> subcommands report the package version and
+environment:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">hwid<span class="w"> </span>version
+</span><span data-line="2">hwid<span class="w"> </span>info
 </span></pre></div>
 </div>
 </section>
