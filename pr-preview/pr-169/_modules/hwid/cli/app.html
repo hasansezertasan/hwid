@@ -168,91 +168,95 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="44">    <span class="k">try</span><span class="p">:</span>
 </span><span data-line="45">        <span class="n">distribution</span> <span class="o">=</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">PROJECT_NAME</span><span class="p">)</span>
 </span><span data-line="46">    <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>
-</span><span data-line="47">        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Package metadata not found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">PROJECT_NAME</span><span class="p">)</span>
-</span><span data-line="48">        <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_METADATA_MISSING</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span data-line="49">        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-</span><span data-line="50">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Command `version` called.&quot;</span><span class="p">)</span>
-</span><span data-line="51">    <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">distribution</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span data-line="52">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Version displayed successfully.&quot;</span><span class="p">)</span></div>
+</span><span data-line="47">        <span class="c1"># An uninstalled or partial package is an expected, user-facing error, so</span>
+</span><span data-line="48">        <span class="c1"># log without the traceback that logging.exception would add.</span>
+</span><span data-line="49">        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Package metadata not found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">PROJECT_NAME</span><span class="p">)</span>
+</span><span data-line="50">        <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_METADATA_MISSING</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="51">        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+</span><span data-line="52">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Command `version` called.&quot;</span><span class="p">)</span>
+</span><span data-line="53">    <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">distribution</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="54">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Version displayed successfully.&quot;</span><span class="p">)</span></div>
 
-</span><span data-line="53">
-</span><span data-line="54">
+</span><span data-line="55">
+</span><span data-line="56">
 <div class="viewcode-block" id="info">
 <a class="viewcode-back" href="../../../modules.html#hwid.cli.app.info">[docs]</a>
-</span><span data-line="55"><span class="k">def</span><span class="w"> </span><span class="nf">info</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="56"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Display information about the hwid application.</span>
-</span><span data-line="57">
-</span><span data-line="58"><span class="sd">    Show application information:</span>
-</span><span data-line="59"><span class="sd">        hwid info</span>
-</span><span data-line="60">
-</span><span data-line="61"><span class="sd">    Example output:</span>
-</span><span data-line="62"><span class="sd">        Application Version: 0.1.0</span>
-</span><span data-line="63"><span class="sd">        Python Version: 3.12.0 (CPython)</span>
-</span><span data-line="64"><span class="sd">        Platform: Darwin</span>
-</span><span data-line="65">
-</span><span data-line="66"><span class="sd">    Raises:</span>
-</span><span data-line="67"><span class="sd">        SystemExit: With code 1 if the package metadata cannot be found.</span>
-</span><span data-line="68"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="69">    <span class="k">try</span><span class="p">:</span>
-</span><span data-line="70">        <span class="n">distribution</span> <span class="o">=</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">PROJECT_NAME</span><span class="p">)</span>
-</span><span data-line="71">    <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>
-</span><span data-line="72">        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Package metadata not found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">PROJECT_NAME</span><span class="p">)</span>
-</span><span data-line="73">        <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_METADATA_MISSING</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span data-line="74">        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
-</span><span data-line="75">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Command `info` called.&quot;</span><span class="p">)</span>
-</span><span data-line="76">    <span class="n">python_version</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()</span>
-</span><span data-line="77">    <span class="n">python_implementation</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">()</span>
-</span><span data-line="78">    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
-</span><span data-line="79">        <span class="sa">f</span><span class="s2">&quot;Application Version: </span><span class="si">{</span><span class="n">distribution</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span data-line="80">        <span class="sa">f</span><span class="s2">&quot;Python Version: </span><span class="si">{</span><span class="n">python_version</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">python_implementation</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
-</span><span data-line="81">        <span class="sa">f</span><span class="s2">&quot;Platform: </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-</span><span data-line="82">    <span class="p">]</span>
-</span><span data-line="83">    <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span data-line="84">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Application information displayed successfully.&quot;</span><span class="p">)</span></div>
+</span><span data-line="57"><span class="k">def</span><span class="w"> </span><span class="nf">info</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="58"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Display information about the hwid application.</span>
+</span><span data-line="59">
+</span><span data-line="60"><span class="sd">    Show application information:</span>
+</span><span data-line="61"><span class="sd">        hwid info</span>
+</span><span data-line="62">
+</span><span data-line="63"><span class="sd">    Example output:</span>
+</span><span data-line="64"><span class="sd">        Application Version: 0.1.0</span>
+</span><span data-line="65"><span class="sd">        Python Version: 3.12.0 (CPython)</span>
+</span><span data-line="66"><span class="sd">        Platform: Darwin</span>
+</span><span data-line="67">
+</span><span data-line="68"><span class="sd">    Raises:</span>
+</span><span data-line="69"><span class="sd">        SystemExit: With code 1 if the package metadata cannot be found.</span>
+</span><span data-line="70"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="71">    <span class="k">try</span><span class="p">:</span>
+</span><span data-line="72">        <span class="n">distribution</span> <span class="o">=</span> <span class="n">Distribution</span><span class="o">.</span><span class="n">from_name</span><span class="p">(</span><span class="n">PROJECT_NAME</span><span class="p">)</span>
+</span><span data-line="73">    <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>
+</span><span data-line="74">        <span class="c1"># An uninstalled or partial package is an expected, user-facing error, so</span>
+</span><span data-line="75">        <span class="c1"># log without the traceback that logging.exception would add.</span>
+</span><span data-line="76">        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Package metadata not found for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">PROJECT_NAME</span><span class="p">)</span>
+</span><span data-line="77">        <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_METADATA_MISSING</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="78">        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+</span><span data-line="79">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Command `info` called.&quot;</span><span class="p">)</span>
+</span><span data-line="80">    <span class="n">python_version</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_version</span><span class="p">()</span>
+</span><span data-line="81">    <span class="n">python_implementation</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">python_implementation</span><span class="p">()</span>
+</span><span data-line="82">    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span>
+</span><span data-line="83">        <span class="sa">f</span><span class="s2">&quot;Application Version: </span><span class="si">{</span><span class="n">distribution</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span data-line="84">        <span class="sa">f</span><span class="s2">&quot;Python Version: </span><span class="si">{</span><span class="n">python_version</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">python_implementation</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+</span><span data-line="85">        <span class="sa">f</span><span class="s2">&quot;Platform: </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span data-line="86">    <span class="p">]</span>
+</span><span data-line="87">    <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="88">    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Application information displayed successfully.&quot;</span><span class="p">)</span></div>
 
-</span><span data-line="85">
-</span><span data-line="86">
-</span><span data-line="87"><span class="c1"># Command name -&gt; handler. ``version``/``info`` mirror the Typer root; a</span>
-</span><span data-line="88"><span class="c1"># dispatcher is added for each enabled non-primary component.</span>
-</span><span data-line="89"><span class="n">_COMMANDS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">show_version</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="n">info</span><span class="p">}</span>
+</span><span data-line="89">
 </span><span data-line="90">
-</span><span data-line="91">
-</span><span data-line="92"><span class="k">def</span><span class="w"> </span><span class="nf">build_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
-</span><span data-line="93"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the top-level argument parser for the hwid CLI.</span>
+</span><span data-line="91"><span class="c1"># Command name -&gt; handler. ``version``/``info`` mirror the Typer root; a</span>
+</span><span data-line="92"><span class="c1"># dispatcher is added for each enabled non-primary component.</span>
+</span><span data-line="93"><span class="n">_COMMANDS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="kc">None</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">show_version</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="n">info</span><span class="p">}</span>
 </span><span data-line="94">
-</span><span data-line="95"><span class="sd">    Returns:</span>
-</span><span data-line="96"><span class="sd">        The configured parser with the ``version``/``info`` commands and one</span>
-</span><span data-line="97"><span class="sd">        subcommand per enabled non-primary component.</span>
-</span><span data-line="98"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="99">    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;hwid&quot;</span><span class="p">)</span>
-</span><span data-line="100">    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">&quot;command&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;COMMAND&quot;</span><span class="p">)</span>
-</span><span data-line="101">    <span class="n">_</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show the version number.&quot;</span><span class="p">)</span>
-</span><span data-line="102">    <span class="n">_</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show application and environment info.&quot;</span><span class="p">)</span>
-</span><span data-line="103">    <span class="k">return</span> <span class="n">parser</span>
-</span><span data-line="104">
-</span><span data-line="105">
+</span><span data-line="95">
+</span><span data-line="96"><span class="k">def</span><span class="w"> </span><span class="nf">build_parser</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">:</span>
+</span><span data-line="97"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the top-level argument parser for the hwid CLI.</span>
+</span><span data-line="98">
+</span><span data-line="99"><span class="sd">    Returns:</span>
+</span><span data-line="100"><span class="sd">        The configured parser with the ``version``/``info`` commands and one</span>
+</span><span data-line="101"><span class="sd">        subcommand per enabled non-primary component.</span>
+</span><span data-line="102"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="103">    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;hwid&quot;</span><span class="p">)</span>
+</span><span data-line="104">    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">&quot;command&quot;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;COMMAND&quot;</span><span class="p">)</span>
+</span><span data-line="105">    <span class="n">_</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show the version number.&quot;</span><span class="p">)</span>
+</span><span data-line="106">    <span class="n">_</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Show application and environment info.&quot;</span><span class="p">)</span>
+</span><span data-line="107">    <span class="k">return</span> <span class="n">parser</span>
+</span><span data-line="108">
+</span><span data-line="109">
 <div class="viewcode-block" id="app">
 <a class="viewcode-back" href="../../../modules.html#hwid.cli.app.app">[docs]</a>
-</span><span data-line="106"><span class="k">def</span><span class="w"> </span><span class="nf">app</span><span class="p">(</span><span class="n">argv</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="107"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the hwid CLI application.</span>
-</span><span data-line="108">
-</span><span data-line="109"><span class="sd">    Args:</span>
-</span><span data-line="110"><span class="sd">        argv: Optional argument vector; defaults to ``sys.argv[1:]`` when ``None``.</span>
-</span><span data-line="111"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="112">    <span class="n">parser</span> <span class="o">=</span> <span class="n">build_parser</span><span class="p">()</span>
-</span><span data-line="113">    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
-</span><span data-line="114">    <span class="c1"># ``argparse.Namespace`` attributes are ``Any``; narrow the dispatch key.</span>
-</span><span data-line="115">    <span class="n">command</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str | None&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">command</span><span class="p">)</span>
-</span><span data-line="116">    <span class="n">handler</span> <span class="o">=</span> <span class="n">_COMMANDS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="k">if</span> <span class="n">command</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
-</span><span data-line="117">    <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="118">        <span class="c1"># hwid&#39;s primary action: bare ``hwid`` prints the machine ID. The</span>
-</span><span data-line="119">        <span class="c1"># ``version``/``info`` subcommands are dispatched above.</span>
-</span><span data-line="120">        <span class="kn">from</span><span class="w"> </span><span class="nn">hwid.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_hwid</span>  <span class="c1"># noqa: PLC0415</span>
-</span><span data-line="121">
-</span><span data-line="122">        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Printing hardware ID.&quot;</span><span class="p">)</span>
-</span><span data-line="123">        <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HWID: </span><span class="si">{</span><span class="n">get_hwid</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span data-line="124">        <span class="k">return</span>
-</span><span data-line="125">    <span class="n">handler</span><span class="p">()</span></div>
+</span><span data-line="110"><span class="k">def</span><span class="w"> </span><span class="nf">app</span><span class="p">(</span><span class="n">argv</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="111"><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run the hwid CLI application.</span>
+</span><span data-line="112">
+</span><span data-line="113"><span class="sd">    Args:</span>
+</span><span data-line="114"><span class="sd">        argv: Optional argument vector; defaults to ``sys.argv[1:]`` when ``None``.</span>
+</span><span data-line="115"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="116">    <span class="n">parser</span> <span class="o">=</span> <span class="n">build_parser</span><span class="p">()</span>
+</span><span data-line="117">    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+</span><span data-line="118">    <span class="c1"># ``argparse.Namespace`` attributes are ``Any``; narrow the dispatch key.</span>
+</span><span data-line="119">    <span class="n">command</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="s2">&quot;str | None&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">command</span><span class="p">)</span>
+</span><span data-line="120">    <span class="n">handler</span> <span class="o">=</span> <span class="n">_COMMANDS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="k">if</span> <span class="n">command</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span data-line="121">    <span class="k">if</span> <span class="n">handler</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="122">        <span class="c1"># hwid&#39;s primary action: bare ``hwid`` prints the machine ID. The</span>
+</span><span data-line="123">        <span class="c1"># ``version``/``info`` subcommands are dispatched above.</span>
+</span><span data-line="124">        <span class="kn">from</span><span class="w"> </span><span class="nn">hwid.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_hwid</span>  <span class="c1"># noqa: PLC0415</span>
+</span><span data-line="125">
+</span><span data-line="126">        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Printing hardware ID.&quot;</span><span class="p">)</span>
+</span><span data-line="127">        <span class="n">_</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HWID: </span><span class="si">{</span><span class="n">get_hwid</span><span class="p">()</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span data-line="128">        <span class="k">return</span>
+</span><span data-line="129">    <span class="n">handler</span><span class="p">()</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
