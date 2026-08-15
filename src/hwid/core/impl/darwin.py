@@ -11,9 +11,14 @@ def extract_hwid() -> str:
     """Extract the hardware ID from the output string.
 
     Returns:
-        str: The extracted hardware ID.
+        str: The extracted hardware ID, or "" if the output has no ``:``
+            delimiter (so ``get_hwid`` raises ``InvalidHWIDError``).
     """
     command = "system_profiler SPHardwareDataType | grep 'UUID'"
     output = subprocess.check_output(command, shell=True, text=True)
-    output = output.strip()
-    return output.split(":")[1].strip()
+    # Guard the delimiter: output without a ``:`` returns "" so ``get_hwid``
+    # raises ``InvalidHWIDError`` via validation instead of an ``IndexError``.
+    _, separator, value = output.strip().partition(":")
+    if not separator:
+        return ""
+    return value.strip()

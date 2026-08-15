@@ -384,9 +384,11 @@ convention = "pep257"
 # packages), so the package-name and implicit-namespace rules do not apply.
 "examples/**/*.py" = ["N999", "INP001"]
 # The platform backends shell out to native OS tools (powershell, system_profiler,
-# dmidecode) to read the hardware UUID -- subprocess with a shell command is the
-# intended mechanism here, not an oversight.
-"src/hwid/core/impl/*.py" = ["S404", "S602"]
+# dmidecode) to read the hardware UUID -- running these fixed commands is the
+# intended mechanism, not an oversight. darwin/win32 use ``shell=True`` for their
+# pipelines (S602); linux runs argv-form (no shell) so its timeout kills sudo
+# directly, which is what S603 flags. All commands are fixed literals, no input.
+"src/hwid/core/impl/*.py" = ["S404", "S602", "S603"]
 # The Sphinx config is a standalone module, not part of an importable package.
 "docs/conf.py" = ["INP001"]
 
