@@ -25,3 +25,12 @@ def test_darwin_parses_system_profiler_line(mocker: MockerFixture) -> None:
         "system_profiler SPHardwareDataType | grep 'UUID'",
     )
     assert check_output.call_args.kwargs == {"shell": True, "text": True}
+
+
+def test_darwin_returns_empty_on_missing_delimiter(mocker: MockerFixture) -> None:
+    """Profiler output without a ``:`` yields ``""`` rather than an ``IndexError``."""
+    mocker.patch(
+        "hwid.core.impl.darwin.subprocess.check_output", return_value="no uuid here\n"
+    )
+
+    assert not darwin.extract_hwid()

@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import subprocess  # noqa: S404
 from typing import TYPE_CHECKING
+
+import pytest
 
 from hwid.core.impl import linux
 
@@ -20,5 +23,23 @@ def test_linux_strips_dmidecode_output(mocker: MockerFixture) -> None:
 
     assert linux.extract_hwid() == VALID_HWID
     check_output.assert_called_once()
-    assert check_output.call_args.args == ("sudo dmidecode -s system-uuid",)
-    assert check_output.call_args.kwargs == {"shell": True, "text": True}
+    # `sudo -n` keeps resolution non-interactive; a timeout keeps it bounded.
+    assert check_output.call_args.args == ("sudo -n dmidecode -s system-uuid",)
+    assert check_output.call_args.kwargs == {
+        "shell": True,
+        "text": True,
+        "timeout": linux.COMMAND_TIMEOUT,
+    }
+
+
+@pytest.mark.parametrize(
+    "error",
+    [subprocess.CalledProcessError(1, "sudo"), subprocess.TimeoutExpired("sudo", 5)],
+)
+def test_linux_returns_empty_on_subprocess_failure(
+    mocker: MockerFixture, error: Exception
+) -> None:
+    """A non-interactive ``sudo`` denial or timeout yields ``""`` (invalid HWID)."""
+    mocker.patch("hwid.core.impl.linux.subprocess.check_output", side_effect=error)
+
+    assert not linux.extract_hwid()
