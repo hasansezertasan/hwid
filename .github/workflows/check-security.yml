@@ -54,16 +54,21 @@ jobs:
         with:
           python-version-file: .python-version
       - name: Setup uv
+<<<<<<< before updating
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d  # v10.0.1
+=======
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+>>>>>>> after updating
         with:
           enable-cache: true
           cache-dependency-glob: |
             pyproject.toml
             uv.lock
       - name: Export locked runtime dependencies
-        # Audit what ships: resolved deps for every optional extra (--all-extras;
-        # this project keeps its dependencies under extras, so without it the
-        # export is empty), excluding dev tooling and the project itself.
+        # Audit what ships: the resolved runtime tree, excluding dev tooling and
+        # the project itself. Component/settings deps are core `dependencies`, so
+        # a plain export already covers them; `--all-extras` is retained as a
+        # harmless safeguard in case a future extra reintroduces shipped deps.
         # --no-hashes keeps pip-audit's resolver from demanding a hash for every
         # transitive pin.
         run: uv export --frozen --all-extras --no-dev --no-emit-project --no-hashes --format requirements.txt --output-file requirements-audit.txt

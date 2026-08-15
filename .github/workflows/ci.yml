@@ -24,7 +24,11 @@ jobs:
           python-version-file: .python-version
       - name: Setup uv
         id: setup-uv
+<<<<<<< before updating
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d  # v10.0.1
+=======
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+>>>>>>> after updating
         with:
           enable-cache: true
           cache-dependency-glob: |
@@ -34,7 +38,11 @@ jobs:
         # ghalint has no PyPI wrapper or pre-commit hook, so the prek `ghalint`
         # hook runs the mise-managed binary. Install mise's tools (incl. ghalint)
         # and put them on PATH before prek runs.
+<<<<<<< before updating
         uses: jdx/mise-action@3c2e0cf82a5b2e5249f0d3635a4d83d0ae861518  # v4.2.5
+=======
+        uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654  # v4.2.4
+>>>>>>> after updating
       - name: Run prek hooks
         run: uv run --locked --group prek prek run --all-files --show-diff-on-failure
   ci:
@@ -89,7 +97,11 @@ jobs:
           python-version-file: .python-version
       - name: Setup uv
         id: setup-uv
+<<<<<<< before updating
         uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d  # v10.0.1
+=======
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+>>>>>>> after updating
         with:
           enable-cache: true
           cache-dependency-glob: |
@@ -120,7 +132,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Note skipped coverage upload
         if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' && matrix.os == 'ubuntu-latest' }}
-        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See .github/CONTRIBUTING.md (Repository setup) to enable coverage reporting."
+        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See docs/maintaining/setup.rst (Repository setup) to enable coverage reporting."
   check:
     if: always()
     needs: [ci, hooks]

@@ -1,6 +1,6 @@
 ---
-# Add 'Documentation' label to any changes within 'docs' folder or any subfolders
-Documentation:
+# Add 'documentation' label to any changes within 'docs' folder or any subfolders
+documentation:
   - changed-files:
       - any-glob-to-any-file: docs/**
 # Add 'release' label to any PR where the head branch name starts with 'release'
@@ -8,3 +8,12 @@ release:
   - head-branch: ['^release']
 bug:
   - head-branch: ['^bugfix', '^bug/', '^fix/']
+github_actions:
+  - changed-files:
+      - any-glob-to-any-file: ['.github/workflows/**', '.github/*labeler*.yml']
+tests:
+  - changed-files:
+      - any-glob-to-any-file: tests/**
+examples:
+  - changed-files:
+      - any-glob-to-any-file: examples/**
