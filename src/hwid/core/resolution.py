@@ -6,8 +6,8 @@
 import re
 from sys import platform
 
-from hwid.exceptions import InvalidHWIDError, UnsupportedOSError
-from hwid.impl import darwin, linux, win32
+from hwid.core.exceptions import InvalidHWIDError, UnsupportedOSError
+from hwid.core.impl import darwin, linux, win32
 
 __all__ = ["get_hwid", "validate_hwid"]
 

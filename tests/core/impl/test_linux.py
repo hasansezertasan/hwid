@@ -1,10 +1,10 @@
-"""Tests for :mod:`hwid.impl.linux`. ``subprocess`` is mocked to run on any host."""
+"""Tests for :mod:`hwid.core.impl.linux`; ``subprocess`` is mocked on any host."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hwid.impl import linux
+from hwid.core.impl import linux
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -15,7 +15,7 @@ VALID_HWID = "D486629F-0026-55CC-988A-C086D16715C1"
 def test_linux_strips_dmidecode_output(mocker: MockerFixture) -> None:
     """The linux backend returns the trimmed UUID from dmidecode."""
     check_output = mocker.patch(
-        "hwid.impl.linux.subprocess.check_output", return_value=f"{VALID_HWID}\n"
+        "hwid.core.impl.linux.subprocess.check_output", return_value=f"{VALID_HWID}\n"
     )
 
     assert linux.extract_hwid() == VALID_HWID

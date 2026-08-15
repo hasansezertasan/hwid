@@ -16,7 +16,7 @@ import sys
 from importlib.metadata import Distribution, PackageNotFoundError
 from typing import TYPE_CHECKING, cast
 
-from hwid.logger import logger
+from hwid.core.logging_setup import logger
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -46,7 +46,7 @@ def show_version() -> None:
     except PackageNotFoundError:
         # An uninstalled or partial package is an expected, user-facing error, so
         # log without the traceback that logging.exception would add.
-        logger.error("Package metadata not found for %s", PROJECT_NAME)
+        logger.error("Package metadata not found for %s", PROJECT_NAME)  # noqa: TRY400
         _ = sys.stderr.write(_METADATA_MISSING + "\n")
         raise SystemExit(1) from None
     logger.info("Command `version` called.")
@@ -73,7 +73,7 @@ def info() -> None:
     except PackageNotFoundError:
         # An uninstalled or partial package is an expected, user-facing error, so
         # log without the traceback that logging.exception would add.
-        logger.error("Package metadata not found for %s", PROJECT_NAME)
+        logger.error("Package metadata not found for %s", PROJECT_NAME)  # noqa: TRY400
         _ = sys.stderr.write(_METADATA_MISSING + "\n")
         raise SystemExit(1) from None
     logger.info("Command `info` called.")

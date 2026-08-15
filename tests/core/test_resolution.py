@@ -1,4 +1,4 @@
-"""Tests for :mod:`hwid.core` -- validation and platform dispatch."""
+"""Tests for :mod:`hwid.core.resolution` -- validation and platform dispatch."""
 
 from __future__ import annotations
 
@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from hwid.core import get_hwid, validate_hwid
-from hwid.exceptions import InvalidHWIDError, UnsupportedOSError
+from hwid.core.exceptions import InvalidHWIDError, UnsupportedOSError
+from hwid.core.resolution import get_hwid, validate_hwid
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -51,9 +51,9 @@ def test_get_hwid_dispatches_per_platform(
     mocker: MockerFixture, plat: str, backend: str
 ) -> None:
     """``get_hwid`` routes to the backend matching ``sys.platform``."""
-    mocker.patch("hwid.core.platform", plat)
+    mocker.patch("hwid.core.resolution.platform", plat)
     extractor = mocker.patch(
-        f"hwid.core.{backend}.extract_hwid", return_value=VALID_HWID
+        f"hwid.core.resolution.{backend}.extract_hwid", return_value=VALID_HWID
     )
 
     assert get_hwid() == VALID_HWID
@@ -62,7 +62,7 @@ def test_get_hwid_dispatches_per_platform(
 
 def test_get_hwid_raises_on_unsupported_os(mocker: MockerFixture) -> None:
     """An unknown platform raises :class:`UnsupportedOSError`."""
-    mocker.patch("hwid.core.platform", "sunos5")
+    mocker.patch("hwid.core.resolution.platform", "sunos5")
 
     with pytest.raises(UnsupportedOSError):
         get_hwid()
@@ -70,8 +70,8 @@ def test_get_hwid_raises_on_unsupported_os(mocker: MockerFixture) -> None:
 
 def test_get_hwid_raises_on_malformed_backend_output(mocker: MockerFixture) -> None:
     """A backend returning a non-UUID string raises :class:`InvalidHWIDError`."""
-    mocker.patch("hwid.core.platform", "darwin")
-    mocker.patch("hwid.core.darwin.extract_hwid", return_value="garbage")
+    mocker.patch("hwid.core.resolution.platform", "darwin")
+    mocker.patch("hwid.core.resolution.darwin.extract_hwid", return_value="garbage")
 
     with pytest.raises(InvalidHWIDError):
         get_hwid()
