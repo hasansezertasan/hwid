@@ -87,9 +87,9 @@ data-aria-dark="Switch to auto color mode">
       <i class="i-lucide close"></i>
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#public-api-hwid-core-resolution">Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core.resolution</span></code>)</a><ul>
-<li><a class="reference internal" href="#hwid.core.resolution.get_hwid"><code class="docutils literal notranslate"><span class="pre">get_hwid()</span></code></a></li>
-<li><a class="reference internal" href="#hwid.core.resolution.validate_hwid"><code class="docutils literal notranslate"><span class="pre">validate_hwid()</span></code></a></li>
+<li><a class="reference internal" href="#public-api-hwid-core">Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core</span></code>)</a><ul>
+<li><a class="reference internal" href="#hwid.core.get_hwid"><code class="docutils literal notranslate"><span class="pre">get_hwid()</span></code></a></li>
+<li><a class="reference internal" href="#hwid.core.validate_hwid"><code class="docutils literal notranslate"><span class="pre">validate_hwid()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-hwid.core.exceptions">Exceptions (<code class="docutils literal notranslate"><span class="pre">hwid.core.exceptions</span></code>)</a><ul>
@@ -138,13 +138,13 @@ data-aria-dark="Switch to auto color mode">
 <h1>Modules<a class="headerlink" href="#modules" title="Link to this heading">#</a></h1>
 <p>An overview of the modules that make up <code class="docutils literal notranslate"><span class="pre">hwid</span></code>.
 The API reference below is generated automatically from the source docstrings.</p>
-<section id="public-api-hwid-core-resolution">
-<h2>Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core.resolution</span></code>)<a class="headerlink" href="#public-api-hwid-core-resolution" title="Link to this heading">#</a></h2>
+<section id="public-api-hwid-core">
+<h2>Public API (<code class="docutils literal notranslate"><span class="pre">hwid.core</span></code>)<a class="headerlink" href="#public-api-hwid-core" title="Link to this heading">#</a></h2>
 <p>The package exposes <code class="xref py py-func docutils literal notranslate"><span class="pre">hwid.get_hwid()</span></code> at the top level.</p>
-<p id="module-hwid.core.resolution">Core functionality for getting hardware IDs.</p>
+<p id="module-hwid.core">Core engine for HWID: resolution logic, per-OS backends, errors, logging.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="hwid.core.resolution.get_hwid">
-<span class="sig-prename descclassname"><span class="pre">hwid.core.resolution.</span></span><span class="sig-name descname"><span class="pre">get_hwid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/resolution.html#get_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.resolution.get_hwid" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="hwid.core.get_hwid">
+<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">get_hwid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/resolution.html#get_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.get_hwid" title="Link to this definition">#</a></dt>
 <dd><p>Get the hardware ID of the current machine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -163,13 +163,13 @@ The API reference below is generated automatically from the source docstrings.</
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="hwid.core.resolution.validate_hwid">
-<span class="sig-prename descclassname"><span class="pre">hwid.core.resolution.</span></span><span class="sig-name descname"><span class="pre">validate_hwid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/resolution.html#validate_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.resolution.validate_hwid" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="hwid.core.validate_hwid">
+<span class="sig-prename descclassname"><span class="pre">hwid.core.</span></span><span class="sig-name descname"><span class="pre">validate_hwid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/resolution.html#validate_hwid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.validate_hwid" title="Link to this definition">#</a></dt>
 <dd><p>Validate if a string matches the HWID format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span class="target" id="hwid.core.resolution.validate_hwid.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#hwid.core.resolution.validate_hwid.params.value">¶</a> – The string to validate.</p></li>
+<li><p><span class="target" id="hwid.core.validate_hwid.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#hwid.core.validate_hwid.params.value">¶</a> – The string to validate.</p></li>
 <li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
 </ul>
 </dd>
