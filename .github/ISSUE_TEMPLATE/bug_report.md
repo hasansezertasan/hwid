@@ -20,6 +20,12 @@ Replace this comment with a clear description of what the bug is.
 Provide a minimal reproducible example that developers can run to investigate.
 See https://stackoverflow.com/help/minimal-reproducible-example for guidance.
 
+As a CLI, include the exact command you ran, for example:
+
+```shell
+hwid --help
+```
+
 Include the full traceback if an exception was raised:
 
 ```text

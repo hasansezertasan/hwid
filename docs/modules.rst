@@ -24,3 +24,10 @@ Logging (``hwid.logger``)
 -------------------------
 
 .. automodule:: hwid.logger
+
+CLI (``hwid.cli``)
+------------------
+
+argparse command-line interface exposing ``version`` and ``info`` commands.
+
+.. automodule:: hwid.cli.app

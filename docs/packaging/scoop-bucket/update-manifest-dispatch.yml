@@ -1,0 +1,129 @@
+---
+name: Update Manifest (Dispatch)
+# Triggered by a package repo's release workflow (bump-scoop job) right after
+# it publishes a release, for a prompt bump instead of waiting on a cron.
+#
+# All the work happens HERE, not in the producer: the producer only signals.
+# A producer's dispatch token needs Contents: write on this bucket (required by
+# the POST /dispatches API for fine-grained PATs) but not Pull requests: write —
+# the bucket opens the PR itself with its own GITHUB_TOKEN.
+on:
+  repository_dispatch:
+    types: [update-manifest]
+# Expected client_payload:
+# {
+#   "package": "example",   # package family (required) — matches example*.json
+#   "version": "0.2.0"      # informational; the updater re-checks each source
+# }
+jobs:
+  update:
+    name: Update manifest (dispatch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write  # open a failure issue on this bucket (GITHUB_TOKEN only)
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate payload
+        # The dispatch payload is attacker-controllable. Read it ONLY through env
+        # (never interpolate ${{ ... }} into the script source, which would let a
+        # value like `example"; rm -rf / #` execute), and validate against strict
+        # patterns before any downstream use. Validated values are persisted to
+        # $GITHUB_ENV so later steps consume the sanitized data, not the raw event.
+        env:
+          RAW_PACKAGE: ${{ github.event.client_payload.package }}
+          RAW_VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          # Validate with bash's =~, which matches the WHOLE string. `grep -E`
+          # matches line-by-line, so a multiline value like $'example\nPACKAGE=x'
+          # would pass a per-line check and then smuggle a second `PACKAGE=` line
+          # into $GITHUB_ENV below (the second assignment wins). =~ has no record
+          # separator: an embedded CR/LF isn't in the character class and can't
+          # reach the `$` anchor, so any multiline payload is rejected here.
+          if [ -z "$RAW_PACKAGE" ]; then
+            echo "::error::'package' is required in client_payload"; exit 1
+          fi
+          # Scoop manifest token: lowercase alphanumerics and hyphens only. The
+          # updater treats this as a family prefix (example -> example*.json).
+          if [[ ! "$RAW_PACKAGE" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
+            echo "::error::invalid package token (must match ^[a-z0-9][a-z0-9-]*\$)"; exit 1
+          fi
+          # Version is optional and informational; if present, restrict to safe chars.
+          if [ -n "$RAW_VERSION" ] && [[ ! "$RAW_VERSION" =~ ^[A-Za-z0-9][A-Za-z0-9._+-]*$ ]]; then
+            echo "::error::invalid version (must match ^[A-Za-z0-9][A-Za-z0-9._+-]*\$)"; exit 1
+          fi
+          {
+            echo "PACKAGE=$RAW_PACKAGE"
+            echo "VERSION=$RAW_VERSION"
+          } >> "$GITHUB_ENV"
+          echo "Validated package: $RAW_PACKAGE"
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.14"
+      - name: Update manifests
+        id: update
+        env:
+          # Authenticates the GitHub Releases API call in the updater. PACKAGE is
+          # the validated value from $GITHUB_ENV (set by the step above).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # A random delimiter prevents a summary line that happens to equal a
+          # fixed marker (e.g. "SUMMARY_EOF") from closing the heredoc early.
+          delimiter="SUMMARY_$(openssl rand -hex 16)"
+          {
+            echo "summary<<${delimiter}"
+            python scripts/update_manifests.py "$PACKAGE"
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+          # A dispatch fires in response to a publish, so "nothing changed" is a
+          # signal worth surfacing — the updater may have hit a misconfigured
+          # checkver, an unpublished asset, or a yank (see the logs above).
+          if [ -n "$(git status --porcelain bucket/)" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::no manifest change for '$PACKAGE' — already current, or a checkver/asset/yank issue (see the update step logs)"
+          fi
+      - name: Create Pull Request
+        if: steps.update.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # env.PACKAGE is the validated token, not the raw payload.
+          commit-message: "chore(${{ env.PACKAGE }}): update manifests"
+          title: "chore(${{ env.PACKAGE }}): update manifests"
+          body: |
+            Automated update triggered by a package release.
+
+            ## Updates
+            ${{ steps.update.outputs.summary }}
+
+            ---
+            *Triggered by repository_dispatch from the package repo.*
+          branch: auto-update/${{ env.PACKAGE }}
+          delete-branch: true
+          labels: automated,dependencies
+      - name: Report failure
+        # Fire-and-forget dispatch hides failures from the producer, so surface
+        # them as an issue on this bucket (mirrors the tap's cask/formula
+        # dispatch). No cross-repo PAT needed — GITHUB_TOKEN + issues: write.
+        # PACKAGE/VERSION are read from $GITHUB_ENV (set only if validation passed).
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Manifest bump failed: ${PACKAGE:-<unknown>} ${VERSION}"
+          body="$(printf 'Automated manifest bump triggered by a release dispatch failed.\n\n- Package: %s\n- Version: %s\n- Run: %s\n\nThe weekly update-manifests.yml cron will retry; investigate if it keeps failing.' "${PACKAGE:-<unknown>}" "${VERSION:-<from checkver>}" "$RUN_URL")"
+          # `gh issue create --label` fails if the label does not exist yet, so
+          # retry without labels before giving up — a labelless issue still
+          # notifies. A fresh bucket has neither label until they are provisioned.
+          gh issue create --title "$title" --label "automated,dependencies" --body "$body" \
+            || gh issue create --title "$title" --body "$body" \
+            || echo "::warning::could not open failure issue"

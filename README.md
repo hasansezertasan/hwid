@@ -33,6 +33,19 @@ Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native O
 pip install hwid
 ```
 
+Install with [Homebrew](https://brew.sh) (macOS/Linux):
+
+```sh
+brew install hasansezertasan/tap/hwid
+```
+
+Install with [Scoop](https://scoop.sh) (Windows):
+
+```sh
+scoop bucket add hasansezertasan https://github.com/hasansezertasan/scoop-bucket
+scoop install hasansezertasan/hwid
+```
+
 ## Usage
 
 ### As a Module
@@ -45,8 +58,18 @@ print(hwid.get_hwid())
 
 ### As a CLI Tool
 
+The bare command prints the machine's hardware ID:
+
 ```sh
 uvx hwid
+```
+
+Or, once installed, invoke the console script:
+
+```sh
+hwid            # prints the hardware ID
+hwid version    # prints the package version
+hwid info       # prints version, Python, and platform information
 ```
 
 ## Motivation

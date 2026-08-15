@@ -1,37 +1,19 @@
-"""Tests for the CLI entrypoint in :mod:`hwid.main` and ``python -m hwid``."""
-
-from __future__ import annotations
+"""Tests for the package's runnable entrypoint (``python -m hwid``)."""
 
 import importlib
-import logging
-from typing import TYPE_CHECKING
-
-from hwid.main import app
-
-if TYPE_CHECKING:
-    import pytest
-    from pytest_mock import MockerFixture
-
-VALID_HWID = "D486629F-0026-55CC-988A-C086D16715C1"
 
 
-def test_app_prints_and_logs_hwid(
-    mocker: MockerFixture,
-    capsys: pytest.CaptureFixture[str],
-    caplog: pytest.LogCaptureFixture,
-) -> None:
-    """``app`` writes ``HWID: <value>`` to stdout and logs it at INFO."""
-    mocker.patch("hwid.main.get_hwid", return_value=VALID_HWID)
+def test_main_is_callable() -> None:
+    """The package exposes a callable ``main()`` entrypoint.
 
-    with caplog.at_level(logging.INFO, logger="hwid.logger"):
-        app()
+    Every standalone-executable build (launcher / freezer / compiler — see
+    ADR-007) targets ``hwid.__main__:main``, so this pins the contract that the
+    symbol exists and is callable. Importing the module also executes the
+    top-level ``from hwid.cli import app``, so a broken import fails here. The
+    module is imported (not executed as ``__main__``), so the CLI is never run.
+    """
+    main_module = importlib.import_module("hwid.__main__")
 
-    assert capsys.readouterr().out.strip() == f"HWID: {VALID_HWID}"
-    assert f"HWID: {VALID_HWID}" in caplog.text
-
-
-def test_dunder_main_exposes_app() -> None:
-    """``python -m hwid`` resolves ``app`` via the ``__main__`` module."""
-    module = importlib.import_module("hwid.__main__")
-
-    assert module.app is app
+    assert callable(main_module.main)
+    # The console root wires ``app`` into __main__; assert it resolved.
+    assert hasattr(main_module, "app")

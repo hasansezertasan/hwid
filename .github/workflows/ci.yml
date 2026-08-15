@@ -120,7 +120,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Note skipped coverage upload
         if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' && matrix.os == 'ubuntu-latest' }}
-        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See .github/CONTRIBUTING.md (Repository setup) to enable coverage reporting."
+        run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See docs/maintaining/setup.rst (Repository setup) to enable coverage reporting."
   check:
     if: always()
     needs: [ci, hooks]

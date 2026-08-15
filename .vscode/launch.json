@@ -33,10 +33,25 @@
     },
     
     
+    {
+      "name": "Python: CLI",
+      "type": "debugpy",
+      "request": "launch",
+      "justMyCode": true,
+      "module": "uv",
+      "args": ["run", "hwid", "${input:args}"]
+    },
+    
     
     
     
   ],
   "inputs": [
+    {
+      "id": "args",
+      "type": "promptString",
+      "default": "",
+      "description": "Arguments passed to the hwid CLI"
+    }
   ]
 }

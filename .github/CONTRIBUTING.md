@@ -167,14 +167,28 @@ hwid is a zero-dependency, cross-platform library, so there is no additional
 project-specific setup — no services to run, no environment variables, and no
 credentials to configure.
 
+### Debugging
+
+Debug in VS Code using the launch configurations shipped in `.vscode/launch.json`:
+
+- **Current File**: Debug the currently open Python file.
+- **Tests**: Debug pytest runs.
+- **Attach**: Attach to a running process (e.g., web app with debugpy).
+- **Web App/CLI/TUI/GUI**: Debug specific entry points (if enabled).
+- **With Profiling**: Debug while profiling with scalene (if profiling enabled).
+
+Select a configuration from the Run and Debug panel in VS Code.
+
 ### Improving The Documentation
 
-The documentation lives under [`docs/`](../docs) and is built with
-[Sphinx](https://www.sphinx-doc.org/); prose pages accept both reStructuredText
-and Markdown (via MyST). Build the HTML locally with `mise run docs-build` (or
-`uv run --locked tox run -e docs-build`), or start a live-reloading preview with
-`mise run docs-serve`. `sphinx-lint` runs as part of the `style` gate, so keep
-your changes lint-clean before opening a pull request.
+The documentation is built with [Sphinx](https://www.sphinx-doc.org/). Common
+documentation tasks:
+
+- `mise run docs-build` (or `uv run --locked tox run -e docs-build`) — build the HTML docs.
+- `mise run docs-serve` (or `uv run --locked tox run -e docs-server`) — serve them locally with live reload.
+- `uv run --locked tox run -e docs-linkcheck` — check for broken links (also runs weekly in CI).
+
+<!-- TODO @hasansezertasan: Updating, improving and correcting the documentation -->
 
 ## Styleguides
 
@@ -239,163 +253,20 @@ changelog by hand:
 
 ### Repository setup (one-time)
 
-A few repository settings must be in place for the automated release and
-maintenance workflows to work. Each can be applied from the GitHub UI or with
-the [`gh` CLI](https://cli.github.com/) commands shown below.
-
-**1. Pull request / merge strategy.** Squash merging must be the only merge
-method, with the squash commit message defaulting to the PR title — that is the
-only configuration under which the lint-validated PR title becomes the commit on
-`main` that release-please reads. Also delete head branches on merge to keep the
-branch list clean:
-
-```sh
-gh repo edit hasansezertasan/hwid \
-  --enable-squash-merge \
-  --enable-merge-commit=false \
-  --enable-rebase-merge=false \
-  --enable-auto-merge=false \
-  --delete-branch-on-merge \
-  --squash-merge-commit-message=pr-title
-```
-
-(UI: **Settings → General → Pull Requests** — enable **Allow squash merging**,
-disable merge commits and rebase merging, set the squash **"Default commit
-message"** to **"Pull request title"**, and enable **Automatically delete head
-branches**.)
-
-**2. Required status checks.** Protect `main` so a PR can only merge once its
-checks pass. Mark these check contexts as required (the names are the **check
-runs**, not the workflow files):
-
-- `Validate PR title` — the Conventional Commits PR-title lint
-  (`check-pr-title.yml`), which release-please depends on.
-- `Validate branch name` — the Conventional Branch lint
-  (`check-branch-name.yml`), which fails a PR whose head branch name does not
-  follow the `<type>/<description>` format.
-- `Verify linked issue` — the linked-issue check (`check-linked-issues.yml`),
-  which fails a PR with no linked issue.
-- `Task Completed Checker` — the PR task-list gate (`task-completed-check.yml`),
-  which fails while any unticked checkbox remains in the PR description.
-
-```sh
-gh api -X PUT repos/hasansezertasan/hwid/branches/main/protection \
-  --input - <<'JSON'
-{
-  "required_status_checks": {
-    "strict": true,
-    "contexts": ["Validate PR title", "Validate branch name", "Verify linked issue", "Task Completed Checker"]
-  },
-  "enforce_admins": null,
-  "required_pull_request_reviews": null,
-  "restrictions": null
-}
-JSON
-```
-
-(UI: **Settings → Branches → Add branch ruleset** (or **Add rule** for `main`) —
-enable **Require status checks to pass before merging**, then search for and add
-the four contexts above. The contexts only appear in the picker after each check
-has run at least once.)
-
-**3. Let Actions open the release PR.** release-please runs as a GitHub Action
-and opens/maintains the release pull request, so the repo must allow Actions to
-create and approve pull requests:
-
-```sh
-gh api -X PUT repos/hasansezertasan/hwid/actions/permissions/workflow \
-  -F default_workflow_permissions=read \
-  -F can_approve_pull_request_reviews=true
-```
-
-(UI: **Settings → Actions → General → Workflow permissions** — enable **Allow
-GitHub Actions to create and approve pull requests**.)
-
-**4. Enable release immutability.** Once published, a release's tag and assets
-can no longer be moved or overwritten, which protects the integrity of what gets
-distributed. Enable it under **Settings → General → ... → Enable release
-immutability** (currently a UI-only toggle).
-
-**5. PyPI trusted publishing.** The release workflow publishes to PyPI via
-[trusted publishing](https://docs.pypi.org/trusted-publishers/) (OIDC — no API
-tokens or secrets to manage). Register the publisher once at
-[PyPI → Publishing](https://pypi.org/manage/account/publishing/) under
-**"Add a new pending publisher"**:
-
-- **PyPI Project Name:** `hwid`
-- **Owner:** `hasansezertasan`
-- **Repository name:** `hwid`
-- **Workflow name:** `release.yml` — the publish step lives inline in this
-  workflow, so this is the filename PyPI's OIDC check matches.
-- **Environment name:** `publish`
-
-**6. Codecov coverage reporting.** CI uploads coverage to
-[Codecov](https://about.codecov.io/) after the test suite runs. **On a public
-repository no setup is required** — the upload is tokenless, so owner pushes and
-fork PRs both report coverage out of the box. A `CODECOV_TOKEN` is only needed
-for a **private** repository (or to avoid tokenless rate-limits); set it once as
-a repository secret:
-
-```sh
-gh secret set CODECOV_TOKEN --repo hasansezertasan/hwid
-```
-
-The upload is best-effort either way: on a private repo with no token CI records
-a `::notice::` and skips the upload — the build still passes — rather than
-failing every run.
-
-**7. Documentation site (GitHub Pages).** On release, the `deploy-docs` job
-builds the Sphinx docs and pushes the HTML to a `gh-pages` branch with
-`JamesIves/github-pages-deploy-action`. GitHub does not serve that branch until
-Pages is pointed at it.
-The branch is created by the first release that runs `deploy-docs`, so enable
-Pages once after that:
-
-```sh
-gh api -X POST repos/hasansezertasan/hwid/pages \
-  -f 'source[branch]=gh-pages' -f 'source[path]=/'
-```
-
-(UI: **Settings → Pages → Build and deployment** — set **Source** to **Deploy
-from a branch**, then pick the `gh-pages` branch and the `/ (root)` folder. Use
-the `gh-pages.yml` workflow to redeploy manually.)
-
-Once Pages is enabled, `docs-preview.yml` also publishes a live documentation
-preview for each pull request under `pr-preview/pr-<N>/` on the same `gh-pages`
-branch and comments the URL on the PR (removed automatically when the PR closes).
-Previews are built only for pull requests opened from branches on this
-repository — a fork PR receives a read-only token and is skipped — and require no
-extra setup beyond Pages.
-
-**8. Automated dependency updates (Renovate).** Dependency bumps — including the
-`prek.toml` hook `rev`s and pinned GitHub Action digests — are driven by
-`.github/renovate.json`, which is read by the hosted Renovate GitHub App. The
-config is inert until the app is installed: install it once from
-[github.com/apps/renovate](https://github.com/apps/renovate) and grant it access
-to this repository. Renovate then opens an onboarding PR; merge it to start
-receiving update PRs.
-
-**9. Template updates (Renovate copier manager).** This project was scaffolded
-from a [Copier](https://copier.readthedocs.io/) template, and `.copier-answers.yml`
-records the template source (`_src_path`) and the revision it is pinned to
-(`_commit`). Renovate's built-in **copier manager** keeps it current: once the
-Renovate App (step 8) is installed, Renovate watches the template repository for
-new **version tags**, and when one lands it runs `copier update` and opens a PR
-with the re-rendered diff — no extra workflow, secret, or token to configure
-(Renovate's App credential can update `.github/workflows/*`, which a plain
-`GITHUB_TOKEN` cannot). This relies on the template publishing tags; if it only
-ever pushes to its default branch without tagging, no update PR is produced.
-
-Review these PRs carefully. `copier update` does a 3-way merge, so where your
-local edits diverged from the template the diff can contain conflict markers
-(`<<<<<<<`) or `.rej` files — and Renovate does **not** currently fail its check
-on them ([renovate#31600](https://github.com/renovatebot/renovate/issues/31600)),
-so a copier PR can look mergeable while carrying conflicts. Reconcile before
-merging: keep your project identity, adopt the template's tooling/config changes.
+The one-time repository setup — squash-merge policy, branch protection, PyPI
+trusted publishing, coverage and docs-site enablement, dependency and template
+updates, and the optional third-party integrations — is **author/maintainer**
+work, not something a contributor does. It lives in its own home:
+[`docs/maintaining/setup.rst`](../docs/maintaining/setup.rst) (published under
+**Maintainer guide** on the documentation site). Each step there is tagged
+`[AGENT]` (a scriptable `gh` command) or `[HUMAN]` (browser-only), so it doubles
+as a runnable setup checklist.
 
 ## Join The Project Team
 
-_Work in progress._
+Interested in helping maintain hwid? Open a
+[discussion](https://github.com/hasansezertasan/hwid/discussions)
+or reach out after a few merged contributions.
 
 <!-- omit in toc -->
 ## Attribution
