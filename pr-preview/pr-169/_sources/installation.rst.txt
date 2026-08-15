@@ -1,9 +1,10 @@
 Installation
 ============
 
-``hwid`` is an end-user application, not a library, so install
-it as a standalone tool rather than as a project dependency. Its primary entry
-point is the ``hwid`` command.
+``hwid`` is both an importable library and a command-line tool. To use it as a
+dependency, add it to your project (``uv add hwid`` or ``pip install hwid``) and
+call :func:`hwid.get_hwid` from Python. To use the ``hwid`` command directly,
+install it as a standalone tool as shown below.
 
 Stable release
 --------------

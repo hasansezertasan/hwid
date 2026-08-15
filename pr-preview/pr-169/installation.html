@@ -121,9 +121,10 @@ data-aria-dark="Switch to auto color mode">
   <article class="yue" role="main">
           <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">hwid</span></code> is an end-user application, not a library, so install
-it as a standalone tool rather than as a project dependency. Its primary entry
-point is the <code class="docutils literal notranslate"><span class="pre">hwid</span></code> command.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hwid</span></code> is both an importable library and a command-line tool. To use it as a
+dependency, add it to your project (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">add</span> <span class="pre">hwid</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">hwid</span></code>) and
+call <code class="xref py py-func docutils literal notranslate"><span class="pre">hwid.get_hwid()</span></code> from Python. To use the <code class="docutils literal notranslate"><span class="pre">hwid</span></code> command directly,
+install it as a standalone tool as shown below.</p>
 <section id="stable-release">
 <h2>Stable release<a class="headerlink" href="#stable-release" title="Link to this heading">#</a></h2>
 <p>Install <code class="docutils literal notranslate"><span class="pre">hwid</span></code> into an isolated environment with your
