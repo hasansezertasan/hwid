@@ -12,8 +12,8 @@ To use ``hwid`` in a project:
 
    print(hwid.get_hwid())
 
-As a CLI tool
--------------
+As a command-line tool
+----------------------
 
 Run it without installing, straight from PyPI:
 
@@ -21,8 +21,17 @@ Run it without installing, straight from PyPI:
 
    uvx hwid
 
-Or, once installed, invoke the console script:
+Or, once installed, invoke the console script. The bare command prints the
+machine's hardware ID:
 
 .. code-block:: sh
 
    hwid
+
+The ``version`` and ``info`` subcommands report the package version and
+environment:
+
+.. code-block:: sh
+
+   hwid version
+   hwid info

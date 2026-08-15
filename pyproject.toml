@@ -70,14 +70,23 @@ classifiers = [
   "Topic :: Software Development",
   "Typing :: Typed",
 
+  "Topic :: Utilities",
+
 
 ]
 requires-python = ">=3.10"
+# The enabled component's runtime deps live here, not in an optional extra: a
+# selected component is chosen at generation time and ``__main__`` imports it
+# unconditionally (see the CLI > GUI > TUI > web > MCP > worker precedence
+# there), so ``pip install hwid`` must pull them or the binary
+# fails at launch. Same for pydantic-settings, which ``core.config`` imports
+# unconditionally when enabled.
 dependencies = []
 
 [project.optional-dependencies]
-
-
+# Runnable-component and settings deps are core (see ``dependencies`` above), so
+# no per-component extras remain. ``all`` is kept (empty) because the ``dev``
+# dependency-group installs ``hwid[all]``.
 all = []
 
 
@@ -89,9 +98,8 @@ issues = "https://github.com/hasansezertasan/hwid/issues"
 releasenotes = "https://github.com/hasansezertasan/hwid/releases"
 source = "https://github.com/hasansezertasan/hwid.git"
 
-
 [project.scripts]
-hwid = "hwid.__main__:app"
+hwid = "hwid.__main__:main"
 
 
 [dependency-groups]
@@ -180,7 +188,12 @@ trusted-publishing = "always"
 
 [tool.hatch.version]
 source = "vcs"
-fallback-version = "0.1.0"
+# Last-resort sentinel: only used when a build sees neither a .git directory nor
+# an expanded .git_archival.txt (e.g. an archive of a commit with no reachable
+# tag). "0.0.0" reads clearly as "version could not be determined" rather than
+# masquerading as a real early release. See .git_archival.txt + .gitattributes
+# `export-subst` for the archive path that recovers the real tag-derived version.
+fallback-version = "0.0.0"
 
 
 [tool.hatch.build]
@@ -289,17 +302,14 @@ name = "Layered architecture with independent components"
 type = "layers"
 # Layers are listed high -> low: a layer may import lower layers but never a
 # higher one. Modules joined by ` | ` on one line are independent SIBLINGS that
-# may not import each other. `main` is the orchestrator/CLI layer; it sits above
-# `core` (the HWID resolution logic), which sits above `impl` (the per-platform
-# backends darwin/linux/win32). `exceptions` and `logger` are independent leaf
-# utilities imported from above but never importing each other. `__main__` is
-# left outside the contract as an unconstrained entry point.
-layers = [
-  "hwid.main",
-  "hwid.core",
-  "hwid.impl",
-  "hwid.exceptions | hwid.logger",
-]
+# may not import each other. `cli` is the orchestrator layer — the `hwid` CLI
+# root, whose bare command prints the HWID and whose `version`/`info` subcommands
+# lazily import `core` — so it sits above `core` (the HWID resolution logic),
+# which sits above `impl` (the per-platform backends darwin/linux/win32).
+# `exceptions` and `logger` are independent leaf utilities imported from above but
+# never importing each other. `__main__` is left outside the contract as an
+# unconstrained entry point.
+layers = ["hwid.cli", "hwid.core", "hwid.impl", "hwid.exceptions | hwid.logger"]
 
 
 [tool.ruff]
@@ -326,6 +336,10 @@ skip-magic-trailing-comma = true
 
 [tool.ruff.lint]
 fixable = ["ALL"]
+# Two opinionated ruff 0.16 preview rules are disabled: RUF105 would rewrite the
+# portable `# noqa` comments into ruff's own `# ruff: ignore` syntax (its docs note
+# `# noqa` is needed for cross-tool compatibility), and RUF201 would rewrite every
+# rule *code* in this config's selectors into long rule *names*. Both are stylistic.
 ignore = ["COM812", "CPY", "FIX", "TD"]
 logger-objects = ["logging_setup.logger"]
 preview = true
@@ -364,8 +378,6 @@ convention = "pep257"
 # hwid's examples are standalone scripts in dash-named directories (not importable
 # packages), so the package-name and implicit-namespace rules do not apply.
 "examples/**/*.py" = ["N999", "INP001"]
-# The CLI entrypoint deliberately writes the HWID to stdout for visibility.
-"src/hwid/main.py" = ["T201"]
 # The platform backends shell out to native OS tools (powershell, system_profiler,
 # dmidecode) to read the hardware UUID -- subprocess with a shell command is the
 # intended mechanism here, not an oversight.
@@ -417,12 +429,57 @@ error-on-warning = true
 python-version = "3.10"
 project-includes = ["src"]
 
+[tool.pylint.main]
+# pylint runs as an always-on gate that deliberately overlaps ruff's PL* rules.
+# Its canonical invocation is `pylint src`, so it never descends into tests; this
+# ignore-paths is a defensive scope guard for broader invocations (`pylint .`,
+# filename-passing hooks). Tests are linted by ruff, not pylint.
+ignore-paths = ["^tests/.*$"]
+# `.pyi` stubs (the c-extension type stub) are signature-only: their bodies are
+# `...` and every parameter is unused by construction, so pylint's unused-argument
+# check is a guaranteed false positive there. Stubs are type-checked by the
+# type-checker gate, not pylint.
+ignore-patterns = ['.*\.pyi$']
+
+[tool.pylint."messages control"]
+# Only formatter-owned checks, the docstring family, and too-few-public-methods
+# are disabled so pylint is usable out of the box; everything else stays on.
+disable = [
+  "line-too-long",              # C0301 — ruff-format owns line length
+  "missing-module-docstring",   # C0114
+  "missing-class-docstring",    # C0115
+  "missing-function-docstring", # C0116
+  "too-few-public-methods",     # R0903 — trips dataclasses / config / Protocol classes
+  "import-outside-toplevel",    # C0415 — components (cli->tui/gui/web, and each
+  # component's own optional-dependency probe) are
+  # deliberately lazy-imported so import-linter's
+  # layering contract holds and optional extras
+  # aren't required at import time.
+  "try-except-raise", # W0706 — the generated TUI entry point
+  # explicitly re-raises KeyboardInterrupt/SystemExit
+  # ahead of a broad `except Exception` to make the
+  # "let these propagate" intent obvious to readers,
+  # even though BaseException subclasses wouldn't be
+  # caught by the Exception clause anyway.
+  "duplicate-code", # R0801 — the component skeletons (gui/tui/mcp/
+  # worker) are deliberately parallel: each fetches
+  # package metadata and formats the same info block
+  # the same way. That structural symmetry is a
+  # feature of the scaffold, not copy-paste debt, and
+  # R0801 cannot be suppressed inline at the call site.
+]
+
+[tool.pylint.design]
+max-args = 10
+max-positional-arguments = 10
+max-branches = 20
+
 [tool.tox]
 # The ``worker`` env is intentionally omitted: it starts a broker-bound process
 # and would hang/fail under ``tox run`` in CI (where no broker is available).
 # The worker is covered by its pytest TestBroker suite; run it on demand with
 # ``tox -e worker`` when a broker is up (e.g. inside the devcontainer).
-env_list = ["style", "3.14", "3.13", "3.12", "3.11", "3.10"]
+env_list = ["style", "cli", "3.14", "3.13", "3.12", "3.11", "3.10"]
 requires = ["tox>=4"]
 
 
@@ -491,6 +548,10 @@ commands = [
 # resolve pytest and other test-only imports.
 dependency_groups = ["style", "test"]
 description = "Run Checkers, Linters and Formatters"
+# Optional components (web/gui/tui/mcp/worker) are only importable when their
+# extra is installed; without this, pylint/mypy/etc. see import-error for any
+# optional component present in this render.
+extras = ["all"]
 runner = "uv-venv-runner"
 
 
@@ -532,4 +593,16 @@ commands = [
 extras = ["all"]
 dependency_groups = ["docs"]
 description = "Check documentation for broken links"
+runner = "uv-venv-runner"
+
+[tool.tox.env.cli]
+commands = [
+  [
+    "hwid",
+    { replace = "posargs", default = [
+      "version",
+    ], extend = true },
+  ],
+]
+description = "Run the CLI application."
 runner = "uv-venv-runner"

@@ -31,4 +31,4 @@ jobs:
       - name: Refresh cobo sources
         run: mise exec -- cobo update
       - name: Check for gitignore drift
-        run: mise exec -- cobo check
+        run: mise exec -- cobo check --strict

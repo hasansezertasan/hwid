@@ -1,24 +1,43 @@
 Installation
 ============
 
-Possible extras:
-
-- ``all``: Installs all extras if available.
+``hwid`` is both an importable library and a command-line tool. To use it as a
+dependency, add it to your project (``uv add hwid`` or ``pip install hwid``) and
+call :func:`hwid.get_hwid` from Python. To use the ``hwid`` command directly,
+install it as a standalone tool as shown below.
 
 Stable release
 --------------
 
-To install ``hwid``, run this command in your terminal:
+Install ``hwid`` into an isolated environment with your
+preferred tool installer:
 
 .. code-block:: sh
 
-   uv add hwid
-
-Or if you prefer to use ``pip``:
+   uv tool install hwid
 
 .. code-block:: sh
 
-   pip install hwid
+   pipx install hwid
+
+Or run it without installing:
+
+.. code-block:: sh
+
+   uvx hwid
+
+Homebrew (macOS/Linux):
+
+.. code-block:: sh
+
+    brew install hasansezertasan/tap/hwid
+
+Scoop (Windows):
+
+.. code-block:: sh
+
+    scoop bucket add hasansezertasan https://github.com/hasansezertasan/scoop-bucket
+    scoop install hasansezertasan/hwid
 
 From source
 -----------
@@ -45,4 +64,4 @@ Once you have a copy of the source, you can install it with:
 .. code-block:: sh
 
    cd hwid
-   uv pip install .
+   uv tool install .

@@ -1,0 +1,170 @@
+---
+name: Update Formula (Dispatch)
+# Triggered by the source repo's release workflow (bump-homebrew job) after a
+# PyPI publish.
+#
+# All the work happens HERE, not in the producer: the producer only signals.
+# That keeps formula-bump logic in one place as more producers come online. A
+# producer's dispatch token needs Contents: write on this tap (required by
+# the POST /dispatches API for fine-grained PATs) but not Pull requests:
+# write — this tap opens its own PR with its own GITHUB_TOKEN.
+on:
+  repository_dispatch:
+    types: [update-formula]
+# Expected payload:
+# {
+#   "formula": "example",         # Formula name (required)
+#   "version": "0.4.0"            # New version (optional, will check PyPI if not provided)
+# }
+jobs:
+  update:
+    timeout-minutes: 20
+    name: Update formula (dispatch)
+    # macOS runner: brew update-python-resources re-resolves the tree on the
+    # host platform, so a macOS-only formula (depends_on :macos) must be
+    # resolved on macOS or its macOS backends get swapped for Linux ones.
+    runs-on: macos-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write  # open a failure issue on this tap (no PAT, GITHUB_TOKEN only)
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate payload
+        # The dispatch payload is attacker-controllable. Read it ONLY through env
+        # (never interpolate ${{ ... }} into the script source, which would let a
+        # value like `example"; rm -rf / #` execute), and validate against strict
+        # patterns before any downstream use. Validated values are persisted to
+        # $GITHUB_ENV so later steps consume the sanitized data, not the raw event.
+        # Validate with bash's =~, which matches the WHOLE string. `grep -E`
+        # matches line-by-line, so a multiline value like $'example\nFORMULA=x'
+        # would pass a per-line check and then smuggle a second `FORMULA=` line
+        # into $GITHUB_ENV below (the second assignment wins). =~ has no record
+        # separator: an embedded CR/LF isn't in the character class and can't
+        # reach the `$` anchor, so any multiline payload is rejected here.
+        shell: bash
+        env:
+          RAW_FORMULA: ${{ github.event.client_payload.formula }}
+          RAW_VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          if [ -z "$RAW_FORMULA" ]; then
+            echo "::error::'formula' is required in client_payload"; exit 1
+          fi
+          # Homebrew formula token: lowercase alphanumerics plus . _ + - and @
+          # (the last for versioned formulae like python@3.14).
+          if [[ ! "$RAW_FORMULA" =~ ^[a-z0-9][a-z0-9._+@-]*$ ]]; then
+            echo "::error::invalid formula token (must match ^[a-z0-9][a-z0-9._+@-]*\$)"; exit 1
+          fi
+          # Version is optional; if present, restrict to safe version characters.
+          if [ -n "$RAW_VERSION" ] && [[ ! "$RAW_VERSION" =~ ^[A-Za-z0-9][A-Za-z0-9._+-]*$ ]]; then
+            echo "::error::invalid version (must match ^[A-Za-z0-9][A-Za-z0-9._+-]*\$)"; exit 1
+          fi
+          if [ ! -f "Formula/${RAW_FORMULA}.rb" ]; then
+            echo "::error::Formula '${RAW_FORMULA}' not found"; exit 1
+          fi
+          {
+            echo "FORMULA=$RAW_FORMULA"
+            echo "VERSION=$RAW_VERSION"
+          } >> "$GITHUB_ENV"
+          echo "Validated formula: $RAW_FORMULA"
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@d3565f64e59130f1fd713440276f7d3e11079b88  # main
+      - name: Check for update
+        id: check
+        # OWNER/REPO come through env (never interpolated into the script source),
+        # matching the payload-validation discipline above.
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.repository }}
+        run: |
+          tap_name="${OWNER}/$(basename "$REPO")"
+          ref="${tap_name}/${FORMULA}"
+
+          if [ -n "$VERSION" ]; then
+            # Version provided in payload (already validated), use it directly.
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "has_update=true" >> "$GITHUB_OUTPUT"
+            echo "Using provided version: $VERSION"
+          else
+            # Use livecheck to find the latest version
+            livecheck_output=$(brew livecheck --json "$ref" 2>/dev/null || echo "[]")
+            is_outdated=$(echo "$livecheck_output" | jq -r '.[0].version.outdated // false')
+
+            if [ "$is_outdated" = "true" ]; then
+              latest=$(echo "$livecheck_output" | jq -r '.[0].version.latest')
+              echo "version=$latest" >> "$GITHUB_OUTPUT"
+              echo "has_update=true" >> "$GITHUB_OUTPUT"
+              echo "Found update: $latest"
+            else
+              echo "has_update=false" >> "$GITHUB_OUTPUT"
+              echo "Formula is already up to date"
+            fi
+          fi
+      - name: Update formula
+        if: steps.check.outputs.has_update == 'true'
+        env:
+          RESOLVED_VERSION: ${{ steps.check.outputs.version }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.repository }}
+        run: |
+          tap_name="${OWNER}/$(basename "$REPO")"
+          ref="${tap_name}/${FORMULA}"
+
+          echo "Updating $FORMULA to $RESOLVED_VERSION..."
+
+          # Use brew bump-formula-pr to update the formula (without creating PR)
+          brew bump-formula-pr \
+            --no-audit \
+            --no-browse \
+            --write-only \
+            --version="$RESOLVED_VERSION" \
+            "$ref"
+
+          # --ignore-non-pypi-packages: skip resources with no PyPI release
+          # instead of failing; a real resource-resolution error still stops the job.
+          brew update-python-resources --ignore-non-pypi-packages "$ref"
+
+          # The PR is opened with GITHUB_TOKEN and so won't trigger tests.yml.
+          # Audit HERE instead so the auto-PR is verified inside the run that
+          # creates it (mirrors update-cask-dispatch.yml). A failure trips the
+          # `if: failure()` issue step below, so no unverified PR is opened.
+          brew audit --strict --online "$ref"
+      - name: Create Pull Request
+        if: steps.check.outputs.has_update == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(${{ env.FORMULA }}): update to ${{ steps.check.outputs.version }}"
+          title: "chore(${{ env.FORMULA }}): update to ${{ steps.check.outputs.version }}"
+          body: |
+            Automated update triggered by package release.
+
+            - **Formula**: ${{ env.FORMULA }}
+            - **Version**: ${{ steps.check.outputs.version }}
+
+            ---
+            *Triggered by repository_dispatch from package repo.*
+          branch: auto-update/${{ env.FORMULA }}
+          delete-branch: true
+      - name: Report failure
+        # Fire-and-forget dispatch hides failures from the producer, so surface
+        # them as an issue on this tap (mirrors update-cask-dispatch.yml). The
+        # owner watches the tap, so this notifies without any cross-repo PAT
+        # (GITHUB_TOKEN + issues: write). FORMULA/VERSION are read from
+        # $GITHUB_ENV (set only if validation passed).
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Formula bump failed: ${FORMULA:-<unknown>} ${VERSION}"
+          body="$(printf 'Automated formula bump triggered by a release dispatch failed.\n\n- Formula: %s\n- Version: %s\n- Run: %s\n\nInvestigate if it keeps failing.' "${FORMULA:-<unknown>}" "${VERSION:-<from livecheck>}" "$RUN_URL")"
+          # `gh issue create --label` fails if the label does not exist yet, so
+          # retry without labels before giving up — a labelless issue still
+          # notifies. A fresh tap has neither label until they are provisioned.
+          gh issue create --title "$title" --label "automated,formula-bump-failure" --body "$body" \
+            || gh issue create --title "$title" --body "$body" \
+            || echo "::warning::could not open failure issue"
