@@ -304,12 +304,17 @@ type = "layers"
 # higher one. Modules joined by ` | ` on one line are independent SIBLINGS that
 # may not import each other. `cli` is the orchestrator layer — the `hwid` CLI
 # root, whose bare command prints the HWID and whose `version`/`info` subcommands
-# lazily import `core` — so it sits above `core` (the HWID resolution logic),
-# which sits above `impl` (the per-platform backends darwin/linux/win32).
-# `exceptions` and `logger` are independent leaf utilities imported from above but
-# never importing each other. `__main__` is left outside the contract as an
-# unconstrained entry point.
-layers = ["hwid.cli", "hwid.core", "hwid.impl", "hwid.exceptions | hwid.logger"]
+# lazily import `core` — so it sits above `core.resolution` (the HWID resolution
+# logic), which sits above `core.impl` (the per-platform backends
+# darwin/linux/win32). `core.exceptions` and `core.logging_setup` are independent
+# leaf utilities imported from above but never importing each other. `__main__`
+# is left outside the contract as an unconstrained entry point.
+layers = [
+  "hwid.cli",
+  "hwid.core.resolution",
+  "hwid.core.impl",
+  "hwid.core.exceptions | hwid.core.logging_setup",
+]
 
 
 [tool.ruff]
@@ -341,7 +346,7 @@ fixable = ["ALL"]
 # `# noqa` is needed for cross-tool compatibility), and RUF201 would rewrite every
 # rule *code* in this config's selectors into long rule *names*. Both are stylistic.
 ignore = ["COM812", "CPY", "FIX", "TD"]
-logger-objects = ["logging_setup.logger"]
+logger-objects = ["hwid.core.logging_setup.logger"]
 preview = true
 select = ["ALL"]
 
@@ -381,7 +386,7 @@ convention = "pep257"
 # The platform backends shell out to native OS tools (powershell, system_profiler,
 # dmidecode) to read the hardware UUID -- subprocess with a shell command is the
 # intended mechanism here, not an oversight.
-"src/hwid/impl/*.py" = ["S404", "S602"]
+"src/hwid/core/impl/*.py" = ["S404", "S602"]
 # The Sphinx config is a standalone module, not part of an importable package.
 "docs/conf.py" = ["INP001"]
 

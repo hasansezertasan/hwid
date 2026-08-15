@@ -1,10 +1,10 @@
-"""Tests for :mod:`hwid.impl.darwin`. ``subprocess`` is mocked to run on any host."""
+"""Tests for :mod:`hwid.core.impl.darwin`; ``subprocess`` is mocked on any host."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from hwid.impl import darwin
+from hwid.core.impl import darwin
 
 if TYPE_CHECKING:
     from pytest_mock import MockerFixture
@@ -16,7 +16,7 @@ def test_darwin_parses_system_profiler_line(mocker: MockerFixture) -> None:
     """The darwin backend extracts the value after the ``UUID:`` label."""
     line = f"          Hardware UUID: {VALID_HWID}\n"
     check_output = mocker.patch(
-        "hwid.impl.darwin.subprocess.check_output", return_value=line
+        "hwid.core.impl.darwin.subprocess.check_output", return_value=line
     )
 
     assert darwin.extract_hwid() == VALID_HWID

@@ -14,16 +14,17 @@ Public API (``hwid.core``)
 The package exposes :func:`hwid.get_hwid` at the top level.
 
 .. automodule:: hwid.core
+   :imported-members:
 
-Exceptions (``hwid.exceptions``)
---------------------------------
+Exceptions (``hwid.core.exceptions``)
+-------------------------------------
 
-.. automodule:: hwid.exceptions
+.. automodule:: hwid.core.exceptions
 
-Logging (``hwid.logger``)
--------------------------
+Logging (``hwid.core.logging_setup``)
+-------------------------------------
 
-.. automodule:: hwid.logger
+.. automodule:: hwid.core.logging_setup
 
 CLI (``hwid.cli``)
 ------------------
