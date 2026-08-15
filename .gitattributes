@@ -31,6 +31,12 @@ uv.lock linguist-generated=true
 cobo.lock linguist-generated=true
 docs/** linguist-documentation
 
+# Expand the archival placeholders in .git_archival.txt when creating a `git
+# archive` (e.g. GitHub source tarballs) so hatch-vcs/setuptools-scm can recover
+# the tag-derived version without a .git directory. Must NOT be export-ignored --
+# the file has to ship inside the archive.
+.git_archival.txt export-subst
+
 # Keep `git archive` tarballs lean (development-only paths are excluded).
 .github/ export-ignore
 .devcontainer/ export-ignore

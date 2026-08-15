@@ -1,6 +1,6 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
-_commit: v1.0.0
+_commit: v1.2.1
 _src_path: https://github.com/hasansezertasan/copier-pyproject.git
 author_email: hasansezertasan@gmail.com
 author_family_names: Taşan
@@ -13,6 +13,7 @@ include_c_extensions: false
 include_cli: false
 include_compiler: false
 include_dbeaver: false
+include_examples: true
 include_freezer: false
 include_gui: false
 include_launcher: false
@@ -22,6 +23,8 @@ include_postgres: false
 include_profiling: false
 include_pydantic_settings: false
 include_redis: false
+include_repo_ruleset: false
+include_repo_settings: false
 include_sonarcloud: false
 include_sourcery: false
 include_tui: false
@@ -30,5 +33,6 @@ include_web: false
 include_worker: false
 package_keywords: hwid, hardware, id, unique, identifier, machine, fingerprint, fingerprinting,
     licensing, license, identification
+preset: library
 short_description: Extract the `hwid` on Windows, Linux, Mac. Cross-platform using
     Python, native OS detection.

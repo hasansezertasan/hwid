@@ -19,6 +19,7 @@ Extract the `hwid` on Windows, Linux, Mac. Cross-platform using Python, native O
 
 - [Table of Contents](#table-of-contents)
 - [Installation](#installation)
+<<<<<<< before updating
 - [Usage](#usage)
 - [Motivation](#motivation)
 - [Features](#features)
@@ -41,6 +42,36 @@ pip install hwid
 import hwid
 
 print(hwid.get_hwid())
+=======
+- [Support](#support-heart)
+- [Motivation](#motivation)
+- [About](#about)
+- [Author](#author-person_with_crown)
+- [Analysis](#analysis)
+- [Contributing](#contributing-heart)
+- [Development](#development-toolbox)
+- [Releasing](#releasing)
+- [Credits](#credits)
+- [License](#license-scroll)
+- [Changelog](#changelog-memo)
+
+## Screenshots
+
+<!-- TODO @hasansezertasan: Add screenshots or a demo GIF, or remove this section. -->
+
+## Installation
+
+`hwid` is a library. Add it to your project as a dependency:
+
+```console
+uv add hwid
+```
+
+Or with `pip`:
+
+```console
+pip install hwid
+>>>>>>> after updating
 ```
 
 ### As a CLI Tool
@@ -55,6 +86,7 @@ TL;DR I don't want to copy and paste it again...
 
 I have created a bunch of desktop applications for Windows. I needed a way to license my applications for my users to use it without distributing to other people. I decided to use the hwid of the computer to license my applications. I needed a way to get the hwid of the computer, so I created this module. It has only one purpose: getting the hwid of the computer. It is cross-platform and does not require any external dependencies.
 
+<<<<<<< before updating
 ## Features
 
 Library:
@@ -75,6 +107,13 @@ Engineering:
 - **Modern Python**: uv for dependency management, hatch for building
 
 ## Warning
+=======
+## About
+
+<!-- TODO @hasansezertasan: Add background/context about the project, or remove this section. -->
+
+## Author :person_with_crown:
+>>>>>>> after updating
 
 I do not recommend using this module for licensing purposes all alone. You can use it as a part of your licensing system.
 
@@ -82,6 +121,7 @@ If you are using server-client architecture, you can send the encrypted hwid to 
 
 If you are using a local licensing system, you can encrypt the hwid and store it in a file. Then you can check if the encrypted hwid is valid. You can use [pyarmor] to obfuscate your code. It will make it harder to reverse engineer your code. Here is a [NeuralNine Tutorial][neuralnine-tutorial] using [Oxyry][oxyry]
 
+<<<<<<< before updating
 <!-- xc-heading -->
 ## Development
 
@@ -126,6 +166,19 @@ uv run --locked tox run -e docs-build
 ```
 
 ## Author
+=======
+## Development :toolbox:
+
+See the [Contributing Guidelines](./.github/CONTRIBUTING.md#your-first-code-contribution)
+for local setup, the common development tasks (exposed via [mise](https://mise.jdx.dev)),
+building and previewing the documentation, and the VS Code debugging configurations.
+
+## Releasing
+
+Versioning and releases are automated with [release-please](https://github.com/googleapis/release-please), driven by [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) PR titles squash-merged into `main`. release-please maintains a release PR that bumps the version and `CHANGELOG.md`; merging it tags the release and publishes to PyPI. See the [Contributing Guidelines](./.github/CONTRIBUTING.md#releasing) for the commit conventions, and the one-time [Repository setup](./docs/maintaining/setup.rst) guide (squash-merge settings, Actions permissions, release immutability, and PyPI trusted publishing) for maintainers.
+
+## Credits
+>>>>>>> after updating
 
 - [hasansezertasan](https://www.github.com/hasansezertasan)
 

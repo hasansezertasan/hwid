@@ -73,11 +73,18 @@ classifiers = [
 
 ]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+]
 
 [project.optional-dependencies]
+<<<<<<< before updating
 
 
+=======
+# Runnable-component and settings deps are core (see ``dependencies`` above), so
+# no per-component extras remain. ``all`` is kept (empty) because the ``dev``
+# dependency-group installs ``hwid[all]``.
+>>>>>>> after updating
 all = []
 
 
@@ -93,17 +100,21 @@ source = "https://github.com/hasansezertasan/hwid.git"
 [project.scripts]
 hwid = "hwid.__main__:app"
 
-
 [dependency-groups]
 dev = [
   "hwid[all]",
+<<<<<<< before updating
   "tox==4.60.0",
+=======
+  "tox==4.58.0",
+>>>>>>> after updating
   "tox-uv==1.36.0",
   "debugpy==1.8.21",
   { include-group = "style" },
   { include-group = "test" },
 ]
 style = [
+<<<<<<< before updating
   "actionlint-py==1.7.12.24",
   "basedpyright==1.39.10",
   "editorconfig-checker==3.11.1",
@@ -134,6 +145,27 @@ test = [
   "coverage[toml]==7.15.4",
   "pytest-mock==3.15.1",
   "pytest-rerunfailures==16.5",
+=======
+  "basedpyright==1.39.9",
+  "editorconfig-checker==3.8.0",
+  "import-linter==2.13",
+  "mypy==2.3.0",
+  "pylint==4.0.6",
+  "pyrefly==1.2.0",
+  "ruff==0.16.1",
+  "slotscheck==0.20.1",
+  "sphinx-lint==1.0.2",
+  "taplo==0.9.3",
+  "ty==0.0.66",
+  "typos==1.49.0",
+  "zuban==0.9.1",
+]
+test = [
+  "coverage-enable-subprocess==1.0",
+  "coverage[toml]==7.15.3",
+  "pytest-mock==3.15.1",
+  "pytest-rerunfailures==16.4",
+>>>>>>> after updating
   "pytest-xdist[psutil]==3.8.0",
   "pytest==9.1.1",
   "pytest-sugar",
@@ -142,6 +174,7 @@ test = [
   "inline-snapshot",
 ]
 docs = [
+<<<<<<< before updating
   "sphinx==8.1.3",
   "shibuya==2026.7.12",
   "sphinx-autobuild==2024.10.3", # 2025.x drops Python 3.10 (requires-python >= 3.11)
@@ -151,6 +184,17 @@ docs = [
   "sphinx-paramlinks==0.6.0",
   "auto-pytabs[sphinx]==0.5.0",
   "myst-parser==4.0.1",
+=======
+    "sphinx==8.1.3",
+    "shibuya==2026.7.12",
+    "sphinx-autobuild==2024.10.3",  # 2025.x drops Python 3.10 (requires-python >= 3.11)
+    "sphinx-copybutton==0.5.2",
+    "sphinx-design==0.6.1",  # 0.7.0 drops Python 3.10 (requires-python >= 3.11)
+    "sphinx-togglebutton==0.4.5",
+    "sphinx-paramlinks==0.6.0",
+    "auto-pytabs[sphinx]==0.5.0",
+    "myst-parser==4.0.1",
+>>>>>>> after updating
 ]
 tool = [
   "commitizen==4.17.0",
@@ -158,7 +202,13 @@ tool = [
   # "inflection==0.5.1",
   # "copier==9.11.0",
 ]
+<<<<<<< before updating
 prek = ["prek==0.4.13"]
+=======
+prek = [
+    "prek==0.4.12",
+]
+>>>>>>> after updating
 
 
 [build-system]
@@ -180,7 +230,12 @@ trusted-publishing = "always"
 
 [tool.hatch.version]
 source = "vcs"
-fallback-version = "0.1.0"
+# Last-resort sentinel: only used when a build sees neither a .git directory nor
+# an expanded .git_archival.txt (e.g. an archive of a commit with no reachable
+# tag). "0.0.0" reads clearly as "version could not be determined" rather than
+# masquerading as a real early release. See .git_archival.txt + .gitattributes
+# `export-subst` for the archive path that recovers the real tag-derived version.
+fallback-version = "0.0.0"
 
 
 [tool.hatch.build]
@@ -289,11 +344,20 @@ name = "Layered architecture with independent components"
 type = "layers"
 # Layers are listed high -> low: a layer may import lower layers but never a
 # higher one. Modules joined by ` | ` on one line are independent SIBLINGS that
+<<<<<<< before updating
 # may not import each other. `main` is the orchestrator/CLI layer; it sits above
 # `core` (the HWID resolution logic), which sits above `impl` (the per-platform
 # backends darwin/linux/win32). `exceptions` and `logger` are independent leaf
 # utilities imported from above but never importing each other. `__main__` is
 # left outside the contract as an unconstrained entry point.
+=======
+# may not import each other. `cli` is the orchestrator layer — the
+# `hwid` console root, whose subcommands launch the other
+# components (web/gui/tui/mcp/worker) via lazy imports — so it sits ABOVE the
+# independent component group, which sits above `core`, which sits above the leaf
+# `utils`. `__metadata__` is left outside the contract as an unconstrained
+# foundation.
+>>>>>>> after updating
 layers = [
   "hwid.main",
   "hwid.core",
@@ -326,7 +390,11 @@ skip-magic-trailing-comma = true
 
 [tool.ruff.lint]
 fixable = ["ALL"]
-ignore = ["COM812", "CPY", "FIX", "TD"]
+# Two opinionated ruff 0.16 preview rules are disabled: RUF105 would rewrite the
+# portable `# noqa` comments into ruff's own `# ruff: ignore` syntax (its docs note
+# `# noqa` is needed for cross-tool compatibility), and RUF201 would rewrite every
+# rule *code* in this config's selectors into long rule *names*. Both are stylistic.
+ignore = ["COM812", "CPY", "FIX", "RUF105", "RUF201", "TD"]
 logger-objects = ["logging_setup.logger"]
 preview = true
 select = ["ALL"]
@@ -361,6 +429,7 @@ convention = "pep257"
 # Tests legitimately use asserts/magic values, reach into package internals, and
 # don't need return-value documentation on their fixtures and helpers.
 "tests/**/*.py" = ["S101", "PLR2004", "PLC2701", "DOC201"]
+<<<<<<< before updating
 # hwid's examples are standalone scripts in dash-named directories (not importable
 # packages), so the package-name and implicit-namespace rules do not apply.
 "examples/**/*.py" = ["N999", "INP001"]
@@ -370,6 +439,9 @@ convention = "pep257"
 # dmidecode) to read the hardware UUID -- subprocess with a shell command is the
 # intended mechanism here, not an oversight.
 "src/hwid/impl/*.py" = ["S404", "S602"]
+=======
+"examples/**/*.py" = ["INP001"]
+>>>>>>> after updating
 # The Sphinx config is a standalone module, not part of an importable package.
 "docs/conf.py" = ["INP001"]
 
@@ -417,6 +489,51 @@ error-on-warning = true
 python-version = "3.10"
 project-includes = ["src"]
 
+[tool.pylint.main]
+# pylint runs as an always-on gate that deliberately overlaps ruff's PL* rules.
+# Its canonical invocation is `pylint src`, so it never descends into tests; this
+# ignore-paths is a defensive scope guard for broader invocations (`pylint .`,
+# filename-passing hooks). Tests are linted by ruff, not pylint.
+ignore-paths = ["^tests/.*$"]
+# `.pyi` stubs (the c-extension type stub) are signature-only: their bodies are
+# `...` and every parameter is unused by construction, so pylint's unused-argument
+# check is a guaranteed false positive there. Stubs are type-checked by the
+# type-checker gate, not pylint.
+ignore-patterns = ['.*\.pyi$']
+
+[tool.pylint."messages control"]
+# Only formatter-owned checks, the docstring family, and too-few-public-methods
+# are disabled so pylint is usable out of the box; everything else stays on.
+disable = [
+  "line-too-long",              # C0301 — ruff-format owns line length
+  "missing-module-docstring",   # C0114
+  "missing-class-docstring",    # C0115
+  "missing-function-docstring", # C0116
+  "too-few-public-methods",     # R0903 — trips dataclasses / config / Protocol classes
+  "import-outside-toplevel",    # C0415 — components (cli->tui/gui/web, and each
+                                 # component's own optional-dependency probe) are
+                                 # deliberately lazy-imported so import-linter's
+                                 # layering contract holds and optional extras
+                                 # aren't required at import time.
+  "try-except-raise",           # W0706 — the generated TUI entry point
+                                 # explicitly re-raises KeyboardInterrupt/SystemExit
+                                 # ahead of a broad `except Exception` to make the
+                                 # "let these propagate" intent obvious to readers,
+                                 # even though BaseException subclasses wouldn't be
+                                 # caught by the Exception clause anyway.
+  "duplicate-code",             # R0801 — the component skeletons (gui/tui/mcp/
+                                 # worker) are deliberately parallel: each fetches
+                                 # package metadata and formats the same info block
+                                 # the same way. That structural symmetry is a
+                                 # feature of the scaffold, not copy-paste debt, and
+                                 # R0801 cannot be suppressed inline at the call site.
+]
+
+[tool.pylint.design]
+max-args = 10
+max-positional-arguments = 10
+max-branches = 20
+
 [tool.tox]
 # The ``worker`` env is intentionally omitted: it starts a broker-bound process
 # and would hang/fail under ``tox run`` in CI (where no broker is available).
@@ -460,6 +577,7 @@ wheel_build_env = ".pkg"
 [tool.tox.env.style]
 base_python = ["3.10"]
 commands = [
+<<<<<<< before updating
   ["ruff", "check", "--no-fix"],
   ["ruff", "format", "--check", "--diff"],
   ["mypy", "--python-version", "3.10"],
@@ -472,6 +590,63 @@ commands = [
   ["python", "-m", "slotscheck", "src"],
   ["lint-imports"],
   ["taplo", "lint", "*.toml"],
+=======
+  [
+    "ruff",
+    "check",
+    "--no-fix",
+  ],
+  [
+    "ruff",
+    "format",
+    "--check",
+    "--diff",
+  ],
+  [
+    "mypy",
+    "--python-version",
+    "3.10",
+  ],
+  [
+    "mypy",
+    "--python-version",
+    "3.14",
+  ],
+  [
+    "basedpyright",
+  ],
+  [
+    "ty",
+    "check",
+  ],
+  [
+    "pyrefly",
+    "check",
+  ],
+  [
+    "zuban",
+    "check",
+    "src",
+  ],
+  [
+    "pylint",
+    "src",
+  ],
+  [
+    "python",
+    "-m",
+    "slotscheck",
+    "src",
+  ],
+  [
+    "lint-imports",
+  ],
+  [
+    "taplo",
+    "lint",
+    "*.toml",
+  ],
+>>>>>>> after updating
   # NOTE: kept in fix mode (not `--check`) because the rendered TOML is not yet
   # guaranteed taplo-formatted across every component combination. The `*.toml`
   # glob is non-recursive, so it scopes taplo to this project's own root TOML
@@ -479,6 +654,7 @@ commands = [
   # trees — no `.taplo.toml` exclude config needed. Making this a strict
   # `--check` gate is a follow-up that first requires the generated
   # pyproject/prek to be clean.
+<<<<<<< before updating
   ["taplo", "format", "*.toml"],
   ["validate-pyproject", "pyproject.toml"],
   ["typos", "--diff"],
@@ -486,11 +662,33 @@ commands = [
   ["ec"],
   ["sphinx-lint", "docs"],
   # ["yamlfmt", "."],
+=======
+  [
+    "taplo",
+    "format",
+    "*.toml",
+  ],
+  [
+    "typos",
+    "--diff",
+  ],
+  [
+    "ec",
+  ],
+  [
+    "sphinx-lint",
+    "docs",
+  ],
+>>>>>>> after updating
 ]
 # `test` is included so the type checkers that scope tests (e.g. ty) can
 # resolve pytest and other test-only imports.
 dependency_groups = ["style", "test"]
 description = "Run Checkers, Linters and Formatters"
+# Optional components (web/gui/tui/mcp/worker) are only importable when their
+# extra is installed; without this, pylint/mypy/etc. see import-error for any
+# optional component present in this render.
+extras = ["all"]
 runner = "uv-venv-runner"
 
 
