@@ -23,10 +23,11 @@ def test_linux_strips_dmidecode_output(mocker: MockerFixture) -> None:
 
     assert linux.extract_hwid() == VALID_HWID
     check_output.assert_called_once()
-    # `sudo -n` keeps resolution non-interactive; a timeout keeps it bounded.
-    assert check_output.call_args.args == ("sudo -n dmidecode -s system-uuid",)
+    # argv (no shell) so the timeout kills sudo directly; `-n` stays non-interactive.
+    assert check_output.call_args.args == (
+        ["sudo", "-n", "dmidecode", "-s", "system-uuid"],
+    )
     assert check_output.call_args.kwargs == {
-        "shell": True,
         "text": True,
         "timeout": linux.COMMAND_TIMEOUT,
     }
