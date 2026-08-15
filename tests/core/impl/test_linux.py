@@ -35,12 +35,16 @@ def test_linux_strips_dmidecode_output(mocker: MockerFixture) -> None:
 
 @pytest.mark.parametrize(
     "error",
-    [subprocess.CalledProcessError(1, "sudo"), subprocess.TimeoutExpired("sudo", 5)],
+    [
+        subprocess.CalledProcessError(1, "sudo"),
+        subprocess.TimeoutExpired("sudo", 5),
+        FileNotFoundError(2, "No such file or directory", "sudo"),
+    ],
 )
 def test_linux_returns_empty_on_subprocess_failure(
     mocker: MockerFixture, error: Exception
 ) -> None:
-    """A non-interactive ``sudo`` denial or timeout yields ``""`` (invalid HWID)."""
+    """A sudo denial, timeout, or missing sudo/dmidecode yields ``""`` (invalid)."""
     mocker.patch("hwid.core.impl.linux.subprocess.check_output", side_effect=error)
 
     assert not linux.extract_hwid()
