@@ -161,7 +161,7 @@ docs = [
   "myst-parser==4.0.1",
 ]
 tool = [
-  "commitizen==4.17.0",
+  "commitizen==4.17.1",
   # "marimo==0.15.2",
   # "inflection==0.5.1",
   # "copier==9.11.0",
