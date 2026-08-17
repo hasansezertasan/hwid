@@ -166,7 +166,7 @@ tool = [
   # "inflection==0.5.1",
   # "copier==9.11.0",
 ]
-prek = ["prek==0.4.13"]
+prek = ["prek==0.4.14"]
 
 
 [build-system]
