@@ -118,7 +118,7 @@ style = [
   "import-linter==2.13",
   "mypy==2.3.1",
   "pyrefly==1.2.0",
-  "ruff==0.15.19",
+  "ruff==0.16.4",
   "slotscheck==0.20.1",
   "sphinx-lint==1.0.2",
   "taplo==0.9.3",
