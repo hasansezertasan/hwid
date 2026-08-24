@@ -169,7 +169,7 @@ reads. Also delete head branches on merge to keep the branch list clean.</p>
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">&#39;.allow_squash_merge and (.allow_merge_commit | not) and (.allow_rebase_merge | not) and (.allow_auto_merge | not) and .delete_branch_on_merge and (.squash_merge_commit_title == &quot;PR_TITLE&quot;)&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.allow_squash_merge and (.allow_merge_commit | not) and (.allow_rebase_merge | not) and (.allow_auto_merge | not) and .delete_branch_on_merge and (.squash_merge_commit_title == "PR_TITLE")'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>UI equivalent: <strong>Settings → General → Pull Requests</strong> — enable <strong>Allow squash
@@ -194,22 +194,22 @@ which fails while any unticked checkbox remains in the PR description.</p></li>
 </ul>
 <p><strong>[AGENT]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--input<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;&#39;JSON&#39;</span>
+</span><span data-line="2"><span class="w">  </span>--input<span class="w"> </span>-<span class="w"> </span><span class="s">&lt;&lt;'JSON'</span>
 </span><span data-line="3"><span class="s">{</span>
-</span><span data-line="4"><span class="s">  &quot;required_status_checks&quot;: {</span>
-</span><span data-line="5"><span class="s">    &quot;strict&quot;: true,</span>
-</span><span data-line="6"><span class="s">    &quot;contexts&quot;: [&quot;Validate PR title&quot;, &quot;Validate branch name&quot;, &quot;Verify linked issue&quot;, &quot;Task Completed Checker&quot;]</span>
+</span><span data-line="4"><span class="s">  "required_status_checks": {</span>
+</span><span data-line="5"><span class="s">    "strict": true,</span>
+</span><span data-line="6"><span class="s">    "contexts": ["Validate PR title", "Validate branch name", "Verify linked issue", "Task Completed Checker"]</span>
 </span><span data-line="7"><span class="s">  },</span>
-</span><span data-line="8"><span class="s">  &quot;enforce_admins&quot;: null,</span>
-</span><span data-line="9"><span class="s">  &quot;required_pull_request_reviews&quot;: null,</span>
-</span><span data-line="10"><span class="s">  &quot;restrictions&quot;: null</span>
+</span><span data-line="8"><span class="s">  "enforce_admins": null,</span>
+</span><span data-line="9"><span class="s">  "required_pull_request_reviews": null,</span>
+</span><span data-line="10"><span class="s">  "restrictions": null</span>
 </span><span data-line="11"><span class="s">}</span>
 </span><span data-line="12"><span class="s">JSON</span>
 </span></pre></div>
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">&#39;(.required_status_checks.strict == true) and (([&quot;Validate PR title&quot;,&quot;Validate branch name&quot;,&quot;Verify linked issue&quot;,&quot;Task Completed Checker&quot;] - (.required_status_checks.contexts // [])) == [])&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'(.required_status_checks.strict == true) and ((["Validate PR title","Validate branch name","Verify linked issue","Task Completed Checker"] - (.required_status_checks.contexts // [])) == [])'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>UI equivalent: <strong>Settings → Branches → Add branch ruleset</strong> (or <strong>Add rule</strong> for
@@ -229,7 +229,7 @@ request, so the repo must allow Actions to create and approve pull requests.</p>
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/actions/permissions/workflow<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">&#39;.can_approve_pull_request_reviews == true and .default_workflow_permissions == &quot;read&quot;&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.can_approve_pull_request_reviews == true and .default_workflow_permissions == "read"'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>UI equivalent: <strong>Settings → Actions → General → Workflow permissions</strong> — enable
@@ -277,10 +277,10 @@ dashboard.</p>
 </span></pre></div>
 </div>
 <p><strong>[CHECK]</strong> A public repo needs no token; a private repo needs the secret:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nv">priv</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>gh<span class="w"> </span>repo<span class="w"> </span>view<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>isPrivate<span class="w"> </span>--jq<span class="w"> </span><span class="s1">&#39;.isPrivate&#39;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
-</span><span data-line="2"><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$priv</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;false&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="nb">true</span>
-</span><span data-line="3"><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$priv</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-</span><span data-line="4"><span class="w">  </span>gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>name<span class="w"> </span>--jq<span class="w"> </span><span class="s1">&#39;.[].name&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span>CODECOV_TOKEN
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nv">priv</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>gh<span class="w"> </span>repo<span class="w"> </span>view<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>isPrivate<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.isPrivate'</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">"</span>
+</span><span data-line="2"><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$priv</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"false"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="nb">true</span>
+</span><span data-line="3"><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$priv</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"true"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span data-line="4"><span class="w">  </span>gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>name<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.[].name'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span>CODECOV_TOKEN
 </span><span data-line="5"><span class="k">else</span><span class="w"> </span>false<span class="p">;</span><span class="w"> </span><span class="k">fi</span>
 </span></pre></div>
 </div>
@@ -305,10 +305,10 @@ empty (and unused) otherwise.</p>
 </div>
 <p><strong>[CHECK]</strong> A user-owned repo needs no license; an organization-owned repo needs
 the secret:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nv">owner</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid<span class="w"> </span>--jq<span class="w"> </span><span class="s1">&#39;.owner.type&#39;</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">&quot;</span>
-</span><span data-line="2"><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$owner</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;User&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="nb">true</span>
-</span><span data-line="3"><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$owner</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Organization&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-</span><span data-line="4"><span class="w">  </span>gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>name<span class="w"> </span>--jq<span class="w"> </span><span class="s1">&#39;.[].name&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span>GITLEAKS_LICENSE
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nv">owner</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.owner.type'</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="s2">"</span>
+</span><span data-line="2"><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$owner</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"User"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="nb">true</span>
+</span><span data-line="3"><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$owner</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Organization"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span data-line="4"><span class="w">  </span>gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>name<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.[].name'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span>GITLEAKS_LICENSE
 </span><span data-line="5"><span class="k">else</span><span class="w"> </span>false<span class="p">;</span><span class="w"> </span><span class="k">fi</span>
 </span></pre></div>
 </div>
@@ -326,12 +326,12 @@ does not serve that branch until Pages is pointed at it. The branch is created
 by the first release that runs <code class="docutils literal notranslate"><span class="pre">deploy-docs</span></code>, so enable Pages once after that.</p>
 <p><strong>[AGENT]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>repos/hasansezertasan/hwid/pages<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>-f<span class="w"> </span><span class="s1">&#39;source[branch]=gh-pages&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="s1">&#39;source[path]=/&#39;</span>
+</span><span data-line="2"><span class="w">  </span>-f<span class="w"> </span><span class="s1">'source[branch]=gh-pages'</span><span class="w"> </span>-f<span class="w"> </span><span class="s1">'source[path]=/'</span>
 </span></pre></div>
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/pages<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">&#39;.source.branch == &quot;gh-pages&quot; and .source.path == &quot;/&quot;&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.source.branch == "gh-pages" and .source.path == "/"'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>This check stays red until the first release runs <code class="docutils literal notranslate"><span class="pre">deploy-docs</span></code> and creates the
@@ -393,7 +393,7 @@ turned on.</p>
 </span></pre></div>
 </div>
 <p><strong>[CHECK]</strong></p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>gh<span class="w"> </span>repo<span class="w"> </span>view<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>hasDiscussionsEnabled<span class="w"> </span>--jq<span class="w"> </span><span class="s1">&#39;.hasDiscussionsEnabled&#39;</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>gh<span class="w"> </span>repo<span class="w"> </span>view<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>hasDiscussionsEnabled<span class="w"> </span>--jq<span class="w"> </span><span class="s1">'.hasDiscussionsEnabled'</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"true"</span><span class="w"> </span><span class="o">]</span>
 </span></pre></div>
 </div>
 <p>UI equivalent: <strong>Settings → General → Features</strong> — tick <strong>Discussions</strong>.</p>
@@ -423,7 +423,7 @@ opens its own PR with its own <code class="docutils literal notranslate"><span c
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>name<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">&#39;any(.[]; .name == &quot;HOMEBREW_TAP_TOKEN&quot;)&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'any(.[]; .name == "HOMEBREW_TAP_TOKEN")'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>When unset, the <code class="docutils literal notranslate"><span class="pre">bump-homebrew</span></code> job skips with a notice (never fails the
@@ -447,7 +447,7 @@ opens its own PR with its own <code class="docutils literal notranslate"><span c
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>secret<span class="w"> </span>list<span class="w"> </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span>--json<span class="w"> </span>name<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">&#39;any(.[]; .name == &quot;SCOOP_BUCKET_TOKEN&quot;)&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'any(.[]; .name == "SCOOP_BUCKET_TOKEN")'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>When unset, the <code class="docutils literal notranslate"><span class="pre">bump-scoop</span></code> job skips with a notice (never fails the release).

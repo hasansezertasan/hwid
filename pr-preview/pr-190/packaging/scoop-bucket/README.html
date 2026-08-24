@@ -148,7 +148,7 @@ bucket repository, using the bucket’s own <code class="docutils literal notran
 which already ships <code class="docutils literal notranslate"><span class="pre">bin/checkver.ps1</span></code> and <code class="docutils literal notranslate"><span class="pre">bin/auto-pr.ps1</span></code>:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>repo<span class="w"> </span>create<span class="w"> </span>hasansezertasan/scoop-bucket<span class="w"> </span>--public<span class="w"> </span><span class="se">\</span>
 </span><span data-line="2"><span class="w">  </span>--template<span class="w"> </span>ScoopInstaller/BucketTemplate<span class="w"> </span><span class="se">\</span>
-</span><span data-line="3"><span class="w">  </span>--description<span class="w"> </span><span class="s2">&quot;Scoop bucket for hasansezertasan packages&quot;</span>
+</span><span data-line="3"><span class="w">  </span>--description<span class="w"> </span><span class="s2">"Scoop bucket for hasansezertasan packages"</span>
 </span></pre></div>
 </div>
 <p><a class="reference external" href="https://github.com/hasansezertasan/scoop-bucket"><code class="docutils literal notranslate"><span class="pre">hasansezertasan/scoop-bucket</span></code></a>
@@ -176,12 +176,12 @@ shapes) and adapt it, rather than trying to complete these fragments by hand:</p
 <code class="docutils literal notranslate"><span class="pre">pipx</span> <span class="pre">install</span> <span class="pre">hwid==$version</span></code>, and <code class="docutils literal notranslate"><span class="pre">checkver</span></code> polls
 PyPI for the latest release:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="p">{</span>
-</span><span data-line="2"><span class="w">  </span><span class="nt">&quot;checkver&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span data-line="3"><span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://pypi.org/pypi/hwid/json&quot;</span><span class="p">,</span>
-</span><span data-line="4"><span class="w">    </span><span class="nt">&quot;jsonpath&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;$.info.version&quot;</span>
+</span><span data-line="2"><span class="w">  </span><span class="nt">"checkver"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span data-line="3"><span class="w">    </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://pypi.org/pypi/hwid/json"</span><span class="p">,</span>
+</span><span data-line="4"><span class="w">    </span><span class="nt">"jsonpath"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$.info.version"</span>
 </span><span data-line="5"><span class="w">  </span><span class="p">},</span>
-</span><span data-line="6"><span class="w">  </span><span class="nt">&quot;installer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span data-line="7"><span class="w">    </span><span class="nt">&quot;script&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pipx install hwid==$version --force&quot;</span>
+</span><span data-line="6"><span class="w">  </span><span class="nt">"installer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span data-line="7"><span class="w">    </span><span class="nt">"script"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pipx install hwid==$version --force"</span>
 </span><span data-line="8"><span class="w">  </span><span class="p">}</span>
 </span><span data-line="9"><span class="p">}</span>
 </span></pre></div>
@@ -215,7 +215,7 @@ previous step.</p></li>
 <li><p>Push everything so the bucket repository actually contains the listener
 and the initial manifest(s) before any release fires a dispatch:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">git<span class="w"> </span>add<span class="w"> </span>-A
-</span><span data-line="2">git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add hwid + release listener&quot;</span>
+</span><span data-line="2">git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"Add hwid + release listener"</span>
 </span><span data-line="3">git<span class="w"> </span>push
 </span></pre></div>
 </div>
