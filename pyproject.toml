@@ -126,7 +126,7 @@ style = [
   "typos==1.50.1",
   "validate-pyproject[all]==0.26",
   "vulture==2.16",
-  "zuban==0.9.2",
+  "zuban==0.9.3",
   # "google-yamlfmt",
   # "shellcheck-makefile>=1.27.3",
   # "shellcheck-py>=0.10.0.1",
