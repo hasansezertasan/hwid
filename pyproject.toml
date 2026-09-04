@@ -122,7 +122,7 @@ style = [
   "slotscheck==0.20.1",
   "sphinx-lint==1.0.2",
   "taplo==0.9.3",
-  "ty==0.0.75",
+  "ty==0.0.78",
   "typos==1.50.1",
   "validate-pyproject[all]==0.26",
   "vulture==2.16",
