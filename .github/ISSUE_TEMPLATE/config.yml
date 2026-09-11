@@ -1,4 +1,6 @@
 ---
+# Structured issue forms (bug_report.yml, feature_request.yml) cover the common
+# cases; force reporters through those instead of a free-form blank issue.
 blank_issues_enabled: false
 contact_links:
   - name: Questions on Discussions

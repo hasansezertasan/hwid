@@ -5,7 +5,7 @@ name: Gitignore Drift Check
 # network and is inherently flaky, so this runs on a weekly schedule and on
 # demand — never on pull_request, and it is not part of the `check` aggregation
 # gate. A failure here is a maintenance signal (regenerate with cobo), not a
-# merge blocker. Mirrors the docs-linkcheck.yml posture. See ADR-012.
+# merge blocker — the same non-blocking weekly-check posture. See ADR-012.
 on:
   workflow_dispatch:
   schedule:

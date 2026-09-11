@@ -4,11 +4,20 @@ Usage
 As a library
 ------------
 
-To use ``hwid`` in a project:
+Look up the installed distribution version:
 
-.. code-block:: python
+.. literalinclude:: examples/version_lookup.py
+   :language: python
+   :caption: examples/version_lookup.py
 
-   import hwid
+For short interactive snippets embedded in prose, the ``docs-doctest`` task
+executes ``>>>`` blocks too:
+
+.. doctest::
+
+   >>> from hwid.__metadata__ import PROJECT_NAME
+   >>> PROJECT_NAME
+   'hwid'
 
    print(hwid.get_hwid())
 

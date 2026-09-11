@@ -127,3 +127,4 @@ jobs:
           gh issue create --title "$title" --label "automated,dependencies" --body "$body" \
             || gh issue create --title "$title" --body "$body" \
             || echo "::warning::could not open failure issue"
+

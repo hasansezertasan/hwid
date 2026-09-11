@@ -22,6 +22,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
   - [Reporting Bugs](#reporting-bugs)
   - [Suggesting Enhancements](#suggesting-enhancements)
   - [Your First Code Contribution](#your-first-code-contribution)
+  - [Secret Scanning](#secret-scanning)
   - [Improving The Documentation](#improving-the-documentation)
 - [Styleguides](#styleguides)
   - [Commit Messages](#commit-messages)
@@ -129,7 +130,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/hasans
 - Use a **clear and descriptive title** for the issue to identify the suggestion.
 - Provide a **step-by-step description of the suggested enhancement** in as many details as possible.
 - **Describe the current behavior** and **explain which behavior you expected to see instead** and why. At this point you can also tell which alternatives do not work for you.
-- You may want to **include screenshots or screen recordings** which help you demonstrate the steps or point out the part which the suggestion is related to. You can use [LICEcap](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and the built-in [screen recorder in GNOME](https://help.gnome.org/users/gnome-help/stable/screen-shot-record.html.en) or [SimpleScreenRecorder](https://github.com/MaartenBaert/ssr) on Linux. <!-- this should only be included if the project has a GUI -->
+- You may want to **include a copy of the command you ran and its output**, which helps demonstrate the steps or point out the part which the suggestion is related to.
 - **Explain why this enhancement would be useful** to most hwid users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
 
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
@@ -173,11 +174,50 @@ Debug in VS Code using the launch configurations shipped in `.vscode/launch.json
 
 - **Current File**: Debug the currently open Python file.
 - **Tests**: Debug pytest runs.
-- **Attach**: Attach to a running process (e.g., web app with debugpy).
-- **Web App/CLI/TUI/GUI**: Debug specific entry points (if enabled).
-- **With Profiling**: Debug while profiling with scalene (if profiling enabled).
+- **Attach**: Attach to a running process.
+- **CLI**: Debug the CLI entry point.
 
 Select a configuration from the Run and Debug panel in VS Code.
+
+### Secret Scanning
+
+The `prek` hooks include [`detect-secrets`](https://github.com/Yelp/detect-secrets),
+a local, pre-commit-stage secret scanner. It checks changed files against the
+committed `.secrets.baseline`, so it only flags **new** potential secrets — not
+the already-triaged false positives recorded in the baseline. This complements
+(and does not replace) the history-spanning [gitleaks](https://github.com/gitleaks/gitleaks)
+scan in `check-security.yml`, which runs on every PR/push and weekly: gitleaks
+catches a secret that already reached history, while `detect-secrets` stops it
+at `git commit` time, before it is ever committed.
+
+If the hook flags something:
+
+- **It's a real secret** — remove it from the change and rotate the credential
+  if it was ever committed or pushed.
+- **It's a false positive** (e.g. a test fixture, an example token, a template
+  placeholder) — triage it into the baseline instead of skipping the hook. The
+  hook does not add the new finding to the baseline itself, so scan it in first,
+  then audit:
+
+  ```bash
+  uv run --locked --group style detect-secrets scan --baseline .secrets.baseline
+  uv run --locked --group style detect-secrets audit .secrets.baseline
+  ```
+
+  The scan records the new finding into `.secrets.baseline` (unaudited); the
+  audit then walks you through each unlabeled entry interactively so you can
+  mark it as a true or false positive. Commit the updated `.secrets.baseline`
+  alongside your change.
+
+- **The tree legitimately changed shape** (new files, moved code) and the
+  baseline needs new entries scanned in — regenerate it:
+
+  ```bash
+  uv run --locked --group style detect-secrets scan --baseline .secrets.baseline
+  ```
+
+  Then re-run `detect-secrets audit .secrets.baseline` to triage any newly
+  discovered entries before committing.
 
 ### Improving The Documentation
 
