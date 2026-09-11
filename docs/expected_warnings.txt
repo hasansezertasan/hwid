@@ -1,0 +1,9 @@
+# Allowlist of tolerated Sphinx build warnings, one normalized line each.
+#
+# The healthy default is empty: zero tolerated warnings. The docs-build tox env
+# runs docs/check_warnings.py, which fails on any emitted warning NOT listed
+# here and on any listed warning that is no longer emitted (so the list can't
+# rot). Add a genuinely-unavoidable upstream warning's exact normalized line
+# (path prefix stripped back to "docs/") in the same PR that introduces it.
+#
+# Lines starting with "#" and blank lines are ignored.

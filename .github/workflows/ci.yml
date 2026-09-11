@@ -6,9 +6,57 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+    # Every job below is draft-gated, so leaving draft must explicitly start a
+    # fresh run; `ready_for_review` is not part of GitHub's default event types.
+    types: [opened, synchronize, reopened, ready_for_review]
 jobs:
+  changes:
+    name: Detect changed components
+    # Draft-skip composes with #159 and is falsy-safe on push/workflow_dispatch
+    # (no pull_request context => the expression is not 'true', so it runs).
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      # dorny/paths-filter fetches the changed-file list via the REST API on
+      # `pull_request` events (git diff is only used for push/other events, even
+      # with a checkout), so it needs `pull-requests: read`.
+      pull-requests: read
+    outputs:
+      core: ${{ steps.filter.outputs.core }}
+      cli: ${{ steps.filter.outputs.cli }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Filter changed paths
+        id: filter
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d  # v4.0.3
+        with:
+          # `core` underpins every component (deps, shared core/, package-root
+          # modules, the root conftest, root-level tests), so a change here
+          # forces the full fan-out — mirrors the import-linter layering
+          # (ADR-014). Each component filter watches only its own src+tests tree.
+          filters: |
+            core:
+              - '.github/workflows/ci.yml'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - 'tox.ini'
+              - 'src/hwid/*.py'
+              - 'src/hwid/core/**'
+              - 'src/hwid/utils/**'
+              - 'tests/conftest.py'
+              - 'tests/core/**'
+              - 'tests/test_*.py'
+            cli:
+              - 'src/hwid/cli/**'
+              - 'tests/cli/**'
   hooks:
     name: Run prek hooks
+    if: ${{ github.event.pull_request.draft != true }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -37,24 +85,108 @@ jobs:
         uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c  # v4.3.0
       - name: Run prek hooks
         run: uv run --locked --group prek prek run --all-files --show-diff-on-failure
-  ci:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    name: Run Tests on ${{ matrix.os }}
+  style:
+    name: Run style and type checks
+    # Keep style in one Linux job rather than repeating it for every component.
+    # The tox env itself sweeps mypy's Python-version and platform axes.
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: read
-    env:
-      # The `secrets` context is not available in `if:` conditions, so surface
-      # CODECOV_TOKEN as a presence flag — never expose the value job-wide.
-      # Codecov upload is opt-in: unset means a visible skip, not a build failure.
-      CODECOV_TOKEN_SET: ${{ secrets.CODECOV_TOKEN != '' }}
-      # On a public repo the codecov-action uploads tokenless, so the token is
-      # only needed for private repos (or to avoid tokenless rate-limits).
-      REPO_IS_PUBLIC: ${{ !github.event.repository.private }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Run style and type checks
+        run: uv run --locked tox run -e style
+  docs-doctest:
+    name: Test documentation examples
+    # Component test jobs override tox's default env list, so keep doctests in
+    # their own job to preserve the generated project's documented examples.
+    if: ${{ github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Run documentation doctests
+        run: uv run --locked tox run -e docs-doctest
+  cli-installed:
+    name: Check installed CLI on ${{ matrix.os }}
+    # This is separate from the marker-filtered pytest jobs: forwarding pytest's
+    # `-m` positional argument into the `cli` tox env would invoke the installed
+    # command with invalid arguments instead of its default `version` command.
+    if: ${{ github.event.pull_request.draft != true }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Run the installed CLI
+        run: uv run --locked tox run -e cli
+
+  test-core:
+    name: Test core on ${{ matrix.os }}
+    needs: changes
+    if: ${{ github.event.pull_request.draft != true }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-latest, tox_args: "-e 3.14,3.13,3.12,3.11,3.10"}
+          - {os: macos-latest, tox_args: "-e py"}
+          - {os: windows-latest, tox_args: "-e py"}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - name: System Info
         shell: bash
@@ -99,31 +231,257 @@ jobs:
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
       - name: Run the tests
-        run: uv run --locked tox run
-      # https://github.com/marketplace/actions/alls-green#why used for branch protection checks
-      - name: Coverage
+        # `matrix.tox_args` selects the interpreter sweep (#159); the posargs
+        # after `--` select this component's marked tests (issue #160).
+        # `matrix.tox_args` is a workflow-defined (trusted) context, used inline
+        # like `matrix.os` in the System Info step — not untrusted GitHub context.
+        run: uv run --locked tox run ${{ matrix.tox_args }} -- -m "not (cli)"
+
+      - name: Store coverage data
+        # Combine this cell's per-interpreter data and hand the raw `.coverage`
+        # off (under a per-component, per-OS name) to this component's
+        # `coverage-core` gate job, which merges its OS cells and
+        # enforces the scoped `fail_under` gate. The per-cell `coverage report`
+        # here stays for fast feedback but does NOT gate (`--fail-under=0`): a
+        # line covered on one OS yet version/OS-gated off on another only
+        # balances in the per-component union. See ADR-028 (decomposes ADR-026).
         run: |
           uv run coverage combine
-          uv run coverage report --show-missing
-          uv run coverage xml
-      - name: Upload coverage
-        # Upload when the token is set, or whenever the repo is public — the
-        # codecov-action uploads tokenless on public repos, so owner pushes and
-        # fork PRs alike report coverage with no secret. Only a private repo with
-        # no token falls through to the visible skip below (a tokenless upload
-        # there would fail). The step is best-effort (fail_ci_if_error defaults to
-        # false), so a tokenless rate-limit never breaks the build.
+          uv run coverage report --show-missing --fail-under=0
+          mv .coverage ".coverage.core.${{ matrix.os }}"
+      - name: Upload coverage data
+        # `include-hidden-files` is required for upload-artifact to pick up the
+        # dotfile `.coverage.*`. Downloaded and merged by `coverage-core`.
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: coverage-core-${{ matrix.os }}
+          path: .coverage.core.${{ matrix.os }}
+          include-hidden-files: true
+
+  test-cli:
+    name: Test cli on ${{ matrix.os }}
+    needs: changes
+    if: >-
+      ${{ github.event.pull_request.draft != true &&
+      (needs.changes.outputs.cli == 'true' ||
+      needs.changes.outputs.core == 'true') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-latest, tox_args: "-e 3.14,3.13,3.12,3.11,3.10"}
+          - {os: macos-latest, tox_args: "-e py"}
+          - {os: windows-latest, tox_args: "-e py"}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: System Info
+        shell: bash
+        run: |
+          if [[ ${{ matrix.os }} == "ubuntu-latest" ]]; then
+              echo "The system is Linux."
+              uname -a || true
+              lsb_release -a || true
+              gcc --version || true
+          elif [[ ${{ matrix.os }} == "macos-latest" ]]; then
+              echo "The system is macOS."
+              sw_vers || true
+              uname -a || true
+              gcc --version || true
+          elif [[ ${{ matrix.os }} == "windows-latest" ]]; then
+              echo "The system is Windows (using a Unix-like environment)."
+              systeminfo || true
+          else
+              echo "Unknown OS: $OS_TYPE"
+              exit 1
+          fi
+      - name: Environment Info
+        run: |
+          env || true
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version-file: .python-version
+      - name: Setup uv
+        id: setup-uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: |
+            pyproject.toml
+            uv.lock
+      - name: Restore cache
+        if: steps.setup-uv.outputs.cache-hit == 'true'
+        run: echo "Cache was restored"
+      - name: Run the tests
+        # `matrix.tox_args` selects the interpreter sweep (#159); the posargs
+        # after `--` select this component's marked tests (issue #160).
+        # `matrix.tox_args` is a workflow-defined (trusted) context, used inline
+        # like `matrix.os` in the System Info step — not untrusted GitHub context.
+        run: uv run --locked tox run ${{ matrix.tox_args }} -- -m "cli"
+
+      - name: Store coverage data
+        # Combine this cell's per-interpreter data and hand the raw `.coverage`
+        # off (under a per-component, per-OS name) to this component's
+        # `coverage-cli` gate job, which merges its OS cells and
+        # enforces the scoped `fail_under` gate. The per-cell `coverage report`
+        # here stays for fast feedback but does NOT gate (`--fail-under=0`): a
+        # line covered on one OS yet version/OS-gated off on another only
+        # balances in the per-component union. See ADR-028 (decomposes ADR-026).
+        run: |
+          uv run coverage combine
+          uv run coverage report --show-missing --fail-under=0
+          mv .coverage ".coverage.cli.${{ matrix.os }}"
+      - name: Upload coverage data
+        # `include-hidden-files` is required for upload-artifact to pick up the
+        # dotfile `.coverage.*`. Downloaded and merged by `coverage-cli`.
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: coverage-cli-${{ matrix.os }}
+          path: .coverage.cli.${{ matrix.os }}
+          include-hidden-files: true
+
+  coverage-core:
+    name: Coverage gate (core)
+    needs: [changes, test-core]
+    if: >-
+      ${{ !cancelled() && github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+      - name: Download core coverage data
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
+        with:
+          pattern: coverage-core-*
+          merge-multiple: true
+      - name: Combine and gate the core subtree
+        # `--locked --only-group test` pins the SAME coverage version that produced
+        # the `.coverage.*` data files (no unpinned drift), without building the
+        # project. `relative_files` (pyproject) lets cross-runner paths merge.
+        run: |
+          uv run --locked --only-group test coverage combine
+          uv run --locked --only-group test coverage report --show-missing --omit="*/_version.py,*/hwid/cli/*,*/tests/cli/*" --fail-under=99
+
+  coverage-cli:
+    name: Coverage gate (cli)
+    needs: [changes, test-cli]
+    if: >-
+      ${{ !cancelled() && github.event.pull_request.draft != true &&
+      (needs.changes.outputs.cli == 'true' ||
+      needs.changes.outputs.core == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+      - name: Download cli coverage data
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
+        with:
+          pattern: coverage-cli-*
+          merge-multiple: true
+      - name: Combine and gate the cli subtree
+        # `--locked --only-group test` pins the SAME coverage version that produced
+        # the `.coverage.*` data files (no unpinned drift), without building the
+        # project. `relative_files` (pyproject) lets cross-runner paths merge.
+        run: |
+          uv run --locked --only-group test coverage combine
+          uv run --locked --only-group test coverage report --show-missing --include="*/hwid/cli/*,*/tests/cli/*" --fail-under=99
+
+  coverage-report:
+    name: Combine coverage and publish
+    # Central non-gating publish (gating lives in the per-component jobs above).
+    # Renders combined HTML/XML from whatever component gates ran and uploads to
+    # Codecov + (optionally) smokeshow. `if: !cancelled()` so it runs even when a
+    # component is path-skipped; downloads all present `coverage-*-*` artifacts.
+    needs: [changes, coverage-core, coverage-cli]
+    # `!cancelled()` still publishes when a component gate failed, but must ALSO
+    # carry the draft guard: on a draft PR every dependency is *skipped* (not
+    # cancelled), so without it this job would run with zero coverage artifacts
+    # and `coverage combine` would fail with "No data to combine".
+    if: ${{ !cancelled() && github.event.pull_request.draft != true }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    env:
+      # The `secrets` context is unavailable in `if:`, so surface CODECOV_TOKEN as
+      # a presence flag — never expose the value job-wide.
+      CODECOV_TOKEN_SET: ${{ secrets.CODECOV_TOKEN != '' }}
+      REPO_IS_PUBLIC: ${{ !github.event.repository.private }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Setup uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9  # v9.0.0
+      - name: Download all coverage data
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8
+        with:
+          pattern: coverage-*-*
+          merge-multiple: true
+      - name: Combine and render (non-gating)
+        # `--fail-under=0`: gating is done per component above; this job only
+        # publishes. On a path-filtered PR the skipped components never ran, but
+        # `source_pkgs` still makes coverage discover their (unexecuted) files and
+        # report them at ~0%, which would misrepresent the combined number in
+        # Codecov/smokeshow. So omit every component that did NOT run this time
+        # (derived from the `changes` outputs — `core` forces the full report).
+        # The `changes` booleans are workflow-derived (trusted), passed via env.
+        env:
+          CHANGED_CORE: ${{ needs.changes.outputs.core }}
+          CHANGED_CLI: ${{ needs.changes.outputs.cli }}
+        run: |
+          uv run --locked --only-group test coverage combine
+          # `--omit` on the CLI overrides the pyproject omit, so re-add the always
+          # -omitted files, then append each component that was skipped this run.
+          omit="*/_version.py"
+          if [ "$CHANGED_CORE" != "true" ] && [ "$CHANGED_CLI" != "true" ]; then
+            omit="$omit,*/hwid/cli/*,*/tests/cli/*"
+          fi
+          uv run --locked --only-group test coverage report --show-missing --omit="$omit" --fail-under=0
+          uv run --locked --only-group test coverage html --omit="$omit"
+          uv run --locked --only-group test coverage xml --omit="$omit"
+      - name: Upload combined HTML report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: coverage-html
+          path: htmlcov
+      - name: Upload coverage to Codecov
+        # Uploads when the token is set or the repo is public (tokenless); only a
+        # private repo with no token falls through to the visible skip below.
+        # Best-effort (`fail_ci_if_error` defaults to false).
         if: ${{ env.CODECOV_TOKEN_SET == 'true' || env.REPO_IS_PUBLIC == 'true' }}
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0
         with:
           files: ./coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}
       - name: Note skipped coverage upload
-        if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' && matrix.os == 'ubuntu-latest' }}
+        if: ${{ env.CODECOV_TOKEN_SET != 'true' && env.REPO_IS_PUBLIC != 'true' }}
         run: echo "::notice::CODECOV_TOKEN secret is not set and this repo is private — skipping the Codecov upload. See docs/maintaining/setup.rst (Repository setup) to enable coverage reporting."
   check:
-    if: always()
-    needs: [ci, hooks]
+    if: ${{ always() && github.event.pull_request.draft != true }}
+    needs: [changes, test-core, test-cli, coverage-core, coverage-cli, coverage-report, hooks, style, docs-doctest, cli-installed]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}

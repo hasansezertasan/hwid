@@ -35,9 +35,9 @@ Before walking, classify each step by where it sits in the doc — this decides
 what a red `[CHECK]` means. **Never stop the walk before reaching the end;**
 collect blockers and report them together.
 
-- **Required** — everything above the `Optional integrations` heading, *except*
-  the two deferred steps below. A red check here must be resolved for the project
-  to work.
+- **Required** — everything above the `Optional integrations` heading,
+  *except* the deferred GitHub Pages step below. A red check here must be
+  resolved for the project to work.
 - **Deferred** — the **GitHub Pages** step (the PR doc previews ride on the same
   `gh-pages` branch and need no separate step). It depends on that branch, which
   the first release's `deploy-docs` job creates, so its `[CHECK]` is expected red

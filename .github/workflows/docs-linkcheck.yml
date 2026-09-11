@@ -39,5 +39,11 @@ jobs:
       - name: Restore cache
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
+      - name: Set reproducible build epoch
+        # Pin Sphinx's "today"/copyright to the last commit date so the same
+        # commit always renders the same docs output (reproducible-builds.org).
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
       - name: Check documentation links
-        run: uv run --no-default-groups --extra all --group docs sphinx-build -b linkcheck docs docs/_build/linkcheck
+        env:
+          PYTHONUNBUFFERED: "1"
+        run: uv run --no-default-groups --group docs sphinx-build -b linkcheck docs docs/_build/linkcheck
