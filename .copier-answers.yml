@@ -1,12 +1,13 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
-_commit: v1.2.1
+_commit: v1.3.0
 _src_path: https://github.com/hasansezertasan/copier-pyproject.git
 author_email: hasansezertasan@gmail.com
 author_family_names: Taşan
 author_full_name: Hasan Sezer Taşan
 author_given_names: Hasan Sezer
 cli_framework: argparse
+docs_version_granularity: minor
 github_repo_name: hwid
 github_user: hasansezertasan
 include_all_contributors: false
@@ -14,6 +15,7 @@ include_c_extensions: false
 include_cli: true
 include_compiler: false
 include_dbeaver: false
+include_docs: true
 include_examples: true
 include_freezer: false
 include_gui: false
@@ -28,6 +30,7 @@ include_redis: false
 include_repo_ruleset: false
 include_repo_settings: true
 include_scoop: true
+include_smokeshow: false
 include_sonarcloud: false
 include_sourcery: false
 include_tui: false

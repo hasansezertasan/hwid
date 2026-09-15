@@ -97,6 +97,16 @@ hooks = [
   # same drift-free rationale as editorconfig-checker above. It statically lints
   # the reStructuredText docs sources (it does not import the project or Sphinx).
   { id = "sphinx-lint", name = "Sphinx Lint", entry = "uv run --locked --group style sphinx-lint docs", language = "system", files = '\.rst$', pass_filenames = false },
+  # detect-secrets is a local pre-commit gate against a committed baseline
+  # (.secrets.baseline), catching a secret at `git commit` time before it ever
+  # enters history. It complements (does not replace) the history-spanning
+  # gitleaks scan in check-security.yml, which runs on PR/push/weekly cron —
+  # local prevention (commit stage) layered with CI detection (history stage).
+  # A hit that slips past a contributor's local hook is still caught in CI, since
+  # `prek run --all-files` runs this hook there too. Single version source: the
+  # `style` group pin (its PyPI wrapper has no separate upstream pre-commit repo
+  # revision worth tracking here).
+  { id = "detect-secrets", name = "detect-secrets (pre-commit secret scan)", entry = "uv run --locked --group style detect-secrets-hook --baseline .secrets.baseline", language = "system", pass_filenames = true },
 ]
 
 [[repos]]

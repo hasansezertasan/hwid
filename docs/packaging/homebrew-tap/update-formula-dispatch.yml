@@ -168,3 +168,4 @@ jobs:
           gh issue create --title "$title" --label "automated,formula-bump-failure" --body "$body" \
             || gh issue create --title "$title" --body "$body" \
             || echo "::warning::could not open failure issue"
+
