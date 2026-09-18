@@ -10,6 +10,22 @@ on:
 jobs:
   analyze:
     name: Analyze
+    # Code scanning needs GitHub Advanced Security on private/internal repos;
+    # without it every run leaves a permanent red X. Free on public repos.
+    #
+    # `||` returns the first truthy operand, so this coalesces two visibility
+    # sources and falls back to "public". Two sources because neither covers
+    # every trigger alone, and one is only probably real:
+    #   * `github.event.repository.visibility` is documented, but `schedule`
+    #     carries no event payload at all, so it is empty there.
+    #   * `github.repository_visibility` is the only source a scheduled run
+    #     could have, but it is undocumented -- absent from both the contexts
+    #     and default-env-var references, though actionlint models it.
+    # Hence the 'public' default: if that property does not resolve, a
+    # scheduled run on a *public* repo sees nothing from either source and must
+    # still run. Silently disabling CodeQL everywhere is a worse failure than
+    # the red X this guard removes, so unknown fails OPEN.
+    if: (github.repository_visibility || github.event.repository.visibility || 'public') == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

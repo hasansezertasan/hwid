@@ -302,20 +302,36 @@ jobs:
       - name: Restore cache
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
-      - name: Build docs
-        run: uv run --no-default-groups --extra all --group docs sphinx-build -b html docs docs/_build/html
+      - name: Set reproducible build epoch
+        # Pin Sphinx's "today"/copyright to the last commit date so the same
+        # commit always renders the same docs output (reproducible-builds.org).
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+      - name: Fetch gh-pages branch
+        # build_docs.py preserves already-published versions from gh-pages; make
+        # the branch available locally (no-op on the very first release).
+        run: git fetch origin gh-pages:gh-pages || echo "gh-pages does not exist yet"
+      - name: Build versioned docs
+        env:
+          PYTHONUNBUFFERED: "1"
+          # Passed via env (not interpolated into run:) — read by the Python
+          # process, so no template-injection surface. See ADR-027 / CLAUDE.md.
+          DOCS_BUILD_VERSION: ${{ needs.release-please.outputs.version }}
+        # Builds only this release's docs, then assembles ./site with every prior
+        # version copied from gh-pages, a `latest` alias, and a root redirect.
+        run: uv run --no-default-groups --group docs python tools/build_docs.py site
       - name: Deploy to GitHub Pages
-        # Publishes the built HTML to the gh-pages branch. The action does its own
-        # git auth from the token input (default github.token) without writing it
-        # to .git/config, so the checkout above keeps persist-credentials: false.
+        # Publishes the assembled ./site to gh-pages. The action does its own git
+        # auth from the token input (default github.token) without writing it to
+        # .git/config, so the checkout above keeps persist-credentials: false.
         # sphinx.ext.githubpages emits .nojekyll so _static/ is served.
         uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445  # v4.9.0
         with:
-          folder: docs/_build/html
-          # Root docs publish uses the action's default clean: true, which would
-          # wipe the PR preview tree docs-preview.yml maintains. Preserve it, and
-          # disable the default force-push so a concurrent preview deploy is not
-          # clobbered (the action merges instead of overwriting). See ADR-010.
+          folder: site
+          # Preserve the PR preview tree (pr-preview/**) that docs-preview.yml
+          # maintains — the action's default clean: true would otherwise wipe it.
+          # The numeric version directories (e.g. 0.3/) are re-supplied in ./site
+          # each run, so clean is safe for them. Disable force-push so a
+          # concurrent preview deploy is not clobbered. See ADR-010 / ADR-027.
           clean-exclude: pr-preview/**
           force: false
   notify-released-issues:
