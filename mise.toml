@@ -51,6 +51,11 @@ run = "uv run --locked tox run -e docs-build"
 description = "Serve documentation locally"
 run = "uv run --locked tox run -e docs-server"
 
+[tasks.docs-doctest]
+description = "Run documentation doctests"
+run = "uv run --locked tox run -e docs-doctest"
+
+
 [tasks.prek]
 description = "Run prek hooks"
 alias = "pc"
