@@ -12,6 +12,22 @@ permissions: read-all
 jobs:
   analysis:
     name: Scorecard analysis
+    # `publish_results` and the code-scanning upload both need a public repo
+    # (GitHub Advanced Security on private/internal ones), so on a private repo
+    # this job just leaves `main` permanently red.
+    #
+    # `||` returns the first truthy operand, so this coalesces two visibility
+    # sources and falls back to "public". Two sources because neither covers
+    # every trigger alone, and one is only probably real:
+    #   * `github.event.repository.visibility` is documented, but `schedule`
+    #     carries no event payload at all, so it is empty there.
+    #   * `github.repository_visibility` is the only source a scheduled run
+    #     could have, but it is undocumented -- absent from both the contexts
+    #     and default-env-var references, though actionlint models it.
+    # Hence the 'public' default: if that property does not resolve, a
+    # scheduled run on a *public* repo sees nothing from either source and must
+    # still run. Unknown therefore fails OPEN. Mirrors codeql.yml.
+    if: (github.repository_visibility || github.event.repository.visibility || 'public') == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:

@@ -19,7 +19,57 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Check out the latest release tag
+        # Manual redeploy has no release event. Build the newest *published*
+        # release's source (not the default branch's HEAD, which may carry
+        # unreleased commits that would overwrite the tagged version's docs), and
+        # set DOCS_BUILD_VERSION from that same tag. Requires at least one
+        # published release.
+        #
+        # `git describe --tags` would pick the newest tag regardless of release
+        # state. release-please creates the tag (force-tag-creation) the moment
+        # the release PR merges and leaves the release a DRAFT until the publish
+        # jobs succeed, so a redeploy run in that window — the likely moment,
+        # right after a failed release — would publish the unreleased version's
+        # docs as `latest`. The releases/latest endpoint excludes drafts and
+        # prereleases by definition.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          tag="$(gh api "repos/${GITHUB_REPOSITORY}/releases/latest" --jq .tag_name)"
+          echo "Redeploying documentation for the latest published release: $tag"
+          dispatch_ref="$(git rev-parse HEAD)"
+          git checkout --force --detach "$tag"
+          # Keep THIS revision's tools/build_docs.py. The tag carries the docs
+          # *sources* we want to rebuild, but build_docs.py is orchestration —
+          # the same layer as this workflow file, which workflow_dispatch already
+          # takes from the dispatch ref. Without this, a project that adopts a
+          # template update before cutting its next release would still run the
+          # tagged script on a manual redeploy, and an older one that returns
+          # silently when `git archive` cannot read a listed version would drop
+          # it from the assembled site — which the deploy then cleans off
+          # gh-pages. That is exactly the deploy this guard exists to protect.
+          #
+          # Its *granularity* is configuration, not orchestration, so carry the
+          # tag's value across the swap: which slug a release occupies is fixed
+          # at publish time. Rebuilding 1.2.3 under `1` because the answer has
+          # since changed from minor to major would publish it a second time
+          # beside the live `1.2/` and repoint `latest` at the duplicate. A tag
+          # from before this script existed leaves it unset, and the dispatch
+          # revision's own baked answer stands.
+          granularity=""
+          if [ -f tools/build_docs.py ]; then
+            granularity="$(sed -nE 's/^(DEFAULT_)?VERSION_GRANULARITY = "([a-z]+)"$/\2/p' tools/build_docs.py)"
+          fi
+          git checkout "$dispatch_ref" -- tools/build_docs.py
+          if [ -n "$granularity" ]; then
+            echo "DOCS_VERSION_GRANULARITY=$granularity" >> "$GITHUB_ENV"
+          fi
+          echo "DOCS_BUILD_VERSION=${tag#v}" >> "$GITHUB_ENV"
       - name: Set up Python
+        # After the release-tag checkout, so .python-version is the interpreter
+        # that release actually shipped on — not whatever main has bumped to
+        # since. Same for the uv cache key, which reads pyproject.toml/uv.lock.
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version-file: .python-version
@@ -34,19 +84,59 @@ jobs:
       - name: Restore cache
         if: steps.setup-uv.outputs.cache-hit == 'true'
         run: echo "Cache was restored"
-      - name: Build docs
-        run: uv run --no-default-groups --extra all --group docs sphinx-build -b html docs docs/_build/html
+      - name: Set reproducible build epoch
+        # Pin Sphinx's "today"/copyright to the checked-out tag's commit date so
+        # the same tag always renders the same docs output (reproducible-builds.org).
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+      - name: Fetch gh-pages branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # actions/checkout runs with `persist-credentials: false` (artipacked),
+        # so raw git has no credentials: on a PRIVATE repo an unauthenticated
+        # `ls-remote`/`fetch` fails outright. Pass the token per invocation via
+        # an in-memory http.extraheader — the same header actions/checkout uses
+        # internally — so nothing is written to .git/config for a later step (or
+        # an uploaded artifact) to pick up.
+        #
+        # `git fetch ... || echo` would swallow a transport error as if the branch
+        # were simply absent: build_docs.py would then assemble a site with no
+        # prior versions and the deploy below (clean, minus pr-preview/**) would
+        # DELETE every published version directory from gh-pages. ls-remote can
+        # tell the two apart — exit 2 is "no such ref", anything else is a real
+        # failure worth aborting on.
+        run: |
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          set +e
+          git -c "http.https://github.com/.extraheader=$auth" \
+            ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1
+          rc=$?
+          set -e
+          if [ "$rc" -eq 0 ]; then
+            git -c "http.https://github.com/.extraheader=$auth" \
+              fetch origin gh-pages:gh-pages
+          elif [ "$rc" -eq 2 ]; then
+            echo "gh-pages does not exist yet — first deploy, nothing to preserve"
+          else
+            echo "::error::could not query origin for gh-pages (ls-remote exit $rc); refusing to continue and risk deleting published versions"
+            exit 1
+          fi
+      - name: Build versioned docs
+        env:
+          PYTHONUNBUFFERED: "1"
+        # Builds only the latest release's docs, then assembles ./site with every
+        # prior version copied from gh-pages, a `latest` alias, and a redirect.
+        run: uv run --no-default-groups --group docs python tools/build_docs.py site
       - name: Deploy to GitHub Pages
-        # Publishes the built HTML to the gh-pages branch. The action does its own
-        # git auth from the token input (default github.token) without writing it
-        # to .git/config, so the checkout above keeps persist-credentials: false.
+        # Publishes the assembled ./site to gh-pages. The action does its own git
+        # auth from the token input (default github.token) without writing it to
+        # .git/config, so the checkout above keeps persist-credentials: false.
         # sphinx.ext.githubpages emits .nojekyll so _static/ is served.
         uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445  # v4.9.0
         with:
-          folder: docs/_build/html
-          # Preserve the PR preview tree (pr-preview/**) that docs-preview.yml
-          # maintains — the action's default clean: true would otherwise wipe it —
-          # and disable the default force-push so a concurrent preview deploy is
-          # not clobbered.
+          folder: site
+          # Preserve the PR preview tree (pr-preview/**); the numeric version
+          # directories (e.g. 0.3/) are re-supplied in ./site each run. Disable
+          # force-push so a concurrent preview deploy is not clobbered. See
+          # ADR-010 / ADR-027.
           clean-exclude: pr-preview/**
           force: false

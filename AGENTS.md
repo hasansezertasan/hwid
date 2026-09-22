@@ -25,6 +25,32 @@ Guidance for AI coding agents working in this repository.
 | Security policy | `.github/SECURITY.md` |
 | Changelog (owned by release-please) | `CHANGELOG.md` |
 
+## Package Structure
+
+**Do not create new top-level subpackages under `src/hwid/`.**
+New feature code goes inside an existing layer:
+
+| What you are adding | Where it goes |
+| ------------------- | ------------- |
+| Data every interface reports (version, runtime info, ...) | `core/app.py` |
+| Business logic, domain models, app behavior | `core/` |
+| External integrations (APIs, storage, brokers) | `core/` |
+| Config / settings | `core/config.py` |
+| Dependency-free helpers (no internal imports) | `utils/` |
+| CLI command or subcommand | `cli/app.py` |
+
+The layering is enforced in CI by import-linter (`[tool.importlinter]` in
+`pyproject.toml`), whose contract is **exhaustive**: a subpackage not listed in
+its `layers` fails `tox run -e style`. `core` may import `utils`; `utils` imports
+nothing internal.
+`core/app.py` holds the version/runtime payload every interface renders; each
+interface is an adapter over it and decides only how to transport, present, and
+fail. Put a fact that more than one interface must report there, not in one of
+them.
+
+Adding a top-level subpackage is an architecture change: propose it first, and if
+agreed, add it to the import-linter contract in the same PR.
+
 ## Key Conventions
 
 - Source lives in `src/hwid/`; tests mirror it under `tests/`.

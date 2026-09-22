@@ -40,4 +40,8 @@
 
 ## Which issue(s) this PR fixes
 
-<!--- If this PR fixes an issue, please add the issue number here like this: Fixes #1 -->
+<!--- Required: link the issue this PR closes using a GitHub closing keyword, -->
+<!--- e.g. `Closes #1`. The "Verify linked issue" check enforces this; pass the -->
+<!--- `no-issue` label if there truly is none. -->
+
+Closes #

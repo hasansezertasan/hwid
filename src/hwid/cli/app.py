@@ -11,12 +11,16 @@ ADR-019 and ADR-020). Selected via ``cli_framework``.
 from __future__ import annotations
 
 import argparse
-import platform
 import sys
-from importlib.metadata import Distribution, PackageNotFoundError
 from typing import TYPE_CHECKING, cast
 
+<<<<<<< before updating
 from hwid.core.logging_setup import logger
+=======
+from hwid.__metadata__ import PROJECT_NAME
+from hwid.core import app as service
+from hwid.core.logging_setup import get_logger
+>>>>>>> after updating
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -42,15 +46,15 @@ def show_version() -> None:
         SystemExit: With code 1 if the package metadata cannot be found.
     """
     try:
-        distribution = Distribution.from_name(PROJECT_NAME)
-    except PackageNotFoundError:
+        resolved = service.version()
+    except service.MetadataUnavailableError:
         # An uninstalled or partial package is an expected, user-facing error, so
         # log without the traceback that logging.exception would add.
         logger.error("Package metadata not found for %s", PROJECT_NAME)  # noqa: TRY400
         _ = sys.stderr.write(_METADATA_MISSING + "\n")
         raise SystemExit(1) from None
     logger.info("Command `version` called.")
-    _ = sys.stdout.write(f"{distribution.version}\n")
+    _ = sys.stdout.write(f"{resolved}\n")
     logger.info("Version displayed successfully.")
 
 
@@ -69,20 +73,19 @@ def info() -> None:
         SystemExit: With code 1 if the package metadata cannot be found.
     """
     try:
-        distribution = Distribution.from_name(PROJECT_NAME)
-    except PackageNotFoundError:
+        payload = service.info()
+    except service.MetadataUnavailableError:
         # An uninstalled or partial package is an expected, user-facing error, so
         # log without the traceback that logging.exception would add.
         logger.error("Package metadata not found for %s", PROJECT_NAME)  # noqa: TRY400
         _ = sys.stderr.write(_METADATA_MISSING + "\n")
         raise SystemExit(1) from None
     logger.info("Command `info` called.")
-    python_version = platform.python_version()
-    python_implementation = platform.python_implementation()
+    python = f"{payload['python_version']} ({payload['python_implementation']})"
     lines = [
-        f"Application Version: {distribution.version}",
-        f"Python Version: {python_version} ({python_implementation})",
-        f"Platform: {platform.system()}",
+        f"Application Version: {payload['application_version']}",
+        f"Python Version: {python}",
+        f"Platform: {payload['platform']}",
     ]
     _ = sys.stdout.write("\n".join(lines) + "\n")
     logger.info("Application information displayed successfully.")

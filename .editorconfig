@@ -39,6 +39,12 @@ indent_size = 2
 [.all-contributorsrc]
 indent_size = 2
 
+# `.secrets.baseline` is JSON but has no `.json` extension, so it needs its own
+# stanza to inherit the 2-space convention detect-secrets writes (the stanza is
+# inert when the file is absent). Only present when the detect-secrets gate is on.
+[.secrets.baseline]
+indent_size = 2
+
 # cobo.lock is a generated TOML lockfile (2-space subtable indent, like the
 # other 2-space TOML above); the `.lock` extension is outside the TOML glob, so
 # it needs its own stanza. taplo does not lint it (its glob is `*.toml`), leaving

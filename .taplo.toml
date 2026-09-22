@@ -1,3 +1,4 @@
+<<<<<<< before updating
 # Scope taplo to the project's own TOML. Without this, `taplo lint`/`format`
 # also walk vendored TOML under .tox/.venv/site-packages/node_modules, which makes
 # `taplo format --check` fail on files this project doesn't own.
@@ -8,3 +9,22 @@ exclude = [
   "**/node_modules/**",
   "docs/_build/**",
 ]
+=======
+# Configuration file for `taplo`, the TOML formatter/linter run by the tox
+# `style` env.
+#
+# Both knobs keep the canonical form independent of how long the rendered values
+# happen to be, which is what lets `style` run taplo as a strict `--check` gate:
+#
+# - Array auto expand/collapse would reflow arrays purely by width, so the
+#   canonical form of a generated file would depend on which components are
+#   enabled (prek.toml one-lines mypy `additional_dependencies` with two
+#   components and explodes it with six).
+# - Comment alignment would pad trailing comments to the longest entry in the
+#   run, so a single Renovate version bump of a *different* line could break the
+#   gate on a line nothing touched.
+[formatting]
+array_auto_expand = false
+array_auto_collapse = false
+align_comments = false
+>>>>>>> after updating
