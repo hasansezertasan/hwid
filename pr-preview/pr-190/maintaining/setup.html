@@ -88,10 +88,18 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#merge-and-pull-request-policy">Merge and pull-request policy</a></li>
-<li><a class="reference internal" href="#branch-protection">Branch protection</a></li>
+<li><a class="reference internal" href="#branch-protection">Branch protection</a><ul>
+<li><a class="reference internal" href="#apply-protection-after-the-first-merge">Apply protection <em>after</em> the first merge</a></li>
+<li><a class="reference internal" href="#release-prs-need-a-manual-nudge">Release PRs need a manual nudge</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#let-actions-open-the-release-pr">Let Actions open the release PR</a></li>
 <li><a class="reference internal" href="#release-immutability">Release immutability</a></li>
-<li><a class="reference internal" href="#pypi-trusted-publishing">PyPI trusted publishing</a></li>
+<li><a class="reference internal" href="#dependency-graph">Dependency graph</a></li>
+<li><a class="reference internal" href="#pypi-trusted-publishing">PyPI trusted publishing</a><ul>
+<li><a class="reference internal" href="#restrict-the-publish-environment-to-main">Restrict the <code class="docutils literal notranslate"><span class="pre">publish</span></code> environment to <code class="docutils literal notranslate"><span class="pre">main</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#coverage-reporting-codecov">Coverage reporting (Codecov)</a></li>
 <li><a class="reference internal" href="#secret-scanning-gitleaks">Secret scanning (gitleaks)</a></li>
 <li><a class="reference internal" href="#documentation-site-github-pages">Documentation site (GitHub Pages)</a></li>
@@ -102,6 +110,13 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#homebrew-tap">Homebrew tap</a><ul>
 </ul>
 </li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optional-post-launch-integrations">Optional post-launch integrations</a><ul>
+<li><a class="reference internal" href="#github-social-preview">GitHub social preview</a></li>
+<li><a class="reference internal" href="#repology-packaging-status">Repology packaging status</a></li>
+<li><a class="reference internal" href="#downstream-package-repositories">Downstream package repositories</a></li>
+<li><a class="reference internal" href="#research-archive-and-doi">Research archive and DOI</a></li>
 </ul>
 </li>
 </ul>
@@ -182,6 +197,10 @@ head branches</strong>.</p>
 <p>Protect <code class="docutils literal notranslate"><span class="pre">main</span></code> so a PR can only merge once its checks pass. Mark these check
 contexts as required (the names are the <strong>check runs</strong>, not the workflow files):</p>
 <ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">check</span></code> — <code class="docutils literal notranslate"><span class="pre">ci.yml</span></code>’s aggregate gate. It is the single context that covers
+the tests, the per-component coverage gates, style, hooks and the documentation
+build; without it a PR whose entire test suite failed still satisfies
+protection, because the four metadata gates below say nothing about the code.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Validate</span> <span class="pre">PR</span> <span class="pre">title</span></code> — the Conventional Commits PR-title lint
 (<code class="docutils literal notranslate"><span class="pre">check-pr-title.yml</span></code>), which release-please depends on.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Validate</span> <span class="pre">branch</span> <span class="pre">name</span></code> — the Conventional Branch lint
@@ -190,7 +209,10 @@ follow the <code class="docutils literal notranslate"><span class="pre">&lt;type
 <li><p><code class="docutils literal notranslate"><span class="pre">Verify</span> <span class="pre">linked</span> <span class="pre">issue</span></code> — the linked-issue check (<code class="docutils literal notranslate"><span class="pre">check-linked-issues.yml</span></code>),
 which fails a PR with no linked issue.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Task</span> <span class="pre">Completed</span> <span class="pre">Checker</span></code> — the PR task-list gate (<code class="docutils literal notranslate"><span class="pre">task-completed-check.yml</span></code>),
-which fails while any unticked checkbox remains in the PR description.</p></li>
+which fails while any unticked checkbox remains in the PR description. This is
+the name of the <strong>check run</strong> the action publishes, not of the job around it
+(<code class="docutils literal notranslate"><span class="pre">Check</span> <span class="pre">PR</span> <span class="pre">task</span> <span class="pre">list</span></code>) — the job is green even when boxes are unticked, so
+requiring the job name would not gate anything.</p></li>
 </ul>
 <p><strong>[AGENT]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
@@ -198,7 +220,7 @@ which fails while any unticked checkbox remains in the PR description.</p></li>
 </span><span data-line="3"><span class="s">{</span>
 </span><span data-line="4"><span class="s">  "required_status_checks": {</span>
 </span><span data-line="5"><span class="s">    "strict": true,</span>
-</span><span data-line="6"><span class="s">    "contexts": ["Validate PR title", "Validate branch name", "Verify linked issue", "Task Completed Checker"]</span>
+</span><span data-line="6"><span class="s">    "contexts": ["check", "Validate PR title", "Validate branch name", "Verify linked issue", "Task Completed Checker"]</span>
 </span><span data-line="7"><span class="s">  },</span>
 </span><span data-line="8"><span class="s">  "enforce_admins": null,</span>
 </span><span data-line="9"><span class="s">  "required_pull_request_reviews": null,</span>
@@ -209,13 +231,45 @@ which fails while any unticked checkbox remains in the PR description.</p></li>
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'(.required_status_checks.strict == true) and ((["Validate PR title","Validate branch name","Verify linked issue","Task Completed Checker"] - (.required_status_checks.contexts // [])) == [])'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'(.required_status_checks.strict == true) and ((["check","Validate PR title","Validate branch name","Verify linked issue","Task Completed Checker"] - (.required_status_checks.contexts // [])) == [])'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>UI equivalent: <strong>Settings → Branches → Add branch ruleset</strong> (or <strong>Add rule</strong> for
 <code class="docutils literal notranslate"><span class="pre">main</span></code>) — enable <strong>Require status checks to pass before merging</strong>, then search
-for and add the four contexts above. The contexts only appear in the picker
+for and add the five contexts above. The contexts only appear in the picker
 after each check has run at least once.</p>
+<section id="apply-protection-after-the-first-merge">
+<span id="setup-first-pr"></span><h3>Apply protection <em>after</em> the first merge<a class="headerlink" href="#apply-protection-after-the-first-merge" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">check-pr-title.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">check-branch-name.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">check-linked-issues.yml</span></code>
+and <code class="docutils literal notranslate"><span class="pre">task-completed-check.yml</span></code> all trigger on <code class="docutils literal notranslate"><span class="pre">pull_request_target</span></code>, which
+GitHub sources from the <strong>base</strong> branch. On a repository adopting this template
+<code class="docutils literal notranslate"><span class="pre">main</span></code> does not have those workflows yet, so the very first pull request — the
+one that adds them — reports none of those four contexts and is permanently
+blocked by the protection above. (<code class="docutils literal notranslate"><span class="pre">check</span></code> is unaffected: <code class="docutils literal notranslate"><span class="pre">ci.yml</span></code> runs on
+plain <code class="docutils literal notranslate"><span class="pre">pull_request</span></code>, which GitHub sources from the <em>head</em> branch.)</p>
+<p>So either apply branch protection only <em>after</em> the scaffolding has landed on
+<code class="docutils literal notranslate"><span class="pre">main</span></code>, or admin-merge that first pull request. From the second PR onwards the
+workflows exist on the base branch and every context reports normally.</p>
+</section>
+<section id="release-prs-need-a-manual-nudge">
+<span id="setup-release-pr-checks"></span><h3>Release PRs need a manual nudge<a class="headerlink" href="#release-prs-need-a-manual-nudge" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">release.yml</span></code> runs <code class="docutils literal notranslate"><span class="pre">release-please</span></code> with the implicit <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code>, and
+<strong>events created with that token do not start workflow runs</strong> — the same rule
+that stops a <code class="docutils literal notranslate"><span class="pre">release:</span> <span class="pre">published</span></code> event from triggering <code class="docutils literal notranslate"><span class="pre">gh-pages.yml</span></code>. So
+the release pull request opens with none of the required contexts reported and
+cannot merge on its own. (Renovate PRs are unaffected: Renovate authenticates as
+a GitHub App, not as <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code>.)</p>
+<p>This is not a setup step — there is nothing to configure and no <code class="docutils literal notranslate"><span class="pre">[CHECK]</span></code>.
+It is the recurring workaround, recorded here because it is not discoverable
+from the workflows themselves: <strong>close and reopen the release pull request.</strong>
+Every required context listens for <code class="docutils literal notranslate"><span class="pre">reopened</span></code>, so reopening it as yourself
+fires all of them under your identity. Do not just edit the PR body — that only
+re-fires the three <code class="docutils literal notranslate"><span class="pre">pull_request_target</span></code> checks that listen for <code class="docutils literal notranslate"><span class="pre">edited</span></code>,
+missing <code class="docutils literal notranslate"><span class="pre">check-branch-name.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">ci.yml</span></code>.</p>
+<p>This is a deliberate trade, not an oversight: the alternative is giving
+<code class="docutils literal notranslate"><span class="pre">release.yml</span></code> a PAT or GitHub App token, which is a standing credential with
+write access to <code class="docutils literal notranslate"><span class="pre">main</span></code>. One manual reopen per release is the cheaper side.</p>
+</section>
 </section>
 <section id="let-actions-open-the-release-pr">
 <h2>Let Actions open the release PR<a class="headerlink" href="#let-actions-open-the-release-pr" title="Link to this heading">#</a></h2>
@@ -244,6 +298,32 @@ immutability</strong> (currently a UI-only toggle).</p>
 <p><strong>[CHECK]</strong> No scriptable check — confirm under <strong>Settings → General</strong> that
 release immutability is enabled.</p>
 </section>
+<section id="dependency-graph">
+<h2>Dependency graph<a class="headerlink" href="#dependency-graph" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">dependency-review.yml</span></code> diffs a pull request’s dependency manifests against the
+base branch and fails it on a newly introduced vulnerable or disallowed-license
+dependency. It reads GitHub’s dependency graph for the repository; with the graph
+off, the action does not pass vacuously — it errors, so the check is red on the
+first pull request:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span data-line="1">Dependency review is not supported on this repository.
+</span><span data-line="2">Please ensure that Dependency graph is enabled
+</span></pre></div>
+</div>
+<p><strong>[HUMAN]</strong> Enable it under <strong>Settings → Advanced Security</strong> (<strong>Code security and
+analysis</strong> on the older settings layout) → <strong>Dependency graph</strong>. UI-only:
+<code class="docutils literal notranslate"><span class="pre">PATCH</span> <span class="pre">/repos/{owner}/{repo}</span></code> accepts
+<code class="docutils literal notranslate"><span class="pre">security_and_analysis[dependency_graph][status]</span></code> and silently no-ops, so there
+is no <code class="docutils literal notranslate"><span class="pre">[AGENT]</span></code> command.</p>
+<p><strong>[CHECK]</strong> Ask the dependency-review API itself — the same endpoint
+<code class="docutils literal notranslate"><span class="pre">dependency-review-action</span></code> calls, so a clean exit here is exactly the state the
+workflow needs. It answers <code class="docutils literal notranslate"><span class="pre">403</span></code> while the graph is off. A self-compare needs
+no second ref, so this works on a repository with nothing merged yet. (Not the
+SBOM export, which also tracks the graph but is closing down on 2026-11-13.)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>--silent<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>repos/hasansezertasan/hwid/dependency-graph/compare/main...main
+</span></pre></div>
+</div>
+</section>
 <section id="pypi-trusted-publishing">
 <h2>PyPI trusted publishing<a class="headerlink" href="#pypi-trusted-publishing" title="Link to this heading">#</a></h2>
 <p>The release workflow publishes to PyPI via
@@ -262,6 +342,67 @@ workflow, so this is the filename PyPI’s OIDC check matches.</p></li>
 </ul>
 <p><strong>[CHECK]</strong> No scriptable check — confirm the pending publisher is listed at
 <a class="reference external" href="https://pypi.org/manage/account/publishing/">PyPI → Publishing</a>.</p>
+<section id="restrict-the-publish-environment-to-main">
+<h3>Restrict the <code class="docutils literal notranslate"><span class="pre">publish</span></code> environment to <code class="docutils literal notranslate"><span class="pre">main</span></code><a class="headerlink" href="#restrict-the-publish-environment-to-main" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">pypi-publish</span></code> job holds <code class="docutils literal notranslate"><span class="pre">id-token:</span> <span class="pre">write</span></code> against the <code class="docutils literal notranslate"><span class="pre">publish</span></code>
+environment. The <code class="docutils literal notranslate"><span class="pre">build</span></code> job uses the same environment while minting build
+provenance attestations. Because <code class="docutils literal notranslate"><span class="pre">release.yml</span></code> carries <code class="docutils literal notranslate"><span class="pre">workflow_dispatch</span></code>,
+a manual run
+executes the workflow file <strong>from the branch you select</strong>, so the
+<code class="docutils literal notranslate"><span class="pre">release_created</span></code> guard inside the file is not a mitigation: anyone with write
+access could push a <code class="docutils literal notranslate"><span class="pre">release.yml</span></code> with that guard removed to an unprotected
+branch, dispatch it, mint a PyPI trusted-publishing token and publish arbitrary
+content. Branch protection on <code class="docutils literal notranslate"><span class="pre">main</span></code> is never consulted on that path, and
+removing the trigger is not an option — <code class="docutils literal notranslate"><span class="pre">finalize-release</span></code> re-dispatches this
+workflow with <code class="docutils literal notranslate"><span class="pre">gh</span> <span class="pre">workflow</span> <span class="pre">run</span></code> to reconcile the next release PR.</p>
+<p>The containment is the environment’s <strong>deployment branch policy</strong>, which GitHub
+evaluates outside the workflow file, so editing the file cannot bypass it. Do
+this before the first release: GitHub auto-creates the environment
+<strong>unprotected</strong> on first use, and a repo scaffolded over an existing project may
+also be carrying a stale, unreferenced publish environment from its previous
+workflow.</p>
+<p><strong>[AGENT]</strong> The branch/tag policies are a <em>separate collection</em> — switching the
+environment to <code class="docutils literal notranslate"><span class="pre">custom_branch_policies</span></code> does not clear whatever is already in
+it, and adding <code class="docutils literal notranslate"><span class="pre">main</span></code> only appends. A pre-existing wildcard (say <code class="docutils literal notranslate"><span class="pre">*</span></code>, the
+default someone clicks through in the UI) would stay eligible alongside it, so
+delete every policy first and re-add exactly one:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>repos/hasansezertasan/hwid/environments/publish<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>-F<span class="w"> </span><span class="s1">'deployment_branch_policy[protected_branches]=false'</span><span class="w"> </span><span class="se">\</span>
+</span><span data-line="3"><span class="w">  </span>-F<span class="w"> </span><span class="s1">'deployment_branch_policy[custom_branch_policies]=true'</span>
+</span><span data-line="4"><span class="nv">ids</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span>--paginate<span class="w"> </span>repos/hasansezertasan/hwid/environments/publish/deployment-branch-policies<span class="w"> </span><span class="se">\</span>
+</span><span data-line="5"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.branch_policies[].id'</span><span class="k">)</span><span class="s2">"</span>
+</span><span data-line="6"><span class="k">for</span><span class="w"> </span>id<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="nv">$ids</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span data-line="7"><span class="w">  </span>gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span><span class="s2">"repos/hasansezertasan/hwid/environments/publish/deployment-branch-policies/</span><span class="nv">$id</span><span class="s2">"</span>
+</span><span data-line="8"><span class="k">done</span>
+</span><span data-line="9">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>repos/hasansezertasan/hwid/environments/publish/deployment-branch-policies<span class="w"> </span><span class="se">\</span>
+</span><span data-line="10"><span class="w">  </span>-f<span class="w"> </span><span class="nv">name</span><span class="o">=</span>main<span class="w"> </span>-f<span class="w"> </span><span class="nv">type</span><span class="o">=</span>branch
+</span></pre></div>
+</div>
+<p>Artifact attestations are enabled automatically for public repositories. For a
+private or internal repository on GitHub Enterprise Cloud, opt in after
+confirming artifact attestations are available:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>variable<span class="w"> </span><span class="nb">set</span><span class="w"> </span>ENABLE_PRIVATE_ATTESTATIONS<span class="w"> </span>--body<span class="w"> </span><span class="nb">true</span><span class="w"> </span>--repo<span class="w"> </span>hasansezertasan/hwid
+</span></pre></div>
+</div>
+<p><strong>[CHECK]</strong> The collection must be <em>exactly</em> one branch policy named <code class="docutils literal notranslate"><span class="pre">main</span></code> —
+asserting only that <code class="docutils literal notranslate"><span class="pre">main</span></code> is present would pass with a wildcard sitting next
+to it. Compare the <em>accumulated</em> lines rather than folding the comparison into
+<code class="docutils literal notranslate"><span class="pre">--jq</span></code>: under <code class="docutils literal notranslate"><span class="pre">--paginate</span></code> the jq expression runs once <strong>per page</strong>, so a
+per-page <code class="docutils literal notranslate"><span class="pre">==</span> <span class="pre">[&quot;branch:main&quot;]</span></code> prints <code class="docutils literal notranslate"><span class="pre">true</span></code> for a final page holding only
+<code class="docutils literal notranslate"><span class="pre">main</span></code> even while an earlier page still carries a wildcard — and a
+<code class="docutils literal notranslate"><span class="pre">grep</span> <span class="pre">-qx</span> <span class="pre">true</span></code> over that output would accept it. (<code class="docutils literal notranslate"><span class="pre">--slurp</span></code> is the
+documented way to wrap every page into one array, but <code class="docutils literal notranslate"><span class="pre">gh</span></code> rejects it
+together with <code class="docutils literal notranslate"><span class="pre">--jq</span></code>.)</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="nv">policies</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>gh<span class="w"> </span>api<span class="w"> </span>--paginate<span class="w"> </span>repos/hasansezertasan/hwid/environments/publish/deployment-branch-policies<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.branch_policies[] | "\(.type // "branch"):\(.name)"'</span><span class="k">)</span><span class="s2">"</span>
+</span><span data-line="3"><span class="o">[</span><span class="w"> </span><span class="s2">"</span><span class="nv">$policies</span><span class="s2">"</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"branch:main"</span><span class="w"> </span><span class="o">]</span>
+</span></pre></div>
+</div>
+<p>UI equivalent: <strong>Settings → Environments → publish → Deployment branches and
+tags</strong> — choose <strong>Selected branches and tags</strong>, delete every rule already listed
+(including any <code class="docutils literal notranslate"><span class="pre">*</span></code>), then add <code class="docutils literal notranslate"><span class="pre">main</span></code>. While you are there, delete any
+leftover environment a previous release workflow created.</p>
+</section>
 </section>
 <section id="coverage-reporting-codecov">
 <h2>Coverage reporting (Codecov)<a class="headerlink" href="#coverage-reporting-codecov" title="Link to this heading">#</a></h2>
@@ -380,6 +521,12 @@ check on them
 (<a class="reference external" href="https://github.com/renovatebot/renovate/issues/31600">renovate#31600</a>), so a
 copier PR can look mergeable while carrying conflicts. Reconcile before merging:
 keep your project identity, adopt the template’s tooling/config changes.</p>
+<p>If the update touches dependency metadata in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> — the
+<code class="docutils literal notranslate"><span class="pre">dependencies</span></code> list, a dependency group, or the optional-dependency table —
+also run <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">lock</span></code> and commit the refreshed <code class="docutils literal notranslate"><span class="pre">uv.lock</span></code> in the same PR.
+Renovate’s copier manager re-renders files but does not re-lock, and CI, the
+<code class="docutils literal notranslate"><span class="pre">prek</span></code> hooks, and the <code class="docutils literal notranslate"><span class="pre">mise</span></code> tasks all run <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">--locked</span></code>, which fails
+outright against a stale lockfile.</p>
 </section>
 <section id="enable-github-discussions">
 <h2>Enable GitHub Discussions<a class="headerlink" href="#enable-github-discussions" title="Link to this heading">#</a></h2>
@@ -476,6 +623,70 @@ narrow <code class="docutils literal notranslate"><span class="pre">.github/CODE
 Deployments in the About sidebar) are <strong>not</strong> settable through any GitHub API,
 so neither this App nor any workflow can manage them — set those in the web UI.
 Labels are managed separately by <code class="docutils literal notranslate"><span class="pre">.github/labels.yml</span></code>, not here.</p>
+</section>
+</section>
+<section id="optional-post-launch-integrations">
+<h2>Optional post-launch integrations<a class="headerlink" href="#optional-post-launch-integrations" title="Link to this heading">#</a></h2>
+<p>These integrations become useful only after the project has releases, users,
+or downstream packaging. They are deliberately not Copier questions: whether
+they are appropriate depends on how the individual project develops. Revisit
+this list after the first stable releases and add only the integrations whose
+prerequisites are met.</p>
+<section id="github-social-preview">
+<h3>GitHub social preview<a class="headerlink" href="#github-social-preview" title="Link to this heading">#</a></h3>
+<p>A social preview is the image GitHub shows when the repository link is shared
+on social media or messaging services. Add one after the project has stable
+branding, a representative screenshot, or another visual that will remain
+recognizable across releases.</p>
+<p><strong>[HUMAN]</strong> Upload a PNG, JPG, or GIF under <strong>Settings → General → Social
+preview</strong>. Keep it under 1 MB. GitHub recommends an image of at least 640×320
+pixels and uses 1280×640 pixels for the best display. Keep essential text and
+artwork away from the edges, where previews may be cropped.</p>
+<p><strong>[CHECK]</strong> Share the repository URL in a preview-capable service or inspect the
+repository settings and confirm that the image remains legible at thumbnail
+size.</p>
+</section>
+<section id="repology-packaging-status">
+<h3>Repology packaging status<a class="headerlink" href="#repology-packaging-status" title="Link to this heading">#</a></h3>
+<p><a class="reference external" href="https://repology.org/">Repology</a> compares the versions of a project shipped
+by package repositories and operating-system distributions. Its vertical badge
+is useful once Repology recognizes this project in multiple relevant
+repositories; a project represented only by PyPI gains little from it.</p>
+<p>Before adding the badge, open
+<code class="docutils literal notranslate"><span class="pre">https://repology.org/project/hwid/versions</span></code> and verify that
+Repology matched the correct project, repositories, and versions. Repository
+names are normalized, so the Repology project name may differ from
+<code class="docutils literal notranslate"><span class="pre">hwid</span></code>. If it does, use the name shown by Repology in both
+URLs below.</p>
+<p>Add the badge to <code class="docutils literal notranslate"><span class="pre">README.md</span></code> only after that check:</p>
+<div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span data-line="1">[<span class="nt">![Packaging status</span>](<span class="na">https://repology.org/badge/vertical-allrepos/hwid.svg</span>)](https://repology.org/project/hwid/versions)
+</span></pre></div>
+</div>
+<p>Do not add <code class="docutils literal notranslate"><span class="pre">minversion</span></code> merely to mirror the current release. That parameter
+means “minimum acceptable version” and should be used only when the project has
+a real support or compatibility policy that makes older downstream packages
+unacceptable.</p>
+</section>
+<section id="downstream-package-repositories">
+<h3>Downstream package repositories<a class="headerlink" href="#downstream-package-repositories" title="Link to this heading">#</a></h3>
+<p>The optional Homebrew tap and Scoop bucket generated by this template are
+maintainer-owned distribution channels. After the project has stable releases
+and user demand, consider submitting it to community-maintained repositories
+such as Homebrew core, Scoop’s main buckets, Arch, Debian, or Fedora. Each has
+its own acceptance, maintenance, and update requirements; do not promise a
+channel in <code class="docutils literal notranslate"><span class="pre">README.md</span></code> until its package is accepted and installable.</p>
+<p>Once downstream packages exist, periodically compare their versions with the
+latest PyPI release. Repology can make that comparison visible when it indexes
+the repositories involved.</p>
+</section>
+<section id="research-archive-and-doi">
+<h3>Research archive and DOI<a class="headerlink" href="#research-archive-and-doi" title="Link to this heading">#</a></h3>
+<p>For software cited in academic or research work, connect the repository to an
+archive such as <a class="reference external" href="https://zenodo.org/">Zenodo</a> after the release process is
+stable. Archive a release, add the resulting DOI badge and citation metadata to
+<code class="docutils literal notranslate"><span class="pre">README.md</span></code>, and update <code class="docutils literal notranslate"><span class="pre">CITATION.cff</span></code> if the archive supplies identifiers
+that should be part of the preferred citation. General-purpose applications and
+libraries do not need a DOI solely for completeness.</p>
 </section>
 </section>
 </section>
