@@ -95,13 +95,16 @@ html_theme_options = {
 # ``_switcher_base = "/"`` instead.
 _switcher_base = "/hwid/"
 _versions_file = Path(__file__).parent / "_static" / "versions.json"
+# Defined unconditionally (empty is Sphinx's default) so the name Sphinx reads
+# is a plain module-level setting rather than a conditional global.
+html_context: dict[str, object] = {}
 if _versions_file.exists():
     _versions = json.loads(_versions_file.read_text(encoding="utf-8"))
     _current = os.environ.get("DOCS_BUILD_VERSION_SLUG") or _versions.get("latest", "")
-    html_context = {
+    html_context.update({
         "current_version": _current,
         "versions": [
             ["latest", f"{_switcher_base}latest/"],
             *([slug, f"{_switcher_base}{slug}/"] for slug in _versions["versions"]),
         ],
-    }
+    })
