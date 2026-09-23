@@ -39,6 +39,24 @@ Scoop (Windows):
     scoop bucket add hasansezertasan https://github.com/hasansezertasan/scoop-bucket
     scoop install hasansezertasan/hwid
 
+Verify release provenance
+-------------------------
+
+Public-repository release distributions include Sigstore-signed build
+provenance. After downloading a wheel or source distribution, verify that the
+release workflow built it from ``main`` in this repository:
+
+.. code-block:: sh
+
+   gh attestation verify <downloaded-distribution> \
+     --repo hasansezertasan/hwid \
+     --signer-workflow hasansezertasan/hwid/.github/workflows/release.yml \
+     --source-ref refs/heads/main
+
+Artifact attestations are available for public repositories on current GitHub
+plans. Private and internal repositories require GitHub Enterprise Cloud and
+the repository variable ``ENABLE_PRIVATE_ATTESTATIONS=true``.
+
 From source
 -----------
 

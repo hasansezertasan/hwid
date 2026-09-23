@@ -88,6 +88,7 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#stable-release">Stable release</a></li>
+<li><a class="reference internal" href="#verify-release-provenance">Verify release provenance</a></li>
 <li><a class="reference internal" href="#from-source">From source</a></li>
 </ul>
 </div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
@@ -148,6 +149,21 @@ preferred tool installer:</p>
 </span><span data-line="2">scoop<span class="w"> </span>install<span class="w"> </span>hasansezertasan/hwid
 </span></pre></div>
 </div>
+</section>
+<section id="verify-release-provenance">
+<h2>Verify release provenance<a class="headerlink" href="#verify-release-provenance" title="Link to this heading">#</a></h2>
+<p>Public-repository release distributions include Sigstore-signed build
+provenance. After downloading a wheel or source distribution, verify that the
+release workflow built it from <code class="docutils literal notranslate"><span class="pre">main</span></code> in this repository:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>attestation<span class="w"> </span>verify<span class="w"> </span>&lt;downloaded-distribution&gt;<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span><span class="se">\</span>
+</span><span data-line="3"><span class="w">  </span>--signer-workflow<span class="w"> </span>hasansezertasan/hwid/.github/workflows/release.yml<span class="w"> </span><span class="se">\</span>
+</span><span data-line="4"><span class="w">  </span>--source-ref<span class="w"> </span>refs/heads/main
+</span></pre></div>
+</div>
+<p>Artifact attestations are available for public repositories on current GitHub
+plans. Private and internal repositories require GitHub Enterprise Cloud and
+the repository variable <code class="docutils literal notranslate"><span class="pre">ENABLE_PRIVATE_ATTESTATIONS=true</span></code>.</p>
 </section>
 <section id="from-source">
 <h2>From source<a class="headerlink" href="#from-source" title="Link to this heading">#</a></h2>

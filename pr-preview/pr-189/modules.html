@@ -97,7 +97,11 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#hwid.core.exceptions.UnsupportedOSError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOSError</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-hwid.core.logging_setup">Logging (<code class="docutils literal notranslate"><span class="pre">hwid.core.logging_setup</span></code>)</a></li>
+<li><a class="reference internal" href="#module-hwid.core.logging_setup">Logging (<code class="docutils literal notranslate"><span class="pre">hwid.core.logging_setup</span></code>)</a><ul>
+<li><a class="reference internal" href="#hwid.core.logging_setup.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+<li><a class="reference internal" href="#hwid.core.logging_setup.setup_logger"><code class="docutils literal notranslate"><span class="pre">setup_logger()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#cli-hwid-cli">CLI (<code class="docutils literal notranslate"><span class="pre">hwid.cli</span></code>)</a><ul>
 <li><a class="reference internal" href="#hwid.cli.app.app"><code class="docutils literal notranslate"><span class="pre">app()</span></code></a></li>
 <li><a class="reference internal" href="#hwid.cli.app.info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
@@ -203,7 +207,43 @@ The API reference below is generated automatically from the source docstrings.</
 </section>
 <section id="module-hwid.core.logging_setup">
 <span id="logging-hwid-core-logging-setup"></span><h2>Logging (<code class="docutils literal notranslate"><span class="pre">hwid.core.logging_setup</span></code>)<a class="headerlink" href="#module-hwid.core.logging_setup" title="Link to this heading">#</a></h2>
-<p>Logging module for HWID.</p>
+<p>Set up logging for the project.</p>
+<p>This module configures logging for the project, ensuring that
+log handlers are only added once to prevent duplicate log entries if the
+module is imported multiple times.</p>
+<p>Setup is resilient to a read-only or unavailable <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>: if the log
+directory cannot be created it degrades to console-only logging instead of
+raising, so read-only commands (<code class="docutils literal notranslate"><span class="pre">--help</span></code>, <code class="docutils literal notranslate"><span class="pre">version</span></code>) stay usable.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hwid.core.logging_setup.get_logger">
+<span class="sig-prename descclassname"><span class="pre">hwid.core.logging_setup.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/logging_setup.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.logging_setup.get_logger" title="Link to this definition">#</a></dt>
+<dd><p>Return the cached project logger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached project logger.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.14)">logging.Logger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hwid.core.logging_setup.setup_logger">
+<span class="sig-prename descclassname"><span class="pre">hwid.core.logging_setup.</span></span><span class="sig-name descname"><span class="pre">setup_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/logging_setup.html#setup_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.logging_setup.setup_logger" title="Link to this definition">#</a></dt>
+<dd><p>Set up and return the main logger for the project.</p>
+<p>Ensures that handlers are only added once to avoid duplicate log entries
+if this module is imported multiple times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configured logger for the project.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.14)">logging.Logger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="cli-hwid-cli">
 <h2>CLI (<code class="docutils literal notranslate"><span class="pre">hwid.cli</span></code>)<a class="headerlink" href="#cli-hwid-cli" title="Link to this heading">#</a></h2>

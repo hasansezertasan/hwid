@@ -123,10 +123,33 @@ data-aria-dark="Switch to auto color mode">
 <h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h1>
 <section id="as-a-library">
 <h2>As a library<a class="headerlink" href="#as-a-library" title="Link to this heading">#</a></h2>
-<p>To use <code class="docutils literal notranslate"><span class="pre">hwid</span></code> in a project:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">hwid</span>
+<p>Look up the installed distribution version:</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">examples/version_lookup.py</span><a class="headerlink" href="#id1" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="sd">"""Look up the version of the installed distribution."""</span>
 </span><span data-line="2">
-</span><span data-line="3"><span class="nb">print</span><span class="p">(</span><span class="n">hwid</span><span class="o">.</span><span class="n">get_hwid</span><span class="p">())</span>
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">hwid.__metadata__</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROJECT_NAME</span>
+</span><span data-line="6">
+</span><span data-line="7">
+</span><span data-line="8"><span class="k">def</span><span class="w"> </span><span class="nf">version_lookup</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span data-line="9"><span class="w">    </span><span class="sd">"""Return the installed distribution version for this project.</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="sd">    Returns:</span>
+</span><span data-line="12"><span class="sd">        str: The installed distribution version.</span>
+</span><span data-line="13"><span class="sd">    """</span>
+</span><span data-line="14">    <span class="k">return</span> <span class="n">version</span><span class="p">(</span><span class="n">PROJECT_NAME</span><span class="p">)</span>
+</span></pre></div>
+</div>
+</div>
+<p>For short interactive snippets embedded in prose, the <code class="docutils literal notranslate"><span class="pre">docs-doctest</span></code> task
+executes <code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span></code> blocks too:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">hwid.__metadata__</span><span class="w"> </span><span class="kn">import</span> <span class="n">PROJECT_NAME</span>
+</span><span data-line="2"><span class="gp">&gt;&gt;&gt; </span><span class="n">PROJECT_NAME</span>
+</span><span data-line="3"><span class="go">'hwid'</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="go">print(hwid.get_hwid())</span>
 </span></pre></div>
 </div>
 </section>
@@ -146,6 +169,34 @@ environment:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">hwid<span class="w"> </span>version
 </span><span data-line="2">hwid<span class="w"> </span>info
 </span></pre></div>
+</div>
+<p>Or invoke it programmatically from Python:</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">examples/cli_usage.py</span><a class="headerlink" href="#id2" title="Link to this code">#</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span data-line="1"><span class="sd">"""CLI argument parsing."""</span>
+</span><span data-line="2">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+</span><span data-line="4">
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
+</span><span data-line="6">
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">hwid.cli.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_parser</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+</span><span data-line="10">    <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+</span><span data-line="11">
+</span><span data-line="12">
+</span><span data-line="13"><span class="k">def</span><span class="w"> </span><span class="nf">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
+</span><span data-line="14"><span class="w">    </span><span class="sd">"""Parse CLI arguments without executing a command.</span>
+</span><span data-line="15">
+</span><span data-line="16"><span class="sd">    Args:</span>
+</span><span data-line="17"><span class="sd">        argv: Argument vector to parse.</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="sd">    Returns:</span>
+</span><span data-line="20"><span class="sd">        argparse.Namespace: The parsed arguments.</span>
+</span><span data-line="21"><span class="sd">    """</span>
+</span><span data-line="22">    <span class="k">return</span> <span class="n">build_parser</span><span class="p">()</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+</span></pre></div>
+</div>
 </div>
 </section>
 </section>
