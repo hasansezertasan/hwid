@@ -59,7 +59,9 @@ def pytest_collection_modifyitems(
         except ValueError:  # pragma: no cover - defensive: items are under tests/
             continue
         component = rel.parts[0] if len(rel.parts) > 1 else "core"
-        if component in _COMPONENT_DIRS:
+        # Every hwid tests/<dir> is a component today, so the unmarked branch
+        # only runs once a non-component dir is added.
+        if component in _COMPONENT_DIRS:  # pragma: no branch
             item.add_marker(component)
 
 
