@@ -1,5 +1,7 @@
 """Tests for the package's runnable entrypoint (``python -m hwid``)."""
 
+from __future__ import annotations
+
 import importlib
 
 

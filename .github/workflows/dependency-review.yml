@@ -10,6 +10,9 @@ permissions:
 jobs:
   dependency-review:
     name: Dependency review
+    # The action requires GitHub Advanced Security on private repos; without it
+    # every PR gets a permanent red X. Free on public repos, so skip elsewhere.
+    if: github.event.repository.visibility == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

@@ -2,24 +2,9 @@
 
 from __future__ import annotations
 
-import importlib
-from importlib.metadata import Distribution, PackageNotFoundError
-
 import pytest
 
 from hwid.cli.app import app
-
-# Import the module object (not the re-exported callable) so the monkeypatch
-# below patches ``Distribution`` where the commands look it up.
-cli_app = importlib.import_module("hwid.cli.app")
-
-
-class _MissingDistribution:
-    """Stub whose ``from_name`` always reports missing package metadata."""
-
-    @staticmethod
-    def from_name(name: str) -> Distribution:
-        raise PackageNotFoundError(name)
 
 
 def test_help_lists_subcommands(capsys: pytest.CaptureFixture[str]) -> None:
@@ -64,9 +49,8 @@ def test_info(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 @pytest.mark.parametrize("command", ["version", "info"])
-def test_command_fails_loudly_when_metadata_missing(
-    monkeypatch: pytest.MonkeyPatch, command: str
-) -> None:
+@pytest.mark.usefixtures("missing_metadata")
+def test_command_fails_loudly_when_metadata_missing(command: str) -> None:
     """Commands exit 1 when package metadata is missing.
 
     Given:
@@ -77,8 +61,6 @@ def test_command_fails_loudly_when_metadata_missing(
         - The command exits with code 1 instead of dumping a traceback or
           silently printing nothing.
     """
-    monkeypatch.setattr(cli_app, "Distribution", _MissingDistribution)
-
     with pytest.raises(SystemExit) as excinfo:
         app([command])
 

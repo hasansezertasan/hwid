@@ -351,6 +351,9 @@ __marimo__/
 # cobo `eol=lf` tradeoff — see ADR-012 and cobo#124). These legacy HFS
 # resource-fork files are rarely committed; the full fix needs both cobo#124 and
 # a Copier render carve-out (Jinja strips the CR at scaffold time too).
+# Version manifest generated into each docs build by tools/build_docs.py from the
+# gh-pages branch listing (ADR-027); regenerated, never committed.
+docs/_static/versions.json
 # MegaLinter local report output (REPORT_OUTPUT_FOLDER in .mega-linter.yml)
 megalinter-reports/
 src/**/_version.py

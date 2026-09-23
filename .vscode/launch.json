@@ -39,7 +39,7 @@
       "request": "launch",
       "justMyCode": true,
       "module": "uv",
-      "args": ["run", "hwid", "${input:args}"]
+      "args": ["run", "hwid", "${input:command}"]
     },
     
     
@@ -47,11 +47,18 @@
     
   ],
   "inputs": [
+    // A pickString, not a promptString: VS Code substitutes an input into a
+    // single `args` element and debugpy passes it verbatim, with no shell
+    // splitting — so free text can never express more than one bare token
+    // ("version --help" arrives as one argument and fails). Constraining the
+    // input to the subcommands this project actually renders removes the need
+    // to split. Add flags by editing the `args` array directly.
     {
-      "id": "args",
-      "type": "promptString",
-      "default": "",
-      "description": "Arguments passed to the hwid CLI"
+      "id": "command",
+      "type": "pickString",
+      "options": ["version", "info"],
+      "default": "version",
+      "description": "The hwid command to debug"
     }
   ]
 }
