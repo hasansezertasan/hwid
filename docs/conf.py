@@ -45,14 +45,10 @@ extensions = [
 
 # Both reStructuredText and (via MyST) Markdown source files are supported.
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}
-<<<<<<< before updating
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "superpowers/**"]
-=======
 # ``_generated`` holds machine-generated reference material (CLI Markdown, etc.)
 # that is ``{include}``d/``literalinclude``d into real pages; exclude it so those
 # fragments are not also built as standalone orphan documents.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "_generated"]
->>>>>>> after updating
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "_generated", "superpowers/**"]
 
 # autosectionlabel can emit duplicate-label warnings across documents; the
 # document prefix keeps them unique, so no blanket suppression is needed.

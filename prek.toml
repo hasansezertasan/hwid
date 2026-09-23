@@ -74,7 +74,7 @@ hooks = [{ id = "ensure-dunder-all", name = "Ensure __all__", files = "^src/" }]
 
 [[repos]]
 repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.15.19"
+rev = "v0.16.1"
 hooks = [
   { id = "ruff", name = "Ruff Linter" },
   { id = "ruff-format", name = "Ruff Formatter" },
@@ -159,14 +159,6 @@ hooks = [{ id = "zizmor", name = "Zizmor GitHub Actions Auditor" }]
 [[repos]]
 repo = "https://github.com/adrienverge/yamllint.git"
 rev = "v1.38.0"
-<<<<<<< before updating
-hooks = [
-  { id = "yamllint", name = "YAML Linter", args = [
-    "-c",
-    ".github/yamllint.yaml",
-  ] },
-]
-=======
 # `.copier-answers.yml` is excluded for the same reason the yamlfmt hook below
 # excludes it: copier owns the file ("NEVER EDIT MANUALLY") and writes block
 # sequences unindented, which yamllint's `indentation` rule rejects. The only
@@ -174,7 +166,6 @@ hooks = [
 # update` overwrites, so the gate can only ever produce an unfixable failure —
 # it fires the moment any answer is a list (e.g. `ai_rulez_presets`).
 hooks = [{ id = "yamllint", exclude = "^\\.copier-answers\\.yml$", args = ["-c", ".github/yamllint.yaml"] }]
->>>>>>> after updating
 
 [[repos]]
 repo = "https://github.com/DavidAnson/markdownlint-cli2"

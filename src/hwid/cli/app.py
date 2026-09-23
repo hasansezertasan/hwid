@@ -14,21 +14,16 @@ import argparse
 import sys
 from typing import TYPE_CHECKING, cast
 
-<<<<<<< before updating
-from hwid.core.logging_setup import logger
-=======
 from hwid.__metadata__ import PROJECT_NAME
 from hwid.core import app as service
 from hwid.core.logging_setup import get_logger
->>>>>>> after updating
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 __all__ = ["app", "info", "show_version"]
 
-# The installed distribution name, used to resolve packaging metadata.
-PROJECT_NAME = "hwid"
+logger = get_logger()
 
 _METADATA_MISSING = f"Error: Package '{PROJECT_NAME}' metadata not found. Is the package installed correctly?"  # noqa: E501
 

@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-
 import pytest
 
 from hwid.cli.app import app
-
 
 
 def test_help_lists_subcommands(capsys: pytest.CaptureFixture[str]) -> None:

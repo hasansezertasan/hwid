@@ -26,13 +26,6 @@ keywords = [
   "metadata",
   "pypi",
   "python",
-<<<<<<< before updating
-=======
-  "template",
-  "copier",
-  "scaffold",
-  "boilerplate",
->>>>>>> after updating
   "uv",
   "hatch",
   "tox",
@@ -77,11 +70,6 @@ classifiers = [
   "Topic :: Software Development",
   "Typing :: Typed",
   "Topic :: Utilities",
-<<<<<<< before updating
-
-
-=======
->>>>>>> after updating
 ]
 requires-python = ">=3.10"
 # The enabled component's runtime deps live here, not in an optional extra: a
@@ -106,38 +94,22 @@ hwid = "hwid.__main__:main"
 
 [dependency-groups]
 dev = [
-<<<<<<< before updating
-  "hwid[all]",
   "tox==4.61.2",
-=======
-  "tox==4.58.0",
->>>>>>> after updating
   "tox-uv==1.36.0",
   "debugpy==1.8.21",
   { include-group = "style" },
   { include-group = "test" },
 ]
 style = [
-<<<<<<< before updating
-  "actionlint-py==1.7.12.25",
   "basedpyright==1.40.1",
+  "detect-secrets==1.5.0",
   "editorconfig-checker==3.11.1",
   "import-linter==2.15",
   "mypy==2.3.1",
-  "pyrefly==1.3.1",
-  "ruff==0.15.19",
-  "slotscheck==0.21.0",
-=======
-  "basedpyright==1.39.9",
-  "detect-secrets==1.5.0",
-  "editorconfig-checker==3.8.0",
-  "import-linter==2.13",
-  "mypy==2.3.0",
   "pylint==4.0.6",
-  "pyrefly==1.2.0",
+  "pyrefly==1.3.1",
   "ruff==0.16.1",
-  "slotscheck==0.20.1",
->>>>>>> after updating
+  "slotscheck==0.21.0",
   "sphinx-lint==1.0.2",
   "taplo==0.9.3",
   "ty==0.0.83",
@@ -181,17 +153,11 @@ docs = [
   "shibuya==2026.7.12",
   "sphinx-autobuild==2024.10.3", # 2025.x drops Python 3.10 (requires-python >= 3.11)
   "sphinx-copybutton==0.5.2",
-<<<<<<< before updating
-  "sphinx-design==0.6.1",        # 0.7.0 drops Python 3.10 (requires-python >= 3.11)
-=======
   "sphinx-design==0.6.1", # 0.7.0 drops Python 3.10 (requires-python >= 3.11)
->>>>>>> after updating
   "sphinx-togglebutton==0.4.5",
   "sphinx-paramlinks==0.6.0",
   "auto-pytabs[sphinx]==0.5.0",
   "myst-parser==4.0.1",
-<<<<<<< before updating
-=======
   # Per-page "last updated" footer sourced from git commit dates (ADR-027);
   # offline, no network. Works from full history (docs CI checks out depth 0).
   "sphinx-last-updated-by-git==0.3.8",
@@ -199,7 +165,6 @@ docs = [
   # published versions and pick the `latest` alias (ADR-027). Also a Sphinx
   # transitive dependency; pinned here for the explicit direct use.
   "packaging>=24.0",
->>>>>>> after updating
 ]
 tool = [
   "commitizen==4.19.0",
@@ -207,13 +172,9 @@ tool = [
   # "inflection==0.5.1",
   # "copier==9.11.0",
 ]
-<<<<<<< before updating
-prek = ["prek==0.5.3"]
-=======
 prek = [
-  "prek==0.4.12",
+  "prek==0.5.3",
 ]
->>>>>>> after updating
 
 
 [build-system]
@@ -277,12 +238,6 @@ name = "cz_conventional_commits"
 
 [tool.pytest.ini_options]
 # addopts = "-rXs --strict-config --strict-markers"
-<<<<<<< before updating
-addopts = "-v --tb=short"
-asyncio_mode = "auto"
-filterwarnings = ["error"]
-testpaths = ["tests"]
-=======
 addopts = "-v --tb=short --doctest-glob=README.md"
 # One marker per component, auto-applied by tests/conftest.py from each test's
 # top-level tests/<dir>/. Enables `pytest -m web` locally and per-component CI
@@ -298,7 +253,6 @@ filterwarnings = [
 # Markdown files can use illustrative snippets without becoming pytest inputs.
 testpaths = ["tests", "README.md"]
 doctest_optionflags = "ELLIPSIS IGNORE_EXCEPTION_DETAIL NORMALIZE_WHITESPACE"
->>>>>>> after updating
 xfail_strict = true
 
 
@@ -366,7 +320,7 @@ ignore_decorators = [
 # names (CSS/compose/on_mount/title/BINDINGS) are invoked by the TUI framework,
 # and ``pytestmark``/``pytest_*`` (conftest hooks) are consumed by pytest at
 # collection time.
-ignore_names = ["CONFIG_FILE_PATH", "logger", "main", "model_config", "pytest_*"]
+ignore_names = ["CONFIG_FILE_PATH", "collect_ignore_glob", "logger", "main", "model_config", "pytest_*"]
 min_confidence = 60
 paths = ["src", "tests"]
 
@@ -384,20 +338,6 @@ name = "Layered architecture with independent components"
 type = "layers"
 # Layers are listed high -> low: a layer may import lower layers but never a
 # higher one. Modules joined by ` | ` on one line are independent SIBLINGS that
-<<<<<<< before updating
-# may not import each other. `cli` is the orchestrator layer — the `hwid` CLI
-# root, whose bare command prints the HWID and whose `version`/`info` subcommands
-# lazily import `core` — so it sits above `core.resolution` (the HWID resolution
-# logic), which sits above `core.impl` (the per-platform backends
-# darwin/linux/win32). `core.exceptions` and `core.logging_setup` are independent
-# leaf utilities imported from above but never importing each other. `__main__`
-# is left outside the contract as an unconstrained entry point.
-layers = [
-  "hwid.cli",
-  "hwid.core.resolution",
-  "hwid.core.impl",
-  "hwid.core.exceptions | hwid.core.logging_setup",
-=======
 # may not import each other. `cli` is the orchestrator layer — the
 # `hwid` console root, whose subcommands launch the other
 # components (web/gui/tui/mcp/worker) via lazy imports — so it sits ABOVE the
@@ -422,7 +362,22 @@ layers = [
   "cli",
   "core",
   "utils",
->>>>>>> after updating
+]
+
+[[tool.importlinter.contracts]]
+name = "Layered core internals"
+type = "layers"
+# hwid's own layering inside `core`, high -> low. `app` (the version/info
+# payload the CLI renders) and `resolution` (the HWID resolution logic) are
+# independent siblings. `resolution` sits above `impl` (the per-platform
+# backends darwin/linux/win32); `app` sits above the logging stack
+# (`logging_setup` -> `config` -> `dirs`). `exceptions` is a leaf.
+containers = ["hwid.core"]
+layers = [
+  "app | resolution",
+  "logging_setup | impl",
+  "config | exceptions",
+  "dirs",
 ]
 
 
@@ -454,7 +409,7 @@ fixable = ["ALL"]
 # portable `# noqa` comments into ruff's own `# ruff: ignore` syntax (its docs note
 # `# noqa` is needed for cross-tool compatibility), and RUF201 would rewrite every
 # rule *code* in this config's selectors into long rule *names*. Both are stylistic.
-ignore = ["COM812", "CPY", "FIX", "TD"]
+ignore = ["COM812", "CPY", "FIX", "RUF105", "RUF201", "TD"]
 logger-objects = ["hwid.core.logging_setup.logger"]
 preview = true
 select = ["ALL"]
@@ -489,22 +444,18 @@ convention = "pep257"
 # Tests legitimately use asserts/magic values, reach into package internals, and
 # don't need return-value documentation on their fixtures and helpers.
 "tests/**/*.py" = ["S101", "PLR2004", "PLC2701", "DOC201"]
-<<<<<<< before updating
 # hwid's examples are standalone scripts in dash-named directories (not importable
 # packages), so the package-name and implicit-namespace rules do not apply.
 "examples/**/*.py" = ["N999", "INP001"]
+# Documentation examples are importable modules tested by
+# ``tests/test_docs_examples.py``; they are not application packages.
+"docs/examples/**/*.py" = ["INP001"]
 # The platform backends shell out to native OS tools (powershell, system_profiler,
 # dmidecode) to read the hardware UUID -- running these fixed commands is the
 # intended mechanism, not an oversight. darwin/win32 use ``shell=True`` for their
 # pipelines (S602); linux runs argv-form (no shell) so its timeout kills sudo
 # directly, which is what S603 flags. All commands are fixed literals, no input.
 "src/hwid/core/impl/*.py" = ["S404", "S602", "S603"]
-=======
-"examples/**/*.py" = ["INP001"]
-# Documentation examples are importable modules tested by
-# ``tests/test_docs_examples.py``; they are not application packages.
-"docs/examples/**/*.py" = ["INP001"]
->>>>>>> after updating
 # The Sphinx config is a standalone module, not part of an importable package.
 "docs/conf.py" = ["INP001"]
 # The docs warning-allowlist gate is a standalone script (not an importable
@@ -578,26 +529,6 @@ disable = [
   "missing-module-docstring", # C0114
   "missing-class-docstring", # C0115
   "missing-function-docstring", # C0116
-<<<<<<< before updating
-  "too-few-public-methods",     # R0903 — trips dataclasses / config / Protocol classes
-  "import-outside-toplevel",    # C0415 — components (cli->tui/gui/web, and each
-  # component's own optional-dependency probe) are
-  # deliberately lazy-imported so import-linter's
-  # layering contract holds and optional extras
-  # aren't required at import time.
-  "try-except-raise", # W0706 — the generated TUI entry point
-  # explicitly re-raises KeyboardInterrupt/SystemExit
-  # ahead of a broad `except Exception` to make the
-  # "let these propagate" intent obvious to readers,
-  # even though BaseException subclasses wouldn't be
-  # caught by the Exception clause anyway.
-  "duplicate-code", # R0801 — the component skeletons (gui/tui/mcp/
-  # worker) are deliberately parallel: each fetches
-  # package metadata and formats the same info block
-  # the same way. That structural symmetry is a
-  # feature of the scaffold, not copy-paste debt, and
-  # R0801 cannot be suppressed inline at the call site.
-=======
   "too-few-public-methods", # R0903 — trips dataclasses / config / Protocol classes
   # C0415 — the cli->tui/gui/web dispatch, and each component's own heavy or
   # platform-conditional import (tkinter, uvicorn, the worker's uvloop probe),
@@ -616,7 +547,10 @@ disable = [
   # same way. That structural symmetry is a feature of the scaffold, not
   # copy-paste debt, and R0801 cannot be suppressed inline at the call site.
   "duplicate-code",
->>>>>>> after updating
+  # C0414 — `from x import y as y` is the PEP 484 explicit re-export idiom that
+  # strict mypy/pyright need to see `get_hwid` as part of the public API of
+  # `hwid` and `hwid.core`; pylint reads it as a redundant alias.
+  "useless-import-alias",
 ]
 
 [tool.pylint.design]
@@ -629,9 +563,6 @@ max-branches = 20
 # and would hang/fail under ``tox run`` in CI (where no broker is available).
 # The worker is covered by its pytest TestBroker suite; run it on demand with
 # ``tox -e worker`` when a broker is up (e.g. inside the devcontainer).
-<<<<<<< before updating
-env_list = ["style", "cli", "3.14", "3.13", "3.12", "3.11", "3.10"]
-=======
 env_list = [
   "style",
   # Inline ``>>>`` snippets are part of the tested-documentation contract,
@@ -644,7 +575,6 @@ env_list = [
   "3.11",
   "3.10",
 ]
->>>>>>> after updating
 requires = ["tox>=4"]
 
 
@@ -681,34 +611,6 @@ wheel_build_env = ".pkg"
 [tool.tox.env.style]
 base_python = ["3.10"]
 commands = [
-<<<<<<< before updating
-  ["ruff", "check", "--no-fix"],
-  ["ruff", "format", "--check", "--diff"],
-  ["mypy", "--python-version", "3.10"],
-  ["mypy", "--python-version", "3.14"],
-  ["basedpyright"],
-  ["ty", "check"],
-  ["pyrefly", "check"],
-  ["zuban", "check", "src"],
-  ["vulture"],
-  ["python", "-m", "slotscheck", "src"],
-  ["lint-imports"],
-  ["taplo", "lint", "*.toml"],
-  # NOTE: kept in fix mode (not `--check`) because the rendered TOML is not yet
-  # guaranteed taplo-formatted across every component combination. The `*.toml`
-  # glob is non-recursive, so it scopes taplo to this project's own root TOML
-  # (pyproject/prek/mise) without walking vendored `.tox`/`.venv`/site-packages
-  # trees — no `.taplo.toml` exclude config needed. Making this a strict
-  # `--check` gate is a follow-up that first requires the generated
-  # pyproject/prek to be clean.
-  ["taplo", "format", "*.toml"],
-  ["validate-pyproject", "pyproject.toml"],
-  ["typos", "--diff"],
-  ["actionlint"],
-  ["ec"],
-  ["sphinx-lint", "docs"],
-  # ["yamlfmt", "."],
-=======
   [
     "ruff",
     "check",
@@ -826,7 +728,6 @@ commands = [
     "pytest",
     "--dead-fixtures",
   ],
->>>>>>> after updating
 ]
 # `test` is included so the type checkers that scope tests (e.g. ty) can
 # resolve pytest and other test-only imports.
@@ -889,20 +790,7 @@ set_env = { PYTHONUNBUFFERED = "1" }
 [tool.tox.env.docs-linkcheck]
 # On-demand link checker. Also run weekly (non-blocking) by docs-linkcheck.yml.
 # Hits the network, so it is deliberately not part of the `style` env or PR CI.
-<<<<<<< before updating
-commands = [
-  [
-    "sphinx-build",
-    "-b",
-    "linkcheck",
-    "docs",
-    "docs/_build/linkcheck",
-  ],
-]
-extras = ["all"]
-=======
 commands = [["sphinx-build", "-b", "linkcheck", "docs", "docs/_build/linkcheck"]]
->>>>>>> after updating
 dependency_groups = ["docs"]
 description = "Check documentation for broken links"
 runner = "uv-venv-runner"
