@@ -149,15 +149,15 @@ test = [
   "pytest-deadfixtures==3.1.0",
 ]
 docs = [
-  "sphinx==8.1.3",
+  "sphinx==9.1.0",
   "shibuya==2026.7.12",
-  "sphinx-autobuild==2024.10.3", # 2025.x drops Python 3.10 (requires-python >= 3.11)
+  "sphinx-autobuild==2025.8.25", # 2025.x drops Python 3.10 (requires-python >= 3.11)
   "sphinx-copybutton==0.5.2",
   "sphinx-design==0.6.1", # 0.7.0 drops Python 3.10 (requires-python >= 3.11)
   "sphinx-togglebutton==0.4.5",
   "sphinx-paramlinks==0.6.0",
   "auto-pytabs[sphinx]==0.5.0",
-  "myst-parser==4.0.1",
+  "myst-parser==5.1.0",
   # Per-page "last updated" footer sourced from git commit dates (ADR-027);
   # offline, no network. Works from full history (docs CI checks out depth 0).
   "sphinx-last-updated-by-git==0.3.8",
