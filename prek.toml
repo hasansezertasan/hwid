@@ -129,7 +129,7 @@ hooks = [{ id = "vulture", name = "Vulture Linter" }]
 
 [[repos]]
 repo = "https://github.com/crate-ci/typos"
-rev = "v1.50.2"
+rev = "v1.50.3"
 hooks = [{ id = "typos", name = "Typos Linter" }]
 
 [[repos]]
