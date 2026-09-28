@@ -134,7 +134,7 @@ style = [
 # ever executes in the Linux-only `style` job. The tox `style` env lists this
 # group explicitly. Still a single version source, same as every other pin.
 sast = [
-  "semgrep==1.177.0",
+  "semgrep==1.178.0",
 ]
 test = [
   "coverage-enable-subprocess==1.0",
