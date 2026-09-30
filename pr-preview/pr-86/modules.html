@@ -97,7 +97,11 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#hwid.core.exceptions.UnsupportedOSError"><code class="docutils literal notranslate"><span class="pre">UnsupportedOSError</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-hwid.core.logging_setup">Logging (<code class="docutils literal notranslate"><span class="pre">hwid.core.logging_setup</span></code>)</a></li>
+<li><a class="reference internal" href="#module-hwid.core.logging_setup">Logging (<code class="docutils literal notranslate"><span class="pre">hwid.core.logging_setup</span></code>)</a><ul>
+<li><a class="reference internal" href="#hwid.core.logging_setup.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+<li><a class="reference internal" href="#hwid.core.logging_setup.setup_logger"><code class="docutils literal notranslate"><span class="pre">setup_logger()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#cli-hwid-cli">CLI (<code class="docutils literal notranslate"><span class="pre">hwid.cli</span></code>)</a><ul>
 <li><a class="reference internal" href="#hwid.cli.app.app"><code class="docutils literal notranslate"><span class="pre">app()</span></code></a></li>
 <li><a class="reference internal" href="#hwid.cli.app.info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
@@ -151,7 +155,7 @@ The API reference below is generated automatically from the source docstrings.</
 <dd class="field-odd"><p>The hardware ID string.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -170,14 +174,14 @@ The API reference below is generated automatically from the source docstrings.</
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span class="target" id="hwid.core.validate_hwid.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#hwid.core.validate_hwid.params.value">¶</a> – The string to validate.</p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if valid, False otherwise.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)">bool</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/functions.html#bool" title="(in Python v3.14)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -188,22 +192,58 @@ The API reference below is generated automatically from the source docstrings.</
 <p>Exceptions for the HWID package.</p>
 <dl class="py exception">
 <dt class="sig sig-object py" id="hwid.core.exceptions.InvalidHWIDError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidHWIDError</span></span><a class="reference internal" href="_modules/hwid/core/exceptions.html#InvalidHWIDError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.exceptions.InvalidHWIDError" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">InvalidHWIDError</span></span><a class="reference internal" href="_modules/hwid/core/exceptions.html#InvalidHWIDError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.exceptions.InvalidHWIDError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Raised when the hardware ID is invalid.</p>
 </dd></dl>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="hwid.core.exceptions.UnsupportedOSError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOSError</span></span><a class="reference internal" href="_modules/hwid/core/exceptions.html#UnsupportedOSError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.exceptions.UnsupportedOSError" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hwid.core.exceptions.</span></span><span class="sig-name descname"><span class="pre">UnsupportedOSError</span></span><a class="reference internal" href="_modules/hwid/core/exceptions.html#UnsupportedOSError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.exceptions.UnsupportedOSError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#Exception" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Raised when the operating system is not supported.</p>
 </dd></dl>
 
 </section>
 <section id="module-hwid.core.logging_setup">
 <span id="logging-hwid-core-logging-setup"></span><h2>Logging (<code class="docutils literal notranslate"><span class="pre">hwid.core.logging_setup</span></code>)<a class="headerlink" href="#module-hwid.core.logging_setup" title="Link to this heading">#</a></h2>
-<p>Logging module for HWID.</p>
+<p>Set up logging for the project.</p>
+<p>This module configures logging for the project, ensuring that
+log handlers are only added once to prevent duplicate log entries if the
+module is imported multiple times.</p>
+<p>Setup is resilient to a read-only or unavailable <code class="docutils literal notranslate"><span class="pre">$HOME</span></code>: if the log
+directory cannot be created it degrades to console-only logging instead of
+raising, so read-only commands (<code class="docutils literal notranslate"><span class="pre">--help</span></code>, <code class="docutils literal notranslate"><span class="pre">version</span></code>) stay usable.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="hwid.core.logging_setup.get_logger">
+<span class="sig-prename descclassname"><span class="pre">hwid.core.logging_setup.</span></span><span class="sig-name descname"><span class="pre">get_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/logging_setup.html#get_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.logging_setup.get_logger" title="Link to this definition">#</a></dt>
+<dd><p>Return the cached project logger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The cached project logger.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.14)">logging.Logger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="hwid.core.logging_setup.setup_logger">
+<span class="sig-prename descclassname"><span class="pre">hwid.core.logging_setup.</span></span><span class="sig-name descname"><span class="pre">setup_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/hwid/core/logging_setup.html#setup_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hwid.core.logging_setup.setup_logger" title="Link to this definition">#</a></dt>
+<dd><p>Set up and return the main logger for the project.</p>
+<p>Ensures that handlers are only added once to avoid duplicate log entries
+if this module is imported multiple times.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configured logger for the project.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/logging.html#logging.Logger" title="(in Python v3.14)">logging.Logger</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="cli-hwid-cli">
 <h2>CLI (<code class="docutils literal notranslate"><span class="pre">hwid.cli</span></code>)<a class="headerlink" href="#cli-hwid-cli" title="Link to this heading">#</a></h2>
@@ -223,7 +263,7 @@ ADR-019 and ADR-020). Selected via <code class="docutils literal notranslate"><s
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span class="target" id="hwid.cli.app.app.params.argv"></span><strong>argv</strong><a class="paramlink headerlink reference internal" href="#hwid.cli.app.app.params.argv">¶</a> – Optional argument vector; defaults to <code class="docutils literal notranslate"><span class="pre">sys.argv[1:]</span></code> when <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>argv</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>argv</strong> (<a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#list" title="(in Python v3.14)"><em>list</em></a><em>[</em><a class="reference external" href="https://docs.python.org/3/builtins/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -246,7 +286,7 @@ Platform: Darwin</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#SystemExit" title="(in Python v3.14)"><strong>SystemExit</strong></a> – With code 1 if the package metadata cannot be found.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#SystemExit" title="(in Python v3.14)"><strong>SystemExit</strong></a> – With code 1 if the package metadata cannot be found.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -266,7 +306,7 @@ Platform: Darwin</p>
 </dl>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#SystemExit" title="(in Python v3.14)"><strong>SystemExit</strong></a> – With code 1 if the package metadata cannot be found.</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/builtins/exceptions.html#SystemExit" title="(in Python v3.14)"><strong>SystemExit</strong></a> – With code 1 if the package metadata cannot be found.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
@@ -331,6 +371,5 @@ Platform: Darwin</p>
       <script src="_static/togglebutton.js?v=b8b12719"></script>
       <script src="_static/design-tabs.js?v=f930bc37"></script>
       <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-      <script src="_static/shibuya.js?v=50760d75"></script>
-      <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script></body>
+      <script src="_static/shibuya.js?v=50760d75"></script></body>
 </html>
