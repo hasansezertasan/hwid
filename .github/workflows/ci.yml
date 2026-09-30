@@ -508,9 +508,8 @@ jobs:
       - name: Decide whether the needed jobs succeeded or failed
         uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35  # release/v1
         with:
-          # The cli jobs are path-filtered by `changes`: a PR touching neither the
-          # core nor the cli tree (e.g. a prek-hook or action bump) skips them on
-          # purpose, and that skip must not fail the gate. A real failure in them
-          # still does — `allowed-skips` only tolerates the skipped state.
+          # The gate counts a skipped job as a failure unless it is listed
+          # here. These jobs are path-gated by `changes`, so they skip whenever
+          # their component (and core) is untouched. Real failures still fail.
           allowed-skips: test-cli, coverage-cli
           jobs: ${{ toJSON(needs) }}
