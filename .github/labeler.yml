@@ -14,7 +14,7 @@ area:cli:
       - any-glob-to-any-file: ['src/hwid/cli/**', 'tests/cli/**']
 area:docs:
   - changed-files:
-      - any-glob-to-any-file: ['docs/**', '*.md', '*.rst']
+      - any-glob-to-any-file: ['docs/**', '**/*.md', '**/*.rst']
 area:ci:
   - changed-files:
       - any-glob-to-any-file: .github/workflows/**

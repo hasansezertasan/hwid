@@ -56,10 +56,16 @@ jobs:
           # since changed from minor to major would publish it a second time
           # beside the live `1.2/` and repoint `latest` at the duplicate. A tag
           # from before this script existed leaves it unset, and the dispatch
-          # revision's own baked answer stands.
+          # revision's own baked answer stands. A tag whose script sets it in a
+          # form this cannot read fails instead: guessing is the duplicate-slug
+          # deploy described above.
           granularity=""
           if [ -f tools/build_docs.py ]; then
             granularity="$(sed -nE 's/^(DEFAULT_)?VERSION_GRANULARITY = "([a-z]+)"$/\2/p' tools/build_docs.py)"
+            if [ -z "$granularity" ]; then
+              echo "::error::$tag's tools/build_docs.py does not set VERSION_GRANULARITY in the rendered form; refusing to guess which docs slug this release occupies"
+              exit 1
+            fi
           fi
           git checkout "$dispatch_ref" -- tools/build_docs.py
           if [ -n "$granularity" ]; then
