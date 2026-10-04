@@ -328,11 +328,7 @@ ignore_decorators = [
 # names (CSS/compose/on_mount/title/BINDINGS) are invoked by the TUI framework,
 # and ``pytestmark``/``pytest_*`` (conftest hooks) are consumed by pytest at
 # collection time.
-<<<<<<< before updating
-ignore_names = ["CONFIG_FILE_PATH", "collect_ignore_glob", "logger", "main", "model_config", "pytest_*"]
-=======
 ignore_names = ["CONFIG_FILE_PATH", "logger", "main", "model_config", "pytest_*", "collect_ignore_glob"]
->>>>>>> after updating
 min_confidence = 60
 paths = ["src", "tests"]
 
