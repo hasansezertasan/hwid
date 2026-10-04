@@ -94,7 +94,7 @@ hwid = "hwid.__main__:main"
 
 [dependency-groups]
 dev = [
-  "tox==4.64.7",
+  "tox==4.64.8",
   "tox-uv==1.36.1",
   "debugpy==1.8.22",
   { include-group = "style" },
