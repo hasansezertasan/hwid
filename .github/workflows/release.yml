@@ -93,13 +93,13 @@ jobs:
         shell: bash
         run: cp "$BUNDLE_PATH" build-provenance.sigstore.json
       - name: Upload package
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
         with:
           name: package-distributions
           path: dist/
       - name: Upload provenance bundle
         if: env.ATTEST_BUILD_PROVENANCE == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
         with:
           name: build-provenance
           path: build-provenance.sigstore.json
@@ -156,7 +156,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: uvx --from cyclonedx-bom cyclonedx-py requirements requirements-sbom.txt --output-format JSON --output-file hwid-sbom.cdx.json
       - name: Upload SBOM
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
         with:
           name: hwid-sbom
           path: hwid-sbom.cdx.json
