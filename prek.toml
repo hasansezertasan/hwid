@@ -1,6 +1,8 @@
 # Configuration file for `prek`, a fast Rust-native pre-commit replacement.
 # See https://prek.j178.dev for more information.
-#:schema https://www.schemastore.org/prek.json
+# No `#:schema` directive: `taplo lint` in the tox `style` env would download it
+# on every run (even with `--no-schema`), so a flaky or offline network fails the
+# gate. Editors still get completion from SchemaStore's `prek.toml` fileMatch.
 #
 # Hook revisions are kept current by Renovate (see the customManagers block in
 # .github/renovate.json). There is no pre-commit.ci integration and no sync-with-uv
