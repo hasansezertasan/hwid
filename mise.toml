@@ -5,12 +5,8 @@ PROJECT_NAME = "{{ config_root | basename }}"
 _.python.venv = { path = ".venv", create = true }
 
 [tools]
-<<<<<<< before updating
-python = "{{ get_env(name='PYTHON_VERSION', default='3.14') }}"
-=======
 # Share the dev interpreter with uv and CI, retaining an explicit env override.
 python = "{{ get_env(name='PYTHON_VERSION', default=read_file(path=config_root ~ '/.python-version') | trim) }}"
->>>>>>> after updating
 # ghalint (GitHub Actions workflow security-policy linter) is delivered via mise
 # because it ships no PyPI wrapper or pre-commit hook. The aqua backend is named
 # explicitly so resolution does not depend on the mise registry short name. The
