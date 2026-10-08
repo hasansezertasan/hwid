@@ -143,6 +143,62 @@ This is a deliberate trade, not an oversight: the alternative is giving
 ``release.yml`` a PAT or GitHub App token, which is a standing credential with
 write access to ``main``. One manual reopen per release is the cheaper side.
 
+.. _setup-release-workflow-race:
+
+Keep workflow changes out of an active release
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+From merging the release PR until the entire **Release** workflow finishes,
+pause merges that change ``.github/workflows/``, including Renovate action-pin
+updates and automatically merged PRs. Other PRs can still merge during this
+window.
+
+The release targets the release PR's merge commit. If a later merge changes
+workflows on ``main``, GitHub can refuse to create the tag or release with
+``Resource not accessible by integration`` (403). GitHub's `release API
+documentation <https://docs.github.com/en/rest/releases/releases#create-a-release>`_
+requires workflow write access when the target commit's workflows differ from
+the default branch; ``GITHUB_TOKEN`` cannot receive that permission. Increasing
+``contents: write`` or simply re-running the job does not repair the mismatch.
+The observed tag-creation failure and recovery are recorded in
+`copier-pyproject issue #332
+<https://github.com/hasansezertasan/copier-pyproject/issues/332>`_.
+
+Recover a release blocked by this mismatch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+1. Pause further workflow-changing merges and wait for active Release runs to
+   stop. In the failed run, identify the release PR's merge SHA and exact tag
+   name (including any ``v`` prefix). Check **Releases**, including drafts, and
+   the tag before changing either. This procedure is for the workflow mismatch
+   above; a 403 alone does not prove that cause.
+2. Compare ``.github/workflows/`` at that merge SHA with current ``main``. For
+   example, after fetching ``origin``, replace ``RELEASE_COMMIT_SHA`` below:
+
+   .. code-block:: sh
+
+      git fetch origin
+      git diff RELEASE_COMMIT_SHA origin/main -- .github/workflows/
+
+3. If the failed run created a tag **but no GitHub Release**, delete only that
+   orphan tag before retrying. Replace ``TAG_NAME`` with the exact failed tag:
+
+   .. code-block:: sh
+
+      gh api -X DELETE repos/hasansezertasan/hwid/git/refs/tags/TAG_NAME
+
+   Skip deletion if the tag is absent. If a draft release already exists, retain
+   its tag and release and use **Re-run failed jobs** after restoring the
+   workflows. Do not delete a published release or its tag.
+4. Revert the intervening workflow changes through the normal PR process so
+   ``main``'s workflow contents match the release commit again. Revert only the
+   workflow changes if those commits also contain unrelated changes. Repeat
+   the diff above against the updated ``origin/main``; it must be empty.
+5. Let the Release run triggered by the revert finish, or re-run the failed
+   jobs if a draft already exists. Confirm the complete pipeline succeeds,
+   including publishing and finalizing the release, before re-applying the
+   reverted changes through a PR and resuming workflow-changing merges.
+
 Let Actions open the release PR
 -------------------------------
 

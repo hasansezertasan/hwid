@@ -566,6 +566,16 @@ max-args = 10
 max-positional-arguments = 10
 max-branches = 20
 
+[tool.typos.files]
+# copier records `_commit` as a `git describe` string (`v1.2.3-4-g<hash>`) when
+# the template is rendered from an untagged ref, and a fragment of the hex hash
+# can read as a misspelled word, failing the check on a hash nobody chose. The
+# file is machine-written with no prose to check. The prek hook passes
+# `--force-exclude`, so the exclusion holds there as well as in `tox -e style`.
+extend-exclude = [
+  ".copier-answers.yml",
+]
+
 [tool.tox]
 # The ``worker`` env is intentionally omitted: it starts a broker-bound process
 # and would hang/fail under ``tox run`` in CI (where no broker is available).
