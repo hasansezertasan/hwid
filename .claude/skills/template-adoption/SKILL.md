@@ -57,6 +57,24 @@ defaults, with file/line or commit evidence for each material difference.
 
 Check particularly:
 
+- **Lost check coverage:** inventory every old hook and quality/security job
+  before deleting a hook config. Classify each as retained, replaced, missing,
+  intentionally omitted, or optional. Record old/new hook IDs or rule sets,
+  stages (pre-commit/pre-push/CI), file/type filters, exclusions, dependencies,
+  execution environments, suppressions, and feedback timing, with evidence.
+  Verify supported IDs and positive/negative file matches against the pinned
+  upstream manifest; a similar tool name is not proof of equivalent coverage.
+  Ruff UP may replace pyupgrade only for the selected rules/Python target;
+  Ruff S and SAST overlap Bandit without proving exact equivalence.
+  Local detect-secrets and history-scanning CI gitleaks are complementary.
+  CI pip-audit is later feedback than a local pre-push dependency audit;
+  check-toml does not replace tox Taplo formatting. Preserve uv-backed local
+  basedpyright/slotscheck environments that need project dependencies.
+  Keep SQLFluff/djLint project-specific; djLint does not extract embedded HTML
+  from Python strings. A local no-commit-to-branch hook requires explicit CI
+  skips for legitimate default-branch runs. Preserve generator-owned bytes,
+  including cobo-managed `.gitignore`, when introducing fixing hooks.
+  Ask before removing a check or accepting reduced coverage/later feedback.
 - **Overlapping workflows:** compare events, branch/path filters, schedules,
   manual dispatch, job conditions, permissions, secrets, concurrency,
   dependencies (`needs`), runner platforms, commands, artifacts, and failure
@@ -114,6 +132,8 @@ behavior equivalent merely because the files parse or CI is green.
 Finish with the baseline and versions, changes applied, decisions made,
 customizations retained, validation results, and unresolved tasks or unavailable
 evidence. Include any required-status/settings handoff to repo-setup.
+Include the per-check coverage classifications, timing changes, evidence for
+replacements, and user decisions on genuine gaps; flag unverified equivalence.
 
 ## Example: an existing prek workflow
 
