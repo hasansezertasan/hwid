@@ -1,0 +1,99 @@
+---
+name: Docs Preview Deploy
+# The privileged half of docs-preview.yml. `workflow_run` always executes the
+# copy of this file on the default branch, so a pull request cannot add a step
+# to the job that holds `contents: write`. The only thing taken from the PR is
+# the built HTML artifact, which is published as static files and never executed;
+# the PR number comes from the GitHub-supplied event payload, not the artifact.
+# Same-repo PRs only (a fork run has no usable artifact trust or token).
+on:
+  # zizmor: ignore[dangerous-triggers] -- intentional: this is the trusted
+  # deploy half. It never checks out or runs PR code and reads the artifact only
+  # as data (static files plus one allowlisted word).
+  workflow_run:
+    workflows: [Docs Preview]
+    types: [completed]
+permissions: {}
+# Serialize deploys per PR so rapid pushes can't race on gh-pages. Do not cancel
+# in-flight runs: a cancelled deploy could leave the preview half-updated.
+concurrency:
+  group: docs-preview-deploy-${{ github.event.workflow_run.pull_requests[0].number }}
+  cancel-in-progress: false
+jobs:
+  deploy:
+    name: Deploy docs preview
+    if: >-
+      github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.pull_requests[0].number != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write  # IMPORTANT: deploy the preview to the gh-pages branch
+      pull-requests: write  # IMPORTANT: maintain the sticky preview comment
+      actions: read  # download the artifacts of the triggering run
+    steps:
+      # The default branch (workflow_run's own ref), never the PR: the deploy
+      # action only needs a git work tree to publish gh-pages from.
+      - name: Checkout default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
+        with:
+          persist-credentials: false
+      - name: Download event artifact
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: docs-preview-meta
+          path: meta
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Resolve action
+        id: event
+        # Untrusted file: collapse to exactly one of two words, else fail.
+        run: |
+          case "$(cat meta/action)" in
+            closed) echo "action=remove" >> "$GITHUB_OUTPUT" ;;
+            opened|synchronize|reopened) echo "action=deploy" >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error::unexpected preview event action"; exit 1 ;;
+          esac
+      - name: Download docs artifact
+        if: steps.event.outputs.action == 'deploy'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: docs-preview-html
+          path: docs/_build/html
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+      - name: Deploy preview
+        id: preview
+        # An explicit deploy/remove, not `auto`: `auto` keys off a
+        # pull_request event, which this workflow_run job does not have. The
+        # action authenticates from its `token` input (default github.token) via
+        # github-pages-deploy-action, so the checkout keeps persist-credentials:
+        # false.
+        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9  # v1.8.1
+        with:
+          source-dir: docs/_build/html
+          preview-branch: gh-pages
+          umbrella-dir: pr-preview
+          pr-number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          deploy-commit-message: Deploy preview for PR ${{ github.event.workflow_run.pull_requests[0].number }} 🛫
+          remove-commit-message: Remove preview for PR ${{ github.event.workflow_run.pull_requests[0].number }} 🛬
+          action: ${{ steps.event.outputs.action }}
+          # The pinned action's internal sticky-comment step does not forward
+          # `pr-number` (upstream rossjrw/pr-preview-action#131), so with no
+          # pull_request event it cannot find the PR. Comment below instead.
+          comment: "false"
+      - name: Comment preview URL
+        if: steps.event.outputs.action == 'deploy'
+        uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db  # v2.9.2
+        with:
+          header: pr-preview
+          number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          message: |
+            :rocket: Docs preview: ${{ steps.preview.outputs.preview-url }}
+      - name: Comment preview removal
+        if: steps.event.outputs.action == 'remove'
+        uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db  # v2.9.2
+        with:
+          header: pr-preview
+          number: ${{ github.event.workflow_run.pull_requests[0].number }}
+          message: |
+            :wastebasket: Docs preview removed because the pull request was closed.

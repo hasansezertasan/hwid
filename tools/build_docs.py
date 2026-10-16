@@ -3,7 +3,7 @@
 Only the *current* release is built here; every previously published version is
 copied across from the ``gh-pages`` branch untouched — old versions are never
 rebuilt. The version list is derived from the ``gh-pages`` directory listing, so
-there is no committed ``versions.json`` to maintain. See ADR-027.
+there is no committed ``versions.json`` to maintain. See https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages.
 
 Usage::
 

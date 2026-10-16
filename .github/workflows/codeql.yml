@@ -42,13 +42,23 @@ jobs:
         with:
           persist-credentials: false
       - name: Initialize CodeQL
+<<<<<<< before updating
         uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d  # v4
+=======
+        uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d  # v4.38.3
+>>>>>>> after updating
         with:
           languages: ${{ matrix.language }}
           config-file: ./.github/linters/.codeql.yml
       - name: Autobuild
+<<<<<<< before updating
         uses: github/codeql-action/autobuild@24c54180a607b1449ed407dd24f251e4e9147c8d  # v4
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d  # v4
+=======
+        uses: github/codeql-action/autobuild@24c54180a607b1449ed407dd24f251e4e9147c8d  # v4.38.3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d  # v4.38.3
+>>>>>>> after updating
         with:
           category: "/language:${{ matrix.language }}"

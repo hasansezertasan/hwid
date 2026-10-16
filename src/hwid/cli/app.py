@@ -5,7 +5,9 @@ exposes the same ``version`` / ``info`` commands as the Typer variant and hangs
 every enabled non-primary component off the root as a lazily-imported subcommand
 — ``hwid interactive`` (TUI), ``hwid web``, ... —
 rather than a separate ``hwid-<name>`` console script (see
-ADR-019 and ADR-020). Selected via ``cli_framework``.
+https://hasansezertasan.github.io/copier-pyproject/context/components/#secondary-components-are-subcommands-of-one-console-root-not-separate-scripts
+and https://hasansezertasan.github.io/copier-pyproject/context/components/#cli_framework-offers-argparse-beside-typer-the-typer-dependency-is-gated-on-root_uses_typer).
+Selected via ``cli_framework``.
 """
 
 from __future__ import annotations
