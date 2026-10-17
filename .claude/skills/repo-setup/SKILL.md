@@ -35,14 +35,25 @@ Before walking, classify each step by where it sits in the doc — this decides
 what a red `[CHECK]` means. **Never stop the walk before reaching the end;**
 collect blockers and report them together.
 
+- **Not applicable** — a step the guide explicitly excludes for this repository.
+  Confirm repository visibility and the owner's GitHub plan before applying
+  the free-plan private-repository exception for branch protection. If either
+  is unknown, ask the user; a failed API call alone does not prove eligibility.
+  Record the reason and skip that step's commands and checks.
 - **Required** — everything above the `Optional integrations` heading,
   *except* the deferred GitHub Pages step below. A red check here must be
-  resolved for the project to work.
+  resolved for the project to work unless the guide marks it not applicable.
 - **Deferred** — the **GitHub Pages** step (the PR doc previews ride on the same
   `gh-pages` branch and need no separate step). It depends on that branch, which
   the first release's `deploy-docs` job creates, so its `[CHECK]` is expected red
   on a fresh repo. **Never** run its `[AGENT]` command or stop on it before the
   first release — record it as "deferred" and continue.
+- **Deferred integration** — an optional integration whose prerequisite is
+  unavailable, as specified in the guide. Record the prerequisite, skip its
+  commands and checks, and continue.
+  The Settings App needs enforceable code-owner review, so defer it on a
+  free-plan private repository, when no distinct trusted code owner can review
+  the maintainer's changes, or whenever its prerequisite check fails.
 - **Optional** — everything under the `Optional integrations` heading. A red
   check means "not configured", which is a fine end state.
 
@@ -52,7 +63,9 @@ Prerequisites: an authenticated `gh` CLI (`gh auth status`). If `gh` is missing
 or unauthenticated, stop and ask the user to run `gh auth login` first.
 
 Read `docs/maintaining/setup.rst` top to bottom (its order is the dependency
-order). For each step, run its `[CHECK]` (the shell block under `**[CHECK]**`);
+order). Classify each step first. For **Not applicable** or **Deferred
+integration**, record the reason and continue without running its commands
+or checks. For each remaining step, run its `[CHECK]` (the shell block under `**[CHECK]**`);
 exit 0 means done. On a red check, branch on the step's class:
 
 1. **Green** → done. Say so briefly, continue.
@@ -71,10 +84,18 @@ exit 0 means done. On a red check, branch on the step's class:
    the choice and continue. If configure, treat it as its `[AGENT]`/`[HUMAN]`
    tags say. Never drive an optional step unprompted.
 
-End of walk: report the green steps, the deferred steps, any blockers, the
+End of walk: report the green steps, the not-applicable and deferred steps, any blockers, the
 pending human handoffs, and the optional steps left unconfigured.
 
 ## Rules
+
+- **Install the Settings App only after its code-owner-review prerequisite
+  check passes and the user confirms a distinct trusted reviewer is available.**
+  If either prerequisite is missing or unavailable, defer the integration;
+  skip the installation handoff and its installed-App check.
+- **Apply the Settings review policy only after reviewer confirmation.**
+  A pending reviewer handoff blocks the dependent policy command;
+  continue independent setup steps while deferring the integration.
 
 - **Register the PyPI publisher before the first release**, and do the
   merge-policy step first — several later steps depend on it.
@@ -88,6 +109,6 @@ pending human handoffs, and the optional steps left unconfigured.
 
 ## When everything is green
 
-Report "repository setup complete — every step's check passes" and list any
-deferred (post-first-release) or intentionally-skipped optional steps so the
+Report "repository setup complete — every applicable required step's check passes" and list any
+not-applicable, deferred, or intentionally-skipped optional steps so the
 user knows what remains by choice.

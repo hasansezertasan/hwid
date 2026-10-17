@@ -8,10 +8,11 @@ report the one failure mode (unreadable package metadata) in its own terms:
 the CLI exits 1, the web app answers 503, the GUI degrades to "unknown".
 
 Adding a component therefore means writing an adapter, not another copy of the
-metadata lookup. See ADR-033.
+metadata lookup. See https://hasansezertasan.github.io/copier-pyproject/context/components/#one-application-payload-in-coreapppy-components-are-adapters-over-it.
 
 It lives in ``core`` — already the layer directly beneath the independent
-component group in the import-linter contract (ADR-014) — so every component
+component group in the import-linter contract (https://hasansezertasan.github.io/copier-pyproject/context/architecture-contracts/#one-exhaustive-import-linter-layers-contract-cli-above-independent-components-above-core-above-utils)
+— so every component
 may import it and none may import another.
 """
 
