@@ -69,11 +69,7 @@ jobs:
           python-version-file: .python-version
       - name: Setup uv
         id: setup-uv
-<<<<<<< before updating
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
-=======
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
->>>>>>> after updating
         with:
           enable-cache: true
           cache-dependency-glob: |
@@ -97,21 +93,13 @@ jobs:
         shell: bash
         run: cp "$BUNDLE_PATH" build-provenance.sigstore.json
       - name: Upload package
-<<<<<<< before updating
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
-=======
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
->>>>>>> after updating
         with:
           name: package-distributions
           path: dist/
       - name: Upload provenance bundle
         if: env.ATTEST_BUILD_PROVENANCE == 'true'
-<<<<<<< before updating
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
-=======
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
->>>>>>> after updating
         with:
           name: build-provenance
           path: build-provenance.sigstore.json
@@ -129,11 +117,7 @@ jobs:
       url: https://pypi.org/project/hwid/${{ needs.release-please.outputs.version }}
     steps:
       - name: Download package
-<<<<<<< before updating
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8
-=======
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
->>>>>>> after updating
         with:
           name: package-distributions
           path: dist/
@@ -157,11 +141,7 @@ jobs:
         with:
           python-version-file: .python-version
       - name: Setup uv
-<<<<<<< before updating
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
-=======
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
->>>>>>> after updating
         with:
           enable-cache: true
           cache-dependency-glob: |
@@ -176,11 +156,7 @@ jobs:
       - name: Generate CycloneDX SBOM
         run: uvx --from cyclonedx-bom cyclonedx-py requirements requirements-sbom.txt --output-format JSON --output-file hwid-sbom.cdx.json
       - name: Upload SBOM
-<<<<<<< before updating
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7
-=======
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
->>>>>>> after updating
         with:
           name: hwid-sbom
           path: hwid-sbom.cdx.json
@@ -194,32 +170,20 @@ jobs:
       contents: write  # IMPORTANT: Mandatory for GitHub Release
     steps:
       - name: Download package
-<<<<<<< before updating
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8
-=======
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
->>>>>>> after updating
         with:
           name: package-distributions
           path: dist/
       - name: Download SBOM
         # Lands in dist/ so the CycloneDX SBOM is attached to the release
         # alongside the distributions by the upload step below.
-<<<<<<< before updating
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8
-=======
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
->>>>>>> after updating
         with:
           name: hwid-sbom
           path: dist/
       - name: Download provenance bundles
         if: ${{ github.repository_visibility == 'public' || vars.ENABLE_PRIVATE_ATTESTATIONS == 'true' }}
-<<<<<<< before updating
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8
-=======
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
->>>>>>> after updating
         with:
           pattern: build-provenance*
           path: dist/provenance/
@@ -372,11 +336,7 @@ jobs:
           python-version-file: .python-version
       - name: Setup uv
         id: setup-uv
-<<<<<<< before updating
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
-=======
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7  # v10.2.0
->>>>>>> after updating
         with:
           enable-cache: true
           cache-dependency-glob: |
