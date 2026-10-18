@@ -350,6 +350,9 @@ paths = ["src", "tests"]
 # the dev tooling).
 extend_exclude = [
   "docs/conf.py",
+  # Standalone Poetry demo projects with their own manifests; they do not ship in
+  # the wheel, so their imports (typer) are not this project's dependencies.
+  "examples",
 ]
 known_first_party = ["hwid"]
 

@@ -172,7 +172,8 @@ hooks = [{ id = "actionlint", name = "Actionlint Linter" }]
 [[repos]]
 repo = "https://github.com/zizmorcore/zizmor-pre-commit"
 rev = "v1.31.1"
-hooks = [{ id = "zizmor", name = "Zizmor GitHub Actions Auditor" }]
+# zizmor-pre-commit requires Python >=3.11, above the 3.10 default_language_version.
+hooks = [{ id = "zizmor", name = "Zizmor GitHub Actions Auditor", language_version = "python3.11" }]
 
 [[repos]]
 repo = "https://github.com/adrienverge/yamllint"
