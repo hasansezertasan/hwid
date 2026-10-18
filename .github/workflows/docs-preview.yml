@@ -5,13 +5,15 @@ name: Docs Preview
 # comment with the preview URL. The preview is removed when the PR closes. The
 # release docs deploy (release.yml `deploy-docs`) and the manual
 # gh-pages.yml publish to the branch *root* and set `clean-exclude: pr-preview/**`
-# so a release never wipes live previews. See ADR-010.
+# so a release never wipes live previews. See https://hasansezertasan.github.io/copier-pyproject/context/docs-stack/#pr-docs-previews-deploy-to-a-subfolder-of-the-projects-own-gh-pages-same-repo-only.
 #
-# Same-repo PRs only: a fork PR's GITHUB_TOKEN is read-only and cannot deploy, so
-# the `if` guard skips forks cleanly rather than failing (fork-preview support is
-# planned for rossjrw/pr-preview-action v2). Plain `pull_request` (not
-# pull_request_target) means untrusted PR code never runs with the write token,
-# so no `dangerous-triggers` exception is needed.
+# Same-repo PRs only: a fork PR's GITHUB_TOKEN is read-only, so the `if` guards
+# skip forks cleanly rather than failing. This workflow is the *unprivileged*
+# half: it runs on `pull_request`, so its YAML comes from the PR itself and it
+# must hold no write token. It builds the HTML with `contents: read` and uploads
+# it as an artifact; the publish happens in docs-preview-deploy.yml, a
+# `workflow_run` workflow that always runs from the default branch's copy of the
+# file, so a PR cannot edit the job that holds `contents: write`.
 on:
   pull_request:
     branches: [main, master]
@@ -24,14 +26,36 @@ concurrency:
   group: docs-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: false
 jobs:
-  docs-preview:
-    name: Deploy docs preview
+  meta:
+    name: Record preview event
     if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      # `closed` skips the build, so the deploy workflow learns from this
+      # artifact whether to publish or remove. It is untrusted input there and is
+      # reduced to one allowlisted word.
+      - name: Record event action
+        env:
+          EVENT_ACTION: ${{ github.event.action }}
+        run: |
+          mkdir meta
+          printf '%s' "$EVENT_ACTION" > meta/action
+      - name: Upload event artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: docs-preview-meta
+          path: meta/action
+          retention-days: 1
+  build:
+    name: Build docs preview
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository && github.event.action != 'closed'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
-      contents: write  # IMPORTANT: deploy the preview to the gh-pages branch
-      pull-requests: write  # IMPORTANT: maintain the sticky preview comment
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7
@@ -43,12 +67,10 @@ jobs:
           # "Set reproducible build epoch" step reads `git log -1` from.
           fetch-depth: 0
       - name: Set up Python
-        if: github.event.action != 'closed'
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version-file: .python-version
       - name: Setup uv
-        if: github.event.action != 'closed'
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884  # v10.3.0
         with:
           enable-cache: true
@@ -56,12 +78,10 @@ jobs:
             pyproject.toml
             uv.lock
       - name: Set reproducible build epoch
-        if: github.event.action != 'closed'
         # Pin Sphinx's "today"/copyright to the last commit date so the same
         # commit always renders the same docs output (reproducible-builds.org).
         run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
       - name: Build docs
-        if: github.event.action != 'closed'
         # sphinx.ext.githubpages emits .nojekyll so _static/ is served.
         env:
           PYTHONUNBUFFERED: "1"
@@ -71,15 +91,10 @@ jobs:
         run: |
           uv run --no-default-groups --group docs sphinx-build -w docs/_build/warnings.txt -b html docs docs/_build/html
           uv run --no-default-groups --group docs python docs/check_warnings.py
-      - name: Deploy preview
-        # action: auto deploys on opened/synchronize/reopened and removes the
-        # pr-preview/pr-<N>/ subfolder on closed; the sticky comment is updated
-        # in both cases. The action authenticates from its `token` input
-        # (default github.token) via github-pages-deploy-action, so the checkout
-        # above keeps persist-credentials: false.
-        uses: rossjrw/pr-preview-action@ffa7509e91a3ec8dfc2e5536c4d5c1acdf7a6de9  # v1.8.1
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
-          source-dir: docs/_build/html
-          preview-branch: gh-pages
-          umbrella-dir: pr-preview
-          action: auto
+          name: docs-preview-html
+          path: docs/_build/html
+          if-no-files-found: error
+          retention-days: 1

@@ -22,6 +22,30 @@
       "justMyCode": true
     },
     {
+      "name": "Python: Debug Test File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-v", "--tb=short", "-s"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      // Mirrors the tox env_run_base invocation so the debug path measures
+      // what CI measures. Run `coverage combine && coverage report`
+      // afterwards to merge the parallel-mode data file.
+      "name": "Python: Run Tests with Coverage",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "coverage",
+      "args": ["run", "--module", "pytest", "-v", "--tb=short"],
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "COVERAGE_PROCESS_START": "${workspaceFolder}/pyproject.toml"
+      }
+    },
+    {
       "name": "Python: Attach",
       "type": "debugpy",
       "request": "attach",

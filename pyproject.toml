@@ -40,11 +40,6 @@ keywords = [
   "github-actions",
   "automation",
   "sphinx",
-  "prek",
-  "linting",
-  "testing",
-  "coverage",
-  "release-automation",
 ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -136,6 +131,15 @@ style = [
 sast = [
   "semgrep==1.180.0",
 ]
+# Dependency hygiene gets its own group for the same reason `sast` does: it is
+# only ever run by the on-demand `deps` tox env and the `deps` CI job, so a plain
+# `uv sync` should not install it. deptry checks the imports against the declared
+# dependencies (missing, transitive, misplaced or obsolete); creosote flags
+# declared runtime dependencies that nothing imports.
+deps = [
+  "creosote==5.2.0",
+  "deptry==0.25.1",
+]
 test = [
   "coverage-enable-subprocess==1.0",
   "coverage[toml]==7.16.2",
@@ -158,11 +162,11 @@ docs = [
   "sphinx-paramlinks==0.6.0",
   "auto-pytabs[sphinx]==0.5.0",
   "myst-parser==4.0.1",
-  # Per-page "last updated" footer sourced from git commit dates (ADR-027);
+  # Per-page "last updated" footer sourced from git commit dates (https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#per-page-last-updated-comes-from-git-history);
   # offline, no network. Works from full history (docs CI checks out depth 0).
   "sphinx-last-updated-by-git==0.3.8",
   # PEP 440 version parsing/sorting used by tools/build_docs.py to order
-  # published versions and pick the `latest` alias (ADR-027). Also a Sphinx
+  # published versions and pick the `latest` alias (https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages). Also a Sphinx
   # transitive dependency; pinned here for the explicit direct use.
   "packaging>=24.0",
 ]
@@ -249,7 +253,7 @@ name = "cz_conventional_commits"
 addopts = "-v --tb=short --doctest-glob=README.md"
 # One marker per component, auto-applied by tests/conftest.py from each test's
 # top-level tests/<dir>/. Enables `pytest -m web` locally and per-component CI
-# jobs (issue #160, ADR-028); `integration` (ADR-008) is one axis of the scheme.
+# jobs (issue #160, https://hasansezertasan.github.io/copier-pyproject/context/ci-topology/#per-component-markers-path-filtered-jobs-and-one-coverage-gate-per-component); `integration` (https://hasansezertasan.github.io/copier-pyproject/context/testing-strategy/#real-broker-integration-tests-testcontainers-locally-per-broker-ci-mechanism) is one axis of the scheme.
 markers = [
   "core: core/shared component tests",
   "cli: CLI component tests",
@@ -267,20 +271,20 @@ xfail_strict = true
 [tool.coverage.run]
 branch = true
 # Match `_version.py` wherever it resolves: `src/...` in editable dev installs and
-# `.../site-packages/...` when tox/CI installs the built wheel or sdist. A
+# `.../site-packages/...` when tox/CI installs the built (non-editable) wheel. A
 # `src/**`-only pattern silently misses the installed copy and reports it at 0%.
 omit = ["*/_version.py"]
 parallel = true
 # Store data-file paths relative to the project root so `.coverage` files produced
 # on different runners/OSes merge in the `coverage-combine` CI job without
 # absolute-path mismatches. Complements the `[tool.coverage.paths]` remap below
-# (which unifies the src/ vs site-packages layouts). See ADR-026.
+# (which unifies the src/ vs site-packages layouts). See https://hasansezertasan.github.io/copier-pyproject/context/ci-topology/#a-single-union-coverage-gate-across-the-whole-matrix.
 relative_files = true
 source_pkgs = ["hwid", "tests"]
 
 
 [tool.coverage.paths]
-# Unify coverage data across environments. tox installs the built wheel/sdist into
+# Unify coverage data across environments. tox installs the built wheel into
 # each env's site-packages, so the same source file is measured under a different
 # `.tox/<env>/.../site-packages/hwid` path per interpreter. Without
 # remapping those back to the canonical `src/` tree, `coverage combine` keeps a
@@ -331,6 +335,31 @@ ignore_decorators = [
 ignore_names = ["CONFIG_FILE_PATH", "logger", "main", "model_config", "pytest_*", "collect_ignore_glob"]
 min_confidence = 60
 paths = ["src", "tests"]
+
+
+[tool.deptry]
+# `known_first_party` is explicit because the tox `deps` env installs the built
+# wheel, so without it deptry reads the project's own imports as a third-party
+# transitive dependency (DEP003). Add further `per_rule_ignores` entries for the
+# project's own findings, e.g. DEP003 for a package only importable through
+# another declared one, or DEP002 for an optional import guarded by try/except.
+# See https://deptry.com/rules-violations/.
+# Excluded: the Sphinx config, the build hook (its imports belong to
+# `[build-system].requires`, not the runtime dependencies), the benchmarks and the
+# worker probe script (neither ships in the wheel; pytest and anyio come from
+# the dev tooling).
+extend_exclude = [
+  "docs/conf.py",
+  # Standalone Poetry demo projects with their own manifests; they do not ship in
+  # the wheel, so their imports (typer) are not this project's dependencies.
+  "examples",
+]
+known_first_party = ["hwid"]
+
+[tool.deptry.per_rule_ignores]
+# tools/build_docs.py imports `packaging`, pinned in the `docs` group for that
+# script alone, so deptry reads it as a misplaced dev dependency.
+DEP004 = ["packaging"]
 
 
 [tool.slotscheck]
@@ -470,7 +499,7 @@ convention = "pep257"
 # package) whose whole job is to print GitHub `::error::` annotations to stdout.
 "docs/check_warnings.py" = ["INP001", "T201"]
 # The versioned-docs build orchestrator is a standalone CLI script under tools/,
-# not part of an importable package (ADR-027).
+# not part of an importable package (https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages).
 "tools/build_docs.py" = ["INP001"]
 
 
@@ -543,7 +572,7 @@ disable = [
   # are deliberately lazy so import-linter's layering contract holds and a
   # framework is only imported when the code path that needs it actually runs.
   # Textual is the exception: the TUI imports it at module scope so `InfoApp`
-  # can be defined there and driven by the headless pilot (ADR-035).
+  # can be defined there and driven by the headless pilot (https://hasansezertasan.github.io/copier-pyproject/context/testing-strategy/#interactive-components-expose-injected-driver-seams-so-headless-ci-measures-everything-but-the-blocking-call).
   "import-outside-toplevel",
   # W0706 — the generated TUI entry point explicitly re-raises
   # KeyboardInterrupt/SystemExit ahead of a broad `except Exception` to make the
@@ -610,7 +639,6 @@ commands = [
     ], extend = true },
   ],
 ]
-constrain_package_deps = true
 dependency_groups = ["test"]
 description = "Run the tests under {base_python}"
 env_tmp_dir = "{toxworkdir}/tmp/{envname}"
@@ -618,12 +646,16 @@ env_tmp_dir = "{toxworkdir}/tmp/{envname}"
 # `coverage run` plus `parallel = true` writes per-env data files that the CI
 # `coverage combine` step merges.
 set_env = { COVERAGE_PROCESS_START = "{tox_root}/pyproject.toml" }
-
+# Non-editable: `uv sync --no-editable` builds the project and installs it into
+# site-packages, the layout `[tool.coverage.paths]` remaps and the per-component
+# coverage gates measure (https://hasansezertasan.github.io/copier-pyproject/context/ci-topology/#per-component-markers-path-filtered-jobs-and-one-coverage-gate-per-component).
 package = "wheel"
-
-runner = "uv-venv-runner"
-use_frozen_constraints = true
-wheel_build_env = ".pkg"
+# Every env installs from uv.lock (`uv sync --locked`), so tox tests and lints
+# the exact versions the lockfile pins. The plain `uv-venv-runner` resolves the
+# project's own dependencies fresh on every env creation (tox's
+# `use_frozen_constraints` never reaches its `uv pip install`), so a newer
+# release could float in and clash with a pinned tool such as semgrep.
+runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.style]
@@ -698,7 +730,7 @@ commands = [
   # would make a registry request on every `git commit`. The ruleset is named
   # explicitly rather than `--config auto` so rule selection does not depend on
   # language auto-detection; it is still fetched from the registry, which is why
-  # this cannot be vendored (see ADR-032). `--error` makes findings blocking;
+  # this cannot be vendored (see https://hasansezertasan.github.io/copier-pyproject/context/lint-orchestration/#semgrep-runs-in-the-style-env-against-a-named-registry-ruleset-never-vendored). `--error` makes findings blocking;
   # silence a false positive with a trailing `# nosemgrep: <rule-id>`.
   [
     "semgrep",
@@ -751,14 +783,44 @@ commands = [
 # resolve pytest and other test-only imports.
 dependency_groups = ["sast", "style", "test"]
 description = "Run Checkers, Linters and Formatters"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
+
+
+# On-demand and CI-only (not in env_list, like `integration`): the `deps` job in
+# ci.yml runs it and `check` aggregates that job. `test` is included so deptry
+# and creosote can resolve the project's own test-only imports. creosote needs
+# the installed distributions to map import names, which the lock runner provides.
+[tool.tox.env.deps]
+commands = [
+  [
+    "deptry",
+    ".",
+  ],
+  [
+    "creosote",
+    "--deps-file",
+    "pyproject.toml",
+    "--section",
+    "project.dependencies",
+    # Without this creosote skips imports inside functions, so a dependency used
+    # only through a lazy import (the worker's uvloop) is reported as unused.
+    "--include-deferred",
+  ],
+]
+dependency_groups = ["deps", "test"]
+description = "Check dependency hygiene (deptry, creosote)"
+runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.prek]
 commands = [["prek", "run", "--all-files"]]
 dependency_groups = ["prek"]
 description = "Run prek hooks"
-runner = "uv-venv-runner"
+# The hooks that need the project call `uv run --locked`, which syncs it (and the
+# groups they name) into this env through the runner's UV_PROJECT_ENVIRONMENT;
+# installing the wheel here too would only be swapped for that install each run.
+package = "skip"
+runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.docs-build]
@@ -772,7 +834,7 @@ commands = [
 ]
 dependency_groups = ["docs"]
 description = "Build Docs"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 # Keep build log output unbuffered/ordered. Reproducible builds pin Sphinx's
 # "today"/copyright to SOURCE_DATE_EPOCH, which the CI docs steps
 # (docs-preview.yml, release.yml) export from the last commit date before
@@ -790,7 +852,7 @@ set_env = { PYTHONUNBUFFERED = "1" }
 commands = [["sphinx-autobuild", "--ignore", "*/_generated/*", "docs", "docs/_build/html"]]
 dependency_groups = ["docs"]
 description = "Start the live-reloading docs server"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 set_env = { PYTHONUNBUFFERED = "1" }
 
 
@@ -801,7 +863,7 @@ set_env = { PYTHONUNBUFFERED = "1" }
 commands = [["sphinx-build", "-b", "doctest", "docs", "docs/_build/doctest"]]
 dependency_groups = ["docs"]
 description = "Run documentation doctests"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 set_env = { PYTHONUNBUFFERED = "1" }
 
 
@@ -811,7 +873,7 @@ set_env = { PYTHONUNBUFFERED = "1" }
 commands = [["sphinx-build", "-b", "linkcheck", "docs", "docs/_build/linkcheck"]]
 dependency_groups = ["docs"]
 description = "Check documentation for broken links"
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"
 set_env = { PYTHONUNBUFFERED = "1" }
 
 [tool.tox.env.cli]
@@ -824,4 +886,4 @@ commands = [
   ],
 ]
 description = "Run the CLI application."
-runner = "uv-venv-runner"
+runner = "uv-venv-lock-runner"

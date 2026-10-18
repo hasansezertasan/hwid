@@ -143,6 +143,6 @@ jobs:
           # Preserve the PR preview tree (pr-preview/**); the numeric version
           # directories (e.g. 0.3/) are re-supplied in ./site each run. Disable
           # force-push so a concurrent preview deploy is not clobbered. See
-          # ADR-010 / ADR-027.
+          # https://hasansezertasan.github.io/copier-pyproject/context/docs-stack/#pr-docs-previews-deploy-to-a-subfolder-of-the-projects-own-gh-pages-same-repo-only, https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages.
           clean-exclude: pr-preview/**
           force: false

@@ -5,7 +5,7 @@ name: Docs Link Check
 # (transient 5xx, rate limits, CI-blocking sites), so it runs on a weekly
 # schedule and on demand — never on pull_request, and it is not part of the
 # `check` aggregation gate. A failure here is a maintenance signal, not a merge
-# blocker. See ADR-011.
+# blocker. See https://hasansezertasan.github.io/copier-pyproject/context/docs-stack/#sphinx-lint-and-the-case-conflict-hook-are-always-on-link-checking-is-weekly.
 on:
   workflow_dispatch:
   schedule:

@@ -85,7 +85,8 @@ html_theme_options = {
     "github_url": "https://github.com/hasansezertasan/hwid",
 }
 
-# -- Versioned docs switcher (ADR-027) ---------------------------------------
+# -- Versioned docs switcher ---------------------------------------------------
+# Why versions are published this way: https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages
 # tools/build_docs.py writes docs/_static/versions.json into each CI build from
 # the gh-pages directory listing. When present, feed the Shibuya theme's native
 # version switcher (components/nav-versions.html) via html_context. Absent (e.g.
