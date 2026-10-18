@@ -198,6 +198,13 @@ head branches</strong>.</p>
 </section>
 <section id="branch-protection">
 <h2>Branch protection<a class="headerlink" href="#branch-protection" title="Link to this heading">#</a></h2>
+<p>Branch protection and rulesets are free on public repositories, but a
+<strong>private</strong> repository needs a paid GitHub plan (Pro, Team or Enterprise) for
+them to be enforced. On a free-plan private repository mark this section
+<strong>not applicable</strong> and skip its commands and checks.
+Also defer the Settings App installation below until required code-owner review
+can be enforced; its review safeguard depends on branch protection.
+Continue with the remaining applicable steps.</p>
 <p>Protect <code class="docutils literal notranslate"><span class="pre">main</span></code> so a PR can only merge once its checks pass. Mark these check
 contexts as required (the names are the <strong>check runs</strong>, not the workflow files):</p>
 <ul class="simple">
@@ -212,11 +219,12 @@ protection, because the four metadata gates below say nothing about the code.</p
 follow the <code class="docutils literal notranslate"><span class="pre">&lt;type&gt;/&lt;description&gt;</span></code> format.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Verify</span> <span class="pre">linked</span> <span class="pre">issue</span></code> — the linked-issue check (<code class="docutils literal notranslate"><span class="pre">check-linked-issues.yml</span></code>),
 which fails a PR with no linked issue.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Task</span> <span class="pre">Completed</span> <span class="pre">Checker</span></code> — the PR task-list gate (<code class="docutils literal notranslate"><span class="pre">task-completed-check.yml</span></code>),
-which fails while any unticked checkbox remains in the PR description. This is
-the name of the <strong>check run</strong> the action publishes, not of the job around it
-(<code class="docutils literal notranslate"><span class="pre">Check</span> <span class="pre">PR</span> <span class="pre">task</span> <span class="pre">list</span></code>) — the job is green even when boxes are unticked, so
-requiring the job name would not gate anything.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Check</span> <span class="pre">PR</span> <span class="pre">task</span> <span class="pre">list</span></code> — the PR task-list gate (<code class="docutils literal notranslate"><span class="pre">task-completed-check.yml</span></code>),
+which fails while any unticked checkbox remains in the PR description. This
+is the name of the <strong>job</strong>, whose enforce step promotes a non-success task
+check into a job failure. (An earlier revision required the action’s
+<code class="docutils literal notranslate"><span class="pre">Task</span> <span class="pre">Completed</span> <span class="pre">Checker</span></code> check run instead; ruleset evaluation stopped
+honoring those synthetic runs, blocking every bot PR.)</p></li>
 </ul>
 <p><strong>[AGENT]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
@@ -224,7 +232,7 @@ requiring the job name would not gate anything.</p></li>
 </span><span data-line="3"><span class="s">{</span>
 </span><span data-line="4"><span class="s">  "required_status_checks": {</span>
 </span><span data-line="5"><span class="s">    "strict": true,</span>
-</span><span data-line="6"><span class="s">    "contexts": ["check", "Validate PR title", "Validate branch name", "Verify linked issue", "Task Completed Checker"]</span>
+</span><span data-line="6"><span class="s">    "contexts": ["check", "Validate PR title", "Validate branch name", "Verify linked issue", "Check PR task list"]</span>
 </span><span data-line="7"><span class="s">  },</span>
 </span><span data-line="8"><span class="s">  "enforce_admins": null,</span>
 </span><span data-line="9"><span class="s">  "required_pull_request_reviews": null,</span>
@@ -235,7 +243,7 @@ requiring the job name would not gate anything.</p></li>
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'(.required_status_checks.strict == true) and ((["check","Validate PR title","Validate branch name","Verify linked issue","Task Completed Checker"] - (.required_status_checks.contexts // [])) == [])'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">   </span>--jq<span class="w"> </span><span class="s1">'(.required_status_checks.strict == true) and ((["check","Validate PR title","Validate branch name","Verify linked issue","Check PR task list"] - (.required_status_checks.contexts // [])) == [])'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>UI equivalent: <strong>Settings → Branches → Add branch ruleset</strong> (or <strong>Add rule</strong> for
@@ -541,7 +549,10 @@ preview for each pull request under <code class="docutils literal notranslate"><
 <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch and comments the URL on the PR (removed automatically when
 the PR closes). Previews are built only for pull requests opened from branches
 on this repository — a fork PR receives a read-only token and is skipped — and
-require no extra setup beyond Pages.</p>
+require no extra setup beyond Pages. The docs are built by <code class="docutils literal notranslate"><span class="pre">docs-preview.yml</span></code>
+with a read-only token and published by <code class="docutils literal notranslate"><span class="pre">docs-preview-deploy.yml</span></code>, a
+<code class="docutils literal notranslate"><span class="pre">workflow_run</span></code> workflow that always runs from the default branch, so a branch
+or dependency update cannot edit the job that holds the write token.</p>
 </section>
 <section id="automated-dependency-updates-renovate">
 <h2>Automated dependency updates (Renovate)<a class="headerlink" href="#automated-dependency-updates-renovate" title="Link to this heading">#</a></h2>
@@ -575,6 +586,12 @@ check on them
 (<a class="reference external" href="https://github.com/renovatebot/renovate/issues/31600">renovate#31600</a>), so a
 copier PR can look mergeable while carrying conflicts. Reconcile before merging:
 keep your project identity, adopt the template’s tooling/config changes.</p>
+<p>Where the project maintains an overlay on a file the template also renders
+(e.g. project-specific entries in <code class="docutils literal notranslate"><span class="pre">.vscode/launch.json</span></code> that the template
+cannot derive from its answers), resolve the conflict in favour of the committed
+file and port only genuine template-side improvements instead of taking the
+template file wholesale. Re-applying the overlay is expected, not a merge
+failure.</p>
 <p>If the update touches dependency metadata in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> — the
 <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> list, a dependency group, or the optional-dependency table —
 also run <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">lock</span></code> and commit the refreshed <code class="docutils literal notranslate"><span class="pre">uv.lock</span></code> in the same PR.
@@ -658,7 +675,32 @@ Repository settings (“Settings” App)
 (when the <code class="docutils literal notranslate"><span class="pre">repository_topics</span></code> template answer is set) topics. It is applied by
 the <a class="reference external" href="https://github.com/apps/settings">Settings GitHub App</a> on every push to
 the default branch. Nothing syncs until it is installed.</p>
-<p><strong>[HUMAN]</strong> Install it once on this repository (or your account) from the
+<p>Before installing, enforce <strong>Require review from Code Owners</strong> on the default
+branch as described below. On a free-plan private repository, <strong>defer the
+Settings App</strong> until that safeguard can be enforced. Record this integration
+as deferred and skip its installation and check; the metadata file can stay
+in the repository without the App.</p>
+<p><strong>[HUMAN]</strong> Confirm that a distinct trusted reviewer with write access can
+approve changes authored by the maintainer and is listed in CODEOWNERS for
+<code class="docutils literal notranslate"><span class="pre">.github/settings.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">.github/CODEOWNERS</span></code>.
+A sole maintainer cannot approve their own pull requests;
+defer the Settings App until that reviewer is available.</p>
+<p><strong>[AGENT]</strong> Only after the reviewer is confirmed, enable code-owner review.
+This updates the review policy separately from the required status contexts.
+If reviewer confirmation is pending or unavailable, skip this command and defer
+the integration.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection/required_pull_request_reviews<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>-F<span class="w"> </span><span class="nv">require_code_owner_reviews</span><span class="o">=</span><span class="nb">true</span>
+</span></pre></div>
+</div>
+<p><strong>[CHECK]</strong> Prerequisite: required code-owner review is enforced on <code class="docutils literal notranslate"><span class="pre">main</span></code>.
+If the check fails or cannot be verified, defer installation and return to that
+policy step; a CODEOWNERS file alone does not enforce review.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.required_pull_request_reviews.require_code_owner_reviews == true'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span></pre></div>
+</div>
+<p><strong>[HUMAN]</strong> Only after the prerequisite check passes, install it once on this repository (or your account) from the
 <a class="reference external" href="https://github.com/apps/settings">App page</a>.</p>
 <p><strong>[CHECK]</strong> No scriptable check — confirm the Settings GitHub App is installed.</p>
 <div class="admonition caution">
