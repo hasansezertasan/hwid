@@ -116,7 +116,7 @@ style = [
 # ever executes in the Linux-only `style` job. The tox `style` env lists this
 # group explicitly. Still a single version source, same as every other pin.
 sast = [
-  "semgrep==1.180.0",
+  "semgrep==1.181.0",
 ]
 # Dependency hygiene gets its own group for the same reason `sast` does: it is
 # only ever run by the on-demand `deps` tox env and the `deps` CI job, so a plain
