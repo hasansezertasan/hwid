@@ -98,6 +98,10 @@ data-aria-dark="Switch to auto color mode">
 <li><a class="reference internal" href="#branch-protection">Branch protection</a><ul>
 <li><a class="reference internal" href="#apply-protection-after-the-first-merge">Apply protection <em>after</em> the first merge</a></li>
 <li><a class="reference internal" href="#release-prs-need-a-manual-nudge">Release PRs need a manual nudge</a></li>
+<li><a class="reference internal" href="#keep-workflow-changes-out-of-an-active-release">Keep workflow changes out of an active release</a><ul>
+<li><a class="reference internal" href="#recover-a-release-blocked-by-this-mismatch">Recover a release blocked by this mismatch</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#let-actions-open-the-release-pr">Let Actions open the release PR</a></li>
@@ -201,6 +205,13 @@ head branches</strong>.</p>
 </section>
 <section id="branch-protection">
 <h2>Branch protection<a class="headerlink" href="#branch-protection" title="Link to this heading">#</a></h2>
+<p>Branch protection and rulesets are free on public repositories, but a
+<strong>private</strong> repository needs a paid GitHub plan (Pro, Team or Enterprise) for
+them to be enforced. On a free-plan private repository mark this section
+<strong>not applicable</strong> and skip its commands and checks.
+Also defer the Settings App installation below until required code-owner review
+can be enforced; its review safeguard depends on branch protection.
+Continue with the remaining applicable steps.</p>
 <p>Protect <code class="docutils literal notranslate"><span class="pre">main</span></code> so a PR can only merge once its checks pass. Mark these check
 contexts as required (the names are the <strong>check runs</strong>, not the workflow files):</p>
 <ul class="simple">
@@ -215,11 +226,12 @@ protection, because the four metadata gates below say nothing about the code.</p
 follow the <code class="docutils literal notranslate"><span class="pre">&lt;type&gt;/&lt;description&gt;</span></code> format.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Verify</span> <span class="pre">linked</span> <span class="pre">issue</span></code> — the linked-issue check (<code class="docutils literal notranslate"><span class="pre">check-linked-issues.yml</span></code>),
 which fails a PR with no linked issue.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Task</span> <span class="pre">Completed</span> <span class="pre">Checker</span></code> — the PR task-list gate (<code class="docutils literal notranslate"><span class="pre">task-completed-check.yml</span></code>),
-which fails while any unticked checkbox remains in the PR description. This is
-the name of the <strong>check run</strong> the action publishes, not of the job around it
-(<code class="docutils literal notranslate"><span class="pre">Check</span> <span class="pre">PR</span> <span class="pre">task</span> <span class="pre">list</span></code>) — the job is green even when boxes are unticked, so
-requiring the job name would not gate anything.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Check</span> <span class="pre">PR</span> <span class="pre">task</span> <span class="pre">list</span></code> — the PR task-list gate (<code class="docutils literal notranslate"><span class="pre">task-completed-check.yml</span></code>),
+which fails while any unticked checkbox remains in the PR description. This
+is the name of the <strong>job</strong>, whose enforce step promotes a non-success task
+check into a job failure. (An earlier revision required the action’s
+<code class="docutils literal notranslate"><span class="pre">Task</span> <span class="pre">Completed</span> <span class="pre">Checker</span></code> check run instead; ruleset evaluation stopped
+honoring those synthetic runs, blocking every bot PR.)</p></li>
 </ul>
 <p><strong>[AGENT]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
@@ -227,7 +239,7 @@ requiring the job name would not gate anything.</p></li>
 </span><span data-line="3"><span class="s">{</span>
 </span><span data-line="4"><span class="s">  "required_status_checks": {</span>
 </span><span data-line="5"><span class="s">    "strict": true,</span>
-</span><span data-line="6"><span class="s">    "contexts": ["check", "Validate PR title", "Validate branch name", "Verify linked issue", "Task Completed Checker"]</span>
+</span><span data-line="6"><span class="s">    "contexts": ["check", "Validate PR title", "Validate branch name", "Verify linked issue", "Check PR task list"]</span>
 </span><span data-line="7"><span class="s">  },</span>
 </span><span data-line="8"><span class="s">  "enforce_admins": null,</span>
 </span><span data-line="9"><span class="s">  "required_pull_request_reviews": null,</span>
@@ -238,7 +250,7 @@ requiring the job name would not gate anything.</p></li>
 </div>
 <p><strong>[CHECK]</strong></p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
-</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'(.required_status_checks.strict == true) and ((["check","Validate PR title","Validate branch name","Verify linked issue","Task Completed Checker"] - (.required_status_checks.contexts // [])) == [])'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span><span data-line="2"><span class="w">   </span>--jq<span class="w"> </span><span class="s1">'(.required_status_checks.strict == true) and ((["check","Validate PR title","Validate branch name","Verify linked issue","Check PR task list"] - (.required_status_checks.contexts // [])) == [])'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
 </span></pre></div>
 </div>
 <p>UI equivalent: <strong>Settings → Branches → Add branch ruleset</strong> (or <strong>Add rule</strong> for
@@ -276,6 +288,56 @@ missing <code class="docutils literal notranslate"><span class="pre">check-branc
 <p>This is a deliberate trade, not an oversight: the alternative is giving
 <code class="docutils literal notranslate"><span class="pre">release.yml</span></code> a PAT or GitHub App token, which is a standing credential with
 write access to <code class="docutils literal notranslate"><span class="pre">main</span></code>. One manual reopen per release is the cheaper side.</p>
+</section>
+<section id="keep-workflow-changes-out-of-an-active-release">
+<span id="setup-release-workflow-race"></span><h3>Keep workflow changes out of an active release<a class="headerlink" href="#keep-workflow-changes-out-of-an-active-release" title="Link to this heading">#</a></h3>
+<p>From merging the release PR until the entire <strong>Release</strong> workflow finishes,
+pause merges that change <code class="docutils literal notranslate"><span class="pre">.github/workflows/</span></code>, including Renovate action-pin
+updates and automatically merged PRs. Other PRs can still merge during this
+window.</p>
+<p>The release targets the release PR’s merge commit. If a later merge changes
+workflows on <code class="docutils literal notranslate"><span class="pre">main</span></code>, GitHub can refuse to create the tag or release with
+<code class="docutils literal notranslate"><span class="pre">Resource</span> <span class="pre">not</span> <span class="pre">accessible</span> <span class="pre">by</span> <span class="pre">integration</span></code> (403). GitHub’s <a class="reference external" href="https://docs.github.com/en/rest/releases/releases#create-a-release">release API
+documentation</a>
+requires workflow write access when the target commit’s workflows differ from
+the default branch; <code class="docutils literal notranslate"><span class="pre">GITHUB_TOKEN</span></code> cannot receive that permission. Increasing
+<code class="docutils literal notranslate"><span class="pre">contents:</span> <span class="pre">write</span></code> or simply re-running the job does not repair the mismatch.
+The observed tag-creation failure and recovery are recorded in
+<a class="reference external" href="https://github.com/hasansezertasan/copier-pyproject/issues/332">copier-pyproject issue #332</a>.</p>
+<section id="recover-a-release-blocked-by-this-mismatch">
+<h4>Recover a release blocked by this mismatch<a class="headerlink" href="#recover-a-release-blocked-by-this-mismatch" title="Link to this heading">#</a></h4>
+<ol class="arabic">
+<li><p>Pause further workflow-changing merges and wait for active Release runs to
+stop. In the failed run, identify the release PR’s merge SHA and exact tag
+name (including any <code class="docutils literal notranslate"><span class="pre">v</span></code> prefix). Check <strong>Releases</strong>, including drafts, and
+the tag before changing either. This procedure is for the workflow mismatch
+above; a 403 alone does not prove that cause.</p></li>
+<li><p>Compare <code class="docutils literal notranslate"><span class="pre">.github/workflows/</span></code> at that merge SHA with current <code class="docutils literal notranslate"><span class="pre">main</span></code>. For
+example, after fetching <code class="docutils literal notranslate"><span class="pre">origin</span></code>, replace <code class="docutils literal notranslate"><span class="pre">RELEASE_COMMIT_SHA</span></code> below:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">git<span class="w"> </span>fetch<span class="w"> </span>origin
+</span><span data-line="2">git<span class="w"> </span>diff<span class="w"> </span>RELEASE_COMMIT_SHA<span class="w"> </span>origin/main<span class="w"> </span>--<span class="w"> </span>.github/workflows/
+</span></pre></div>
+</div>
+</li>
+<li><p>If the failed run created a tag <strong>but no GitHub Release</strong>, delete only that
+orphan tag before retrying. Replace <code class="docutils literal notranslate"><span class="pre">TAG_NAME</span></code> with the exact failed tag:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>DELETE<span class="w"> </span>repos/hasansezertasan/hwid/git/refs/tags/TAG_NAME
+</span></pre></div>
+</div>
+<p>Skip deletion if the tag is absent. If a draft release already exists, retain
+its tag and release and use <strong>Re-run failed jobs</strong> after restoring the
+workflows. Do not delete a published release or its tag.</p>
+</li>
+<li><p>Revert the intervening workflow changes through the normal PR process so
+<code class="docutils literal notranslate"><span class="pre">main</span></code>’s workflow contents match the release commit again. Revert only the
+workflow changes if those commits also contain unrelated changes. Repeat
+the diff above against the updated <code class="docutils literal notranslate"><span class="pre">origin/main</span></code>; it must be empty.</p></li>
+<li><p>Let the Release run triggered by the revert finish, or re-run the failed
+jobs if a draft already exists. Confirm the complete pipeline succeeds,
+including publishing and finalizing the release, before re-applying the
+reverted changes through a PR and resuming workflow-changing merges.</p></li>
+</ol>
+</section>
 </section>
 </section>
 <section id="let-actions-open-the-release-pr">
@@ -494,7 +556,10 @@ preview for each pull request under <code class="docutils literal notranslate"><
 <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> branch and comments the URL on the PR (removed automatically when
 the PR closes). Previews are built only for pull requests opened from branches
 on this repository — a fork PR receives a read-only token and is skipped — and
-require no extra setup beyond Pages.</p>
+require no extra setup beyond Pages. The docs are built by <code class="docutils literal notranslate"><span class="pre">docs-preview.yml</span></code>
+with a read-only token and published by <code class="docutils literal notranslate"><span class="pre">docs-preview-deploy.yml</span></code>, a
+<code class="docutils literal notranslate"><span class="pre">workflow_run</span></code> workflow that always runs from the default branch, so a branch
+or dependency update cannot edit the job that holds the write token.</p>
 </section>
 <section id="automated-dependency-updates-renovate">
 <h2>Automated dependency updates (Renovate)<a class="headerlink" href="#automated-dependency-updates-renovate" title="Link to this heading">#</a></h2>
@@ -528,6 +593,12 @@ check on them
 (<a class="reference external" href="https://github.com/renovatebot/renovate/issues/31600">renovate#31600</a>), so a
 copier PR can look mergeable while carrying conflicts. Reconcile before merging:
 keep your project identity, adopt the template’s tooling/config changes.</p>
+<p>Where the project maintains an overlay on a file the template also renders
+(e.g. project-specific entries in <code class="docutils literal notranslate"><span class="pre">.vscode/launch.json</span></code> that the template
+cannot derive from its answers), resolve the conflict in favour of the committed
+file and port only genuine template-side improvements instead of taking the
+template file wholesale. Re-applying the overlay is expected, not a merge
+failure.</p>
 <p>If the update touches dependency metadata in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> — the
 <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> list, a dependency group, or the optional-dependency table —
 also run <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">lock</span></code> and commit the refreshed <code class="docutils literal notranslate"><span class="pre">uv.lock</span></code> in the same PR.
@@ -611,7 +682,32 @@ Repository settings (“Settings” App)
 (when the <code class="docutils literal notranslate"><span class="pre">repository_topics</span></code> template answer is set) topics. It is applied by
 the <a class="reference external" href="https://github.com/apps/settings">Settings GitHub App</a> on every push to
 the default branch. Nothing syncs until it is installed.</p>
-<p><strong>[HUMAN]</strong> Install it once on this repository (or your account) from the
+<p>Before installing, enforce <strong>Require review from Code Owners</strong> on the default
+branch as described below. On a free-plan private repository, <strong>defer the
+Settings App</strong> until that safeguard can be enforced. Record this integration
+as deferred and skip its installation and check; the metadata file can stay
+in the repository without the App.</p>
+<p><strong>[HUMAN]</strong> Confirm that a distinct trusted reviewer with write access can
+approve changes authored by the maintainer and is listed in CODEOWNERS for
+<code class="docutils literal notranslate"><span class="pre">.github/settings.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">.github/CODEOWNERS</span></code>.
+A sole maintainer cannot approve their own pull requests;
+defer the Settings App until that reviewer is available.</p>
+<p><strong>[AGENT]</strong> Only after the reviewer is confirmed, enable code-owner review.
+This updates the review policy separately from the required status contexts.
+If reviewer confirmation is pending or unavailable, skip this command and defer
+the integration.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection/required_pull_request_reviews<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>-F<span class="w"> </span><span class="nv">require_code_owner_reviews</span><span class="o">=</span><span class="nb">true</span>
+</span></pre></div>
+</div>
+<p><strong>[CHECK]</strong> Prerequisite: required code-owner review is enforced on <code class="docutils literal notranslate"><span class="pre">main</span></code>.
+If the check fails or cannot be verified, defer installation and return to that
+policy step; a CODEOWNERS file alone does not enforce review.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>api<span class="w"> </span>repos/hasansezertasan/hwid/branches/main/protection<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>--jq<span class="w"> </span><span class="s1">'.required_pull_request_reviews.require_code_owner_reviews == true'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-qx<span class="w"> </span><span class="nb">true</span>
+</span></pre></div>
+</div>
+<p><strong>[HUMAN]</strong> Only after the prerequisite check passes, install it once on this repository (or your account) from the
 <a class="reference external" href="https://github.com/apps/settings">App page</a>.</p>
 <p><strong>[CHECK]</strong> No scriptable check — confirm the Settings GitHub App is installed.</p>
 <div class="admonition caution">

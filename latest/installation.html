@@ -159,18 +159,45 @@ preferred tool installer:</p>
 </section>
 <section id="verify-release-provenance">
 <h2>Verify release provenance<a class="headerlink" href="#verify-release-provenance" title="Link to this heading">#</a></h2>
-<p>Public-repository release distributions include Sigstore-signed build
-provenance. After downloading a wheel or source distribution, verify that the
-release workflow built it from <code class="docutils literal notranslate"><span class="pre">main</span></code> in this repository:</p>
+<p>The release workflow uses two complementary attestation mechanisms:</p>
+<ul class="simple">
+<li><p>GitHub build attestations record SLSA provenance for distributions when they
+are built, including workflow and source information. Their Sigstore bundles
+are also attached to the GitHub Release.</p></li>
+<li><p>PyPI publication attestations identify the Trusted Publisher that uploaded each
+distribution. The publishing action enables these by default for Trusted
+Publishing to PyPI or TestPyPI. They are available through PyPI’s per-file
+provenance APIs and UI, rather than as GitHub release bundles.</p></li>
+</ul>
+<p>The publication claim does not replace the structured build-provenance claim.
+Both refer to the distribution bytes transferred from the build job, without an
+intervening rebuild. See <a class="reference external" href="https://docs.pypi.org/attestations/">PyPI’s attestation documentation</a> for the index-hosted publication claim.</p>
+<p>After downloading a wheel or source distribution, verify its GitHub build
+attestation against this repository’s release workflow and <code class="docutils literal notranslate"><span class="pre">main</span></code> ref:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>attestation<span class="w"> </span>verify<span class="w"> </span>&lt;downloaded-distribution&gt;<span class="w"> </span><span class="se">\</span>
 </span><span data-line="2"><span class="w">  </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span><span class="se">\</span>
 </span><span data-line="3"><span class="w">  </span>--signer-workflow<span class="w"> </span>hasansezertasan/hwid/.github/workflows/release.yml<span class="w"> </span><span class="se">\</span>
 </span><span data-line="4"><span class="w">  </span>--source-ref<span class="w"> </span>refs/heads/main
 </span></pre></div>
 </div>
-<p>Artifact attestations are available for public repositories on current GitHub
-plans. Private and internal repositories require GitHub Enterprise Cloud and
-the repository variable <code class="docutils literal notranslate"><span class="pre">ENABLE_PRIVATE_ATTESTATIONS=true</span></code>.</p>
+<p>To use the matching provenance bundle downloaded from the GitHub Release instead
+of fetching the attestation from GitHub’s API, add <code class="docutils literal notranslate"><span class="pre">--bundle</span></code>:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span data-line="1">gh<span class="w"> </span>attestation<span class="w"> </span>verify<span class="w"> </span>&lt;downloaded-distribution&gt;<span class="w"> </span><span class="se">\</span>
+</span><span data-line="2"><span class="w">  </span>--bundle<span class="w"> </span>&lt;downloaded-provenance-bundle&gt;<span class="w"> </span><span class="se">\</span>
+</span><span data-line="3"><span class="w">  </span>--repo<span class="w"> </span>hasansezertasan/hwid<span class="w"> </span><span class="se">\</span>
+</span><span data-line="4"><span class="w">  </span>--signer-workflow<span class="w"> </span>hasansezertasan/hwid/.github/workflows/release.yml<span class="w"> </span><span class="se">\</span>
+</span><span data-line="5"><span class="w">  </span>--source-ref<span class="w"> </span>refs/heads/main
+</span></pre></div>
+</div>
+<p>Fully offline verification also needs trusted-root material; see
+<a class="reference external" href="https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/verify-attestations-offline">GitHub’s offline verification guide</a>.</p>
+<p>GitHub build attestations are available for public repositories on current
+GitHub plans. Private and internal repositories require GitHub Enterprise Cloud
+and the repository variable <code class="docutils literal notranslate"><span class="pre">ENABLE_PRIVATE_ATTESTATIONS=true</span></code>. This opt-in
+applies to GitHub build attestations, not PyPI’s publication attestations. PyPI’s
+default attestation path requires Trusted Publishing and uses public Sigstore
+infrastructure; publication with an API token or an explicit attestation opt-out
+does not generate those attestations automatically.</p>
 </section>
 <section id="from-source">
 <h2>From source<a class="headerlink" href="#from-source" title="Link to this heading">#</a></h2>
