@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/hasansezertasan/hwid/compare/0.3.0...0.3.1) (2026-10-19)
+
+
+### 🐛 Bug Fixes
+
+* trim misleading PyPI keywords ([#322](https://github.com/hasansezertasan/hwid/issues/322)) ([dcec315](https://github.com/hasansezertasan/hwid/commit/dcec315614afb7e39b901fe7a12c3c879168d16b))
+
 ## [0.3.0](https://github.com/hasansezertasan/hwid/compare/0.2.0...0.3.0) (2026-09-30)
 
 
