@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://github.com/hasansezertasan/hwid/compare/0.3.1...0.4.0) (2026-10-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop Python 3.10 support ([#327](https://github.com/hasansezertasan/hwid/issues/327))
+
+### 🔧 Chores
+
+* drop Python 3.10 support ([#327](https://github.com/hasansezertasan/hwid/issues/327)) ([d96c352](https://github.com/hasansezertasan/hwid/commit/d96c352b0d517cf34e88148fa556c4c5ec449c83))
+
 ## [0.3.1](https://github.com/hasansezertasan/hwid/compare/0.3.0...0.3.1) (2026-10-19)
 
 
