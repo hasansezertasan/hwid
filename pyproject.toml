@@ -39,7 +39,6 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -53,7 +52,7 @@ classifiers = [
   "Typing :: Typed",
   "Topic :: Utilities",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 # The enabled component's runtime deps live here, not in an optional extra: a
 # selected component is chosen at generation time and ``__main__`` imports it
 # unconditionally (see the CLI > GUI > TUI > web > MCP > worker precedence
@@ -142,7 +141,7 @@ test = [
 docs = [
   "sphinx==8.2.3",
   "shibuya==2026.7.12",
-  "sphinx-autobuild==2024.10.3",
+  "sphinx-autobuild==2025.8.25",
   "sphinx-copybutton==0.5.2",
   "sphinx-design==0.7.0",
   "sphinx-togglebutton==0.4.5",
@@ -186,9 +185,9 @@ trusted-publishing = "always"
 
 [tool.uv.dependency-groups]
 # Docs only ever build on the `.python-version` interpreter, never across the
-# test matrix, so the group need not resolve down to the project's 3.10 floor.
+# test matrix, so the group need not resolve down to the project's 3.11 floor.
 # Without this the universal lock pins Sphinx and its extensions to the last
-# releases that still support 3.10, and every Renovate bump past them fails
+# releases that still support 3.11, and every Renovate bump past them fails
 # with an unresolvable lock. 3.12 is the floor Sphinx 9.1 requires.
 docs = { requires-python = ">=3.12" }
 
@@ -411,7 +410,7 @@ output-format = "full"
 preview = true
 show-fixes = true
 src = ["src", "tests", "examples", "docs/examples"]
-target-version = "py310"
+target-version = "py311"
 unsafe-fixes = true
 
 
@@ -501,14 +500,14 @@ parenthesize-tuple-in-subscript = true
 [tool.mypy]
 files = ["src", "docs/examples"]
 pretty = true
-python_version = "3.10"
+python_version = "3.11"
 strict = true
 
 
 [tool.basedpyright]
 exclude = [".venv"]
 include = ["src/hwid", "docs/examples"]
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 venv = ".venv"
 # venvPath is the directory *containing* the venv, not the venv itself; ".venv"
 # here would make basedpyright look for ".venv/.venv". Use "." so both the venv
@@ -522,7 +521,7 @@ respect-ignore-files = false
 
 
 [tool.ty.environment]
-python-version = "3.10"
+python-version = "3.11"
 
 
 [tool.ty.terminal]
@@ -530,7 +529,7 @@ error-on-warning = true
 
 
 [tool.pyrefly]
-python-version = "3.10"
+python-version = "3.11"
 project-includes = ["src", "docs/examples"]
 
 [tool.pylint.main]
@@ -607,7 +606,6 @@ env_list = [
   "3.13",
   "3.12",
   "3.11",
-  "3.10",
 ]
 requires = ["tox>=4"]
 
@@ -646,7 +644,7 @@ runner = "uv-venv-lock-runner"
 
 
 [tool.tox.env.style]
-base_python = ["3.10"]
+base_python = ["3.11"]
 commands = [
   [
     "ruff",
@@ -662,7 +660,7 @@ commands = [
   [
     "mypy",
     "--python-version",
-    "3.10",
+    "3.11",
   ],
   [
     "mypy",
