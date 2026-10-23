@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 # -- Project information -----------------------------------------------------
@@ -19,9 +19,9 @@ author = "Hasan Sezer Taşan"
 # `tox` runs leave it unset and fall back to the current year below.
 _source_date_epoch = os.environ.get("SOURCE_DATE_EPOCH")
 _build_date = (
-    datetime.fromtimestamp(int(_source_date_epoch), tz=timezone.utc)
+    datetime.fromtimestamp(int(_source_date_epoch), tz=UTC)
     if _source_date_epoch
-    else datetime.now(tz=timezone.utc)
+    else datetime.now(tz=UTC)
 )
 copyright = f"{_build_date:%Y}, Hasan Sezer Taşan"  # noqa: A001
 
@@ -69,7 +69,7 @@ napoleon_numpy_docstring = False
 # Keep the version tabs in sync with this project's supported Python range
 # (requires-python >= 3.11, classifiers/CI up to 3.14). auto-pytabs otherwise
 # defaults to (3, 7), which would mislabel the rendered examples.
-auto_pytabs_min_version = (3, 10)
+auto_pytabs_min_version = (3, 11)
 auto_pytabs_max_version = (3, 14)
 
 # -- Intersphinx -------------------------------------------------------------
