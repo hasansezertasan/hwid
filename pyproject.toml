@@ -75,8 +75,8 @@ hwid = "hwid.__main__:main"
 
 [dependency-groups]
 dev = [
-  "tox==4.65.0",
-  "tox-uv==1.36.1",
+  "tox==4.67.1",
+  "tox-uv==1.37.0",
   "debugpy==1.8.22",
   { include-group = "style" },
   { include-group = "test" },
@@ -128,7 +128,7 @@ deps = [
 ]
 test = [
   "coverage-enable-subprocess==1.0",
-  "coverage[toml]==7.16.2",
+  "coverage[toml]==7.17.0",
   "pytest-mock==3.17.0",
   "pytest-rerunfailures==16.7",
   "pytest-xdist[psutil]==3.8.0",
