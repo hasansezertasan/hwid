@@ -5,7 +5,7 @@ name: Gitignore Drift Check
 # network and is inherently flaky, so this runs on a weekly schedule and on
 # demand — never on pull_request, and it is not part of the `check` aggregation
 # gate. A failure here is a maintenance signal (regenerate with cobo), not a
-# merge blocker — the same non-blocking weekly-check posture. See https://hasansezertasan.github.io/copier-pyproject/context/ci-topology/#network-dependent-checks-run-on-a-weekly-cron-never-in-the-merge-gate.
+# merge blocker — the same non-blocking weekly-check posture.
 on:
   workflow_dispatch:
   schedule:
@@ -29,7 +29,7 @@ jobs:
         # system Python is older — and without uv on PATH mise falls back from
         # uvx to pipx, which ignores the mise-managed Python. Provision both
         # first so `mise install` resolves cobo against the .python-version
-        # interpreter (issue #369).
+        # interpreter.
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version-file: .python-version

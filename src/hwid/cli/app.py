@@ -4,9 +4,7 @@ A dependency-free ``argparse`` root for the ``hwid`` command. It
 exposes the same ``version`` / ``info`` commands as the Typer variant and hangs
 every enabled non-primary component off the root as a lazily-imported subcommand
 — ``hwid interactive`` (TUI), ``hwid web``, ... —
-rather than a separate ``hwid-<name>`` console script (see
-https://hasansezertasan.github.io/copier-pyproject/context/components/#secondary-components-are-subcommands-of-one-console-root-not-separate-scripts
-and https://hasansezertasan.github.io/copier-pyproject/context/components/#cli_framework-offers-argparse-beside-typer-the-typer-dependency-is-gated-on-root_uses_typer).
+rather than a separate ``hwid-<name>`` console script.
 Selected via ``cli_framework``.
 """
 

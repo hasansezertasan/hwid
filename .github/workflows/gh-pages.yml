@@ -43,9 +43,9 @@ jobs:
           # Keep THIS revision's tools/build_docs.py. The tag carries the docs
           # *sources* we want to rebuild, but build_docs.py is orchestration —
           # the same layer as this workflow file, which workflow_dispatch already
-          # takes from the dispatch ref. Without this, a project that adopts a
-          # template update before cutting its next release would still run the
-          # tagged script on a manual redeploy, and an older one that returns
+          # takes from the dispatch ref. Without this, a project whose
+          # build_docs.py is newer than its latest tagged release would still run
+          # the tagged script on a manual redeploy, and an older one that returns
           # silently when `git archive` cannot read a listed version would drop
           # it from the assembled site — which the deploy then cleans off
           # gh-pages. That is exactly the deploy this guard exists to protect.
@@ -142,7 +142,6 @@ jobs:
           folder: site
           # Preserve the PR preview tree (pr-preview/**); the numeric version
           # directories (e.g. 0.3/) are re-supplied in ./site each run. Disable
-          # force-push so a concurrent preview deploy is not clobbered. See
-          # https://hasansezertasan.github.io/copier-pyproject/context/docs-stack/#pr-docs-previews-deploy-to-a-subfolder-of-the-projects-own-gh-pages-same-repo-only, https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages.
+          # force-push so a concurrent preview deploy is not clobbered.
           clean-exclude: pr-preview/**
           force: false
