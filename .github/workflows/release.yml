@@ -9,7 +9,7 @@ on:
   # also the documented exception to GITHUB_TOKEN loop-prevention, which is why
   # that step needs no PAT. The containment is the `publish` environment's
   # deployment-branch policy, which GitHub evaluates OUTSIDE this file so a
-  # branch edit cannot bypass it — see docs/maintaining/setup.rst
+  # branch edit cannot bypass it — see REPOSITORY_SETUP.rst
   # ("Restrict the publish environment to main"). Verify that policy is in
   # place rather than deleting this trigger.
   workflow_dispatch:
@@ -214,7 +214,7 @@ jobs:
       actions: write  # IMPORTANT: Mandatory to re-dispatch this workflow
     steps:
       - name: Publish the draft release
-        # KNOWN COSMETIC LIMITATION (accepted, see https://hasansezertasan.github.io/copier-pyproject/context/release-automation/#the-stale-draft-release-comment-link-is-an-accepted-cosmetic-defect): while the release is
+        # KNOWN COSMETIC LIMITATION (accepted): while the release is
         # a draft it has no public tag page, so its URL is a transient
         # `/releases/tag/untagged-<hash>` slug. release-please writes its
         # "🤖 Created releases:" comment on the merged release PR once, at
@@ -387,7 +387,7 @@ jobs:
         env:
           PYTHONUNBUFFERED: "1"
           # Passed via env (not interpolated into run:) — read by the Python
-          # process, so no template-injection surface. See https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages / CLAUDE.md.
+          # process, so no template-injection surface.
           DOCS_BUILD_VERSION: ${{ needs.release-please.outputs.version }}
         # Builds only this release's docs, then assembles ./site with every prior
         # version copied from gh-pages, a `latest` alias, and a root redirect.
@@ -404,7 +404,7 @@ jobs:
           # maintains — the action's default clean: true would otherwise wipe it.
           # The numeric version directories (e.g. 0.3/) are re-supplied in ./site
           # each run, so clean is safe for them. Disable force-push so a
-          # concurrent preview deploy is not clobbered. See https://hasansezertasan.github.io/copier-pyproject/context/docs-stack/#pr-docs-previews-deploy-to-a-subfolder-of-the-projects-own-gh-pages-same-repo-only, https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages.
+          # concurrent preview deploy is not clobbered.
           clean-exclude: pr-preview/**
           force: false
   notify-released-issues:
@@ -413,7 +413,7 @@ jobs:
     timeout-minutes: 10
     # Runs after the release is published (un-drafted) so the comment links a
     # live release page. Best-effort: a failure here never affects the already
-    # published release or packages. See https://hasansezertasan.github.io/copier-pyproject/context/release-automation/#released-issue-notifications-are-one-inline-job-in-releaseyml.
+    # published release or packages.
     needs: [release-please, finalize-release]
     if: ${{ needs.release-please.outputs.release_created == 'true' }}
     permissions:

@@ -5,7 +5,7 @@ name: Docs Preview
 # comment with the preview URL. The preview is removed when the PR closes. The
 # release docs deploy (release.yml `deploy-docs`) and the manual
 # gh-pages.yml publish to the branch *root* and set `clean-exclude: pr-preview/**`
-# so a release never wipes live previews. See https://hasansezertasan.github.io/copier-pyproject/context/docs-stack/#pr-docs-previews-deploy-to-a-subfolder-of-the-projects-own-gh-pages-same-repo-only.
+# so a release never wipes live previews.
 #
 # Same-repo PRs only: a fork PR's GITHUB_TOKEN is read-only, so the `if` guards
 # skip forks cleanly rather than failing. This workflow is the *unprivileged*

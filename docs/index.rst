@@ -12,6 +12,7 @@ native OS detection.
    usage
    modules
 
+<<<<<<< before updating
 .. toctree::
    :maxdepth: 2
    :caption: Maintainer guide
@@ -79,6 +80,8 @@ Disclaimer
 This module is not intended to be used for malicious purposes. The author is not
 responsible for any damage caused by this module. Use at your own risk.
 
+=======
+>>>>>>> after updating
 Indices and tables
 ==================
 

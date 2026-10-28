@@ -171,22 +171,25 @@ uv run --locked tox run -e docs-build
 
 ## Releasing
 
-Versioning and releases are automated with [release-please](https://github.com/googleapis/release-please), driven by [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) PR titles squash-merged into `main`. release-please maintains a release PR that bumps the version and `CHANGELOG.md`; merging it tags the release and publishes to PyPI. See the [Contributing Guidelines](./.github/CONTRIBUTING.md#releasing) for the commit conventions, and the [Repository setup](./docs/maintaining/setup.rst) guide for one-time configuration and optional post-launch integrations such as a social preview, downstream packaging, and Repology.
+Versioning and releases are automated with [release-please](https://github.com/googleapis/release-please), driven by [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) PR titles squash-merged into `main`. release-please maintains a release PR that bumps the version and `CHANGELOG.md`; merging it tags the release and publishes to PyPI. See the [Contributing Guidelines](./.github/CONTRIBUTING.md#releasing) for the commit conventions, and the [Repository setup](./REPOSITORY_SETUP.rst) guide for one-time configuration and optional post-launch integrations such as a social preview, downstream packaging, and Repology.
 
-Pause merges that change `.github/workflows/`, including Renovate action-pin updates, from merging a release PR until the entire Release run finishes. Workflow differences between the release commit and current `main` can block tag or release creation with a 403 when using `GITHUB_TOKEN`. See [Release recovery](./docs/maintaining/setup.rst#keep-workflow-changes-out-of-an-active-release) for prevention and recovery steps.
+Pause merges that change `.github/workflows/`, including Renovate action-pin updates, from merging a release PR until the entire Release run finishes. Workflow differences between the release commit and current `main` can block tag or release creation with a 403 when using `GITHUB_TOKEN`. See [Release recovery](./REPOSITORY_SETUP.rst#keep-workflow-changes-out-of-an-active-release) for prevention and recovery steps.
 
-For adoption or template-update reconciliation, ask your agent to "audit this
-template adoption/update against our existing project behavior".
-The shipped [template-adoption skill](./.claude/skills/template-adoption/SKILL.md)
-also supports audits after an update was applied. It compares workflow behavior,
-required checks, custom tooling, and documentation, and asks before consequential
-cleanup. Its prek-workflow example shows why duplicate commands alone do not
-justify removing a workflow. Use the sibling `repo-setup` skill for repository
-settings and release setup.
+For adopting this project's tooling into an existing package, or reconciling a
+template update with existing project behavior, see the **Template updates** and
+**Adopting into an existing project** sections of
+[REPOSITORY_SETUP.rst](./REPOSITORY_SETUP.rst). They cover the baseline,
+workflow and required-check overlap, custom tooling and documentation, and ask
+for a decision before consequential cleanup. Work through the repository
+settings and release steps in the same file.
 
 ## Author
 
+<<<<<<< before updating
 - [hasansezertasan](https://www.github.com/hasansezertasan)
+=======
+Generated from [copier-pyproject](https://github.com/hasansezertasan/copier-pyproject).
+>>>>>>> after updating
 
 ## Disclaimer
 

@@ -3,15 +3,14 @@
 Auto-applies a per-component marker to each test based on its top-level
 ``tests/<dir>/`` directory, so ``pytest -m web`` (or ``-m "not web"``) selects a
 component without per-test decoration. Markers are registered in pyproject.toml
-``[tool.pytest.ini_options] markers``. See issue #160 / https://hasansezertasan.github.io/copier-pyproject/context/ci-topology/#per-component-markers-path-filtered-jobs-and-one-coverage-gate-per-component.
+``[tool.pytest.ini_options] markers``.
 
 Also keeps the Markdown doctest surface to the single root ``README.md``: see
 ``collect_ignore_glob`` below.
 
 Also hosts the ``missing_metadata`` fixture: every component degrades or fails
 differently when the package metadata is unreadable, but they all read it
-through ``core.app``, so one fixture covers every component's error path
-(https://hasansezertasan.github.io/copier-pyproject/context/components/#one-application-payload-in-coreapppy-components-are-adapters-over-it).
+through ``core.app``, so one fixture covers every component's error path.
 """
 
 from __future__ import annotations
@@ -30,7 +29,7 @@ if TYPE_CHECKING:
 # ``--doctest-glob=README.md`` (pyproject ``addopts``) matches on the *basename*,
 # so without this every ``tests/**/README.md`` -- fixture notes, a subdirectory
 # guide -- would also be collected as a doctest the moment it contained a ``>>>``
-# line. The root README is the whole Markdown doctest surface (https://hasansezertasan.github.io/copier-pyproject/context/docs-stack/#documentation-code-examples-are-executed-not-pasted);
+# line. The root README is the whole Markdown doctest surface;
 # prose
 # under tests/ stays prose.
 collect_ignore_glob = ["*.md"]

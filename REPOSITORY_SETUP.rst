@@ -528,6 +528,43 @@ Renovate's copier manager re-renders files but does not re-lock, and CI, the
 ``prek`` hooks, and the ``mise`` tasks all run ``uv run --locked``, which fails
 outright against a stale lockfile.
 
+Check these even when the update runner reports success:
+
+* **Scan for conflicts.** After checkout, run
+  ``git grep -nE '^(<<<<<<<|>>>>>>>)'`` and
+  ``find . -name '*.rej' -not -path './.git/*'``, and list silent deletions with
+  ``git diff --name-only --diff-filter=D <pre-update-commit> HEAD --``.
+* **New questions took their defaults.** Diff ``.copier-answers.yml`` against
+  the pre-update commit (``git show <pre-update-commit>:.copier-answers.yml``)
+  and review every added or changed key before keeping it: a default can enable
+  a dependency or a behaviour.
+* **Project-owned release state is reset.** An update deletes ``CHANGELOG.md``
+  and resets ``.github/release-please-manifest.json`` to ``0.0.0``. Restore both
+  from the pre-update commit (``git restore --source=<pre-update-commit> --
+  <path>``) and confirm the manifest holds the last released version.
+* **Verify the recorded anchor.** After committing the reconciliation, run
+  ``uvx copier@latest update --vcs-ref=<_commit> --pretend --defaults`` pinned
+  to the ``_commit`` you reconciled to; it must report
+  ``Keeping template version``. An unpinned ``--pretend`` selects the latest
+  release tag, which is not divergence from the recorded anchor.
+* **Retired ai-rulez output.** If the pre-update ``.copier-answers.yml`` has
+  ``include_ai_rulez: true``, the update deletes ``.ai-rulez/`` but leaves the
+  host files it generated (``CLAUDE.md``, ``.github/copilot-instructions.md``,
+  per-host skill copies, ...) behind, next to the newly rendered ``AGENTS.md``.
+  Preferably run ``uvx ai-rulez clean --force --keep-gitignore`` *before*
+  updating, while the sources still exist. If the update is already checked
+  out, restore the sources and clean, then put back the rendered ``AGENTS.md``,
+  which ``clean`` also deletes: ``git checkout <pre-update-commit> --
+  .ai-rulez && uvx ai-rulez clean --force --keep-gitignore && git rm -rf
+  --ignore-unmatch .ai-rulez && git checkout HEAD -- AGENTS.md``. Move any
+  guidance kept in the ``.ai-rulez/`` rule sources into ``AGENTS.md``, and drop
+  the ``agents`` dependency group from ``pyproject.toml`` if it remains.
+* **Never run** ``copier copy --overwrite`` **on an adopted project.** It
+  discards every committed reconciliation; use ``copier update`` (``uvx
+  copier@latest`` if a ``copier`` shim cannot resolve a version).
+* **Leave the merge to a human.** An update PR with no linked issue takes the
+  ``no-issue`` label.
+
 Enable GitHub Discussions
 -------------------------
 
@@ -563,15 +600,20 @@ Homebrew tap
 
 The release workflow does not build a formula itself — it sends a
 ``repository_dispatch`` event to your ``hasansezertasan/homebrew-tap`` repo,
-whose own listener workflow bumps the formula and opens a PR there. Full
-one-time setup (creating the tap, bootstrapping the initial formula, and
-installing the listener) is documented in
-:doc:`../packaging/homebrew-tap/README`.
+whose own listener workflow bumps the formula and opens a PR there. The tap is
+not scaffolded by this project; create and maintain it with its own tooling:
 
-.. toctree::
-   :hidden:
+* `copier-homebrew-tap <https://github.com/hasansezertasan/copier-homebrew-tap>`_
+  — the Copier template that scaffolds the tap, including the
+  ``update-formula`` dispatch listener this project fires at.
+* `homebrew-tap-skills <https://github.com/hasansezertasan/homebrew-tap-skills>`_
+  — agent skills to set the tap up (``homebrew-tap-setup``), add
+  ``hwid`` to it (``homebrew-add``), and later fix, triage,
+  retire and verify formulae and casks.
 
-   ../packaging/homebrew-tap/README
+.. code-block:: sh
+
+   uvx copier copy gh:hasansezertasan/copier-homebrew-tap homebrew-tap
 
 The only piece owned by **this** repo is the dispatch credential:
 
@@ -599,14 +641,20 @@ Scoop bucket
 
 The release workflow does not build a manifest itself — it sends a
 ``repository_dispatch`` event to your ``hasansezertasan/scoop-bucket`` repo,
-whose own listener workflow bumps the manifest and opens a PR there. Full
-one-time setup (creating the bucket, bootstrapping the initial manifest, and
-installing the listener) is documented in :doc:`../packaging/scoop-bucket/README`.
+whose own listener workflow bumps the manifest and opens a PR there. The bucket
+is not scaffolded by this project; create and maintain it with its own tooling:
 
-.. toctree::
-   :hidden:
+* `copier-scoop-bucket <https://github.com/hasansezertasan/copier-scoop-bucket>`_
+  — the Copier template that scaffolds the bucket, including the
+  ``update-manifest`` dispatch listener this project fires at.
+* `scoop-bucket-skills <https://github.com/hasansezertasan/scoop-bucket-skills>`_
+  — agent skills to set the bucket up (``scoop-bucket-setup``), add
+  ``hwid`` to it (``scoop-add``), and later fix, triage, retire
+  and verify manifests.
 
-   ../packaging/scoop-bucket/README
+.. code-block:: sh
+
+   uvx copier copy gh:hasansezertasan/copier-scoop-bucket scoop-bucket
 
 The only piece owned by **this** repo is the dispatch credential:
 
@@ -745,7 +793,7 @@ unacceptable.
 Downstream package repositories
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The optional Homebrew tap and Scoop bucket generated by this template are
+The optional Homebrew tap and Scoop bucket this project dispatches to are
 maintainer-owned distribution channels. After the project has stable releases
 and user demand, consider submitting it to community-maintained repositories
 such as Homebrew core, Scoop's main buckets, Arch, Debian, or Fedora. Each has
@@ -765,3 +813,91 @@ stable. Archive a release, add the resulting DOI badge and citation metadata to
 ``README.md``, and update ``CITATION.cff`` if the archive supplies identifiers
 that should be part of the preferred citation. General-purpose applications and
 libraries do not need a DOI solely for completeness.
+
+Adopting into an existing project
+---------------------------------
+
+This section is reference material, not part of the setup walkthrough: it has
+no ``[AGENT]``, ``[HUMAN]`` or ``[CHECK]`` steps. It applies when the template
+was copied over an existing or already-published package. The rendered output is
+a proposed baseline, not authority over the project's existing behaviour: keep
+project-specific functionality unless the owner chooses to change it, and ask
+before any consequential change (removing or merging workflows, changing
+triggers or required checks, supported Python versions or platforms,
+dependencies, test or coverage scope, packaging or release behaviour).
+
+**Set up the baseline first.** Start from a clean tree with all project work
+committed, on a dedicated branch. Record the baseline commit, the last
+published version, and the exact template tag rendered. Render onto that
+committed branch rather than blindly over uncommitted work: the pre-adoption
+commit is the baseline, and the job is restoring the project's side from git.
+``_src_path`` in ``.copier-answers.yml`` must be a git URL such as
+``https://github.com/hasansezertasan/copier-pyproject.git``; the ``gh:``
+shorthand stops Renovate's copier manager from resolving template tags, so no
+update PR ever opens.
+
+Then reconcile, in this order of likely damage:
+
+* **Gate ruff before running any tool.** ``pyproject.toml`` sets ``fix = true``,
+  ``unsafe-fixes = true`` and ``select = ["ALL"]``, so the first ``ruff check``
+  or hook run rewrites ``src/**`` in place. Run ``ruff check --diff`` first and
+  add ``per-file-ignores`` for deliberate patterns before letting it fix. The
+  ``markdownlint-cli2`` config also sets ``"fix": true`` and rewrites every
+  Markdown file it discovers.
+* **The source skeleton collides with real code.** The template renders
+  ``src/hwid/__init__.py``, ``__main__.py``, ``__metadata__.py``,
+  ``core/`` and ``utils/``, plus tests under ``tests/`` that import them.
+  Restore the project's own files from the baseline, decide which skeleton
+  modules to keep (enabled components read ``core/app.py``), and update the
+  tests that import removed ones.
+* **Docs collide too.** An old MkDocs ``docs/index.md`` has the same docname as
+  the rendered ``docs/index.rst``, and ``docs/modules.rst`` runs ``automodule``
+  on the skeleton modules. Port the content into ``.rst`` and point
+  ``automodule`` at the real modules. Keep custom ``exclude_patterns`` in
+  ``docs/conf.py`` so internal design notes stay off the published site.
+* **Release state starts at zero.** ``.github/release-please-manifest.json``
+  renders as ``0.0.0``; set it to the last published version, checked against
+  the release history (the nearest git tag can belong to a draft or unrelated
+  release). The version stays dynamic: hatch-vcs reads the tag release-please
+  cuts.
+* **Dependencies the answers enabled.** A zero-dependency library must not gain
+  runtime dependencies from a component toggle; compare
+  ``[project] dependencies`` with the baseline before keeping any answer.
+* **A raised Python floor is a breaking change.** Mark it with a ``feat!:``
+  title or a ``BREAKING CHANGE:`` footer so release-please recognises it; the
+  ``bump-minor-pre-major`` policy still uses a minor bump before 1.0.
+* **Planted prose passes every gate.** Resolve each ``TODO @hasansezertasan:``
+  marker one at a time (write, remove or keep), and rewrite the example bodies
+  in ``.github/ISSUE_TEMPLATE/``, including the ``hwid==0.1.0``
+  pin, for the project's real surface.
+* **Lost check coverage.** Before deleting a hook config or quality job, list
+  every old hook and classify it as retained, replaced, missing or intentionally
+  omitted, with its stage (pre-commit, pre-push, CI), file filters, exclusions
+  and feedback timing. A similar tool name is not proof of equivalent coverage
+  (Ruff ``S`` overlaps Bandit without matching it; a CI ``pip-audit`` is later
+  feedback than a local pre-push audit). Ask before accepting reduced coverage.
+* **Manifest parity (``pyproject.toml``).** Compare table by table, not as one
+  diff, since the template reorders tables. Map each removed env-manager entry
+  point (Hatch, PDM or nox envs, Makefile targets) to the tox env, ``mise`` task
+  or CI step that now runs it. Treat a lower rendered pin as a downgrade, not an
+  update. Check that strictness did not narrow (pytest ``strict`` markers,
+  ``filterwarnings``, type-checker ``include`` covering tests), that runtime
+  ``dependencies`` match the package's real imports, and that keywords, URLs
+  and classifiers keep their old values. Trim template leftovers such as
+  keywords describing the template, and prove an ignore is unused by rerunning
+  the tool before removing it.
+* **Overlapping workflows and required checks.** Compare events, branch and path
+  filters, schedules, manual dispatch, permissions, secrets and ``needs`` for
+  any workflow that does the same job as a shipped one. Before deleting or
+  renaming a workflow or job, inspect check names (including matrix names),
+  aggregate gates and the live branch protection or ruleset; if live
+  requirements are unreadable, defer the removal.
+* **Project customisations.** Preserve source behaviour, meaningful tests,
+  coverage expectations, supported Python and OS combinations, package data, the
+  public CLI and API, docs exclusions, real prose and changelog history.
+  Generated skeletons and placeholder tests do not replace real code or tests.
+
+Validate with the project's own lint, type, test, build and docs commands, and
+inspect auto-fix settings before running tools that write files. Report any check
+that failed or could not run, and do not call untested behaviour equivalent
+merely because files parse or CI is green.

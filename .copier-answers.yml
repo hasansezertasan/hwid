@@ -1,6 +1,6 @@
 # Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
 ---
-_commit: v1.13.1
+_commit: v1.15.1
 _src_path: https://github.com/hasansezertasan/copier-pyproject.git
 async_style: none
 author_email: hasansezertasan@gmail.com
@@ -8,10 +8,10 @@ author_family_names: Taşan
 author_full_name: Hasan Sezer Taşan
 author_given_names: Hasan Sezer
 cli_framework: argparse
+copyright_year: 2026
 docs_version_granularity: minor
 github_repo_name: hwid
 github_user: hasansezertasan
-include_ai_rulez: false
 include_all_contributors: false
 include_benchmarks: false
 include_c_extensions: false
