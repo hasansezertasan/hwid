@@ -1,14 +1,5 @@
 """Module entrypoint for the project.
 
-<<<<<<< before updating
-This is the single runnable entrypoint used by ``python -m hwid`` and by every
-standalone-executable build (PyCrucible launcher, PyInstaller freezer, Nuitka
-compiler — see ADR-007). The build tools all target this file, so the launch
-wiring lives here and nowhere else.
-
-``main()`` runs the ``hwid`` CLI root, which prints the machine ID by default and
-exposes ``version`` / ``info`` subcommands.
-=======
 This is the single runnable entrypoint used by ``python -m hwid``
 and by every standalone-executable build (PyCrucible launcher, PyInstaller
 freezer, Nuitka compiler).
@@ -31,7 +22,6 @@ dependency into one actionable line instead of a traceback.
 This is
 the boundary that needs it most: a standalone executable's user has no console
 root to fall back on and no obvious way to read a Python stack trace.
->>>>>>> after updating
 """
 
 from hwid.cli import app

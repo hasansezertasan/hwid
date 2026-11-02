@@ -185,11 +185,7 @@ settings and release steps in the same file.
 
 ## Author
 
-<<<<<<< before updating
-- [hasansezertasan](https://www.github.com/hasansezertasan)
-=======
 Generated from [copier-pyproject](https://github.com/hasansezertasan/copier-pyproject).
->>>>>>> after updating
 
 ## Disclaimer
 

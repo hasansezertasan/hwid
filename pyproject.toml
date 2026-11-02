@@ -285,17 +285,12 @@ hwid = ["src/hwid", "*/site-packages/hwid"]
 # patterns here: a regex matching a `def` line excludes the *whole function body*,
 # so a pattern like `def main\(` would silently un-measure any future `main()`
 # with real logic (and did mask the tested GUI/TUI entrypoints). Pragmas carry the
-<<<<<<< before updating
-# exclusion decision next to the code it affects. See ADR-008.
-exclude_lines = ["no cov", "if __name__ == .__main__.:", "if TYPE_CHECKING:"]
-=======
 # exclusion decision next to the code it affects.
 exclude_lines = [
   "no cov",
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
->>>>>>> after updating
 fail_under = 99
 # Patterns match both the `src/` (editable) and installed (`site-packages`)
 # layouts (see [tool.coverage.run] omit).
