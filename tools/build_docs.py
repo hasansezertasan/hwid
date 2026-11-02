@@ -3,7 +3,7 @@
 Only the *current* release is built here; every previously published version is
 copied across from the ``gh-pages`` branch untouched — old versions are never
 rebuilt. The version list is derived from the ``gh-pages`` directory listing, so
-there is no committed ``versions.json`` to maintain. See https://hasansezertasan.github.io/copier-pyproject/context/docs-versioning/#docs-publish-only-the-current-version-and-carry-older-built-versions-forward-from-gh-pages.
+there is no committed ``versions.json`` to maintain.
 
 Usage::
 
@@ -27,8 +27,8 @@ from pathlib import Path
 
 from packaging.version import InvalidVersion, Version
 
-# Version-directory granularity, baked from the Copier ``docs_version_granularity``
-# answer. Edit here only if you want to change how release versions map to docs
+# Version-directory granularity, chosen when the project was created.
+# Edit here only if you want to change how release versions map to docs
 # directories: "minor" -> X.Y, "major" -> X, "full" -> X.Y.Z.
 DEFAULT_VERSION_GRANULARITY = "minor"
 
@@ -65,11 +65,11 @@ _PRESERVE_FAILED_MSG = (
 )
 
 # Raised on an interpreter too old for tarfile's safe extraction filter. The
-# filter landed in 3.12 and was backported to the 3.10.12 / 3.11.4 security
-# releases, so only a long-unpatched 3.10.x or 3.11.x reaches this.
+# filter landed in 3.12 and was backported to the 3.11.4 security
+# release, so only a long-unpatched 3.11.x reaches this.
 _NO_TAR_FILTER_MSG = (
     "this interpreter predates tarfile's `data` extraction filter; upgrade to "
-    "Python 3.10.12+ / 3.11.4+ (or 3.12+) to build the versioned docs site"
+    "Python 3.11.4+ (or 3.12+) to build the versioned docs site"
 )
 
 _REDIRECT_HTML = """<!DOCTYPE html>

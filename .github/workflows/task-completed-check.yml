@@ -48,7 +48,7 @@ jobs:
         # skipped for them. Publish the informational check run green here; the
         # required gate is this job's own conclusion, which stays green for
         # bots. (A required check on the check-run name stopped being honored
-        # by ruleset evaluation on 2026-10-16 — see issue #418.)
+        # by ruleset evaluation on 2026-10-16.)
         if: ${{ endsWith(github.event.pull_request.user.login, '[bot]') }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
