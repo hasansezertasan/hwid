@@ -85,7 +85,7 @@ style = [
   "basedpyright==1.40.2",
   "detect-secrets==1.5.0",
   "editorconfig-checker==3.11.1",
-  "import-linter==2.15",
+  "import-linter==2.16",
   "mypy==2.4.0",
   "pylint==4.0.9",
   "pyrefly==1.3.1",
