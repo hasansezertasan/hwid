@@ -128,7 +128,7 @@ deps = [
 ]
 test = [
   "coverage-enable-subprocess==1.0",
-  "coverage[toml]==7.17.2",
+  "coverage[toml]==7.17.3",
   "pytest-mock==3.17.0",
   "pytest-rerunfailures==16.7",
   "pytest-xdist[psutil]==3.8.0",
@@ -143,7 +143,7 @@ docs = [
   "shibuya==2026.7.12",
   "sphinx-autobuild==2025.8.25",
   "sphinx-copybutton==0.5.2",
-  "sphinx-design==0.7.0",
+  "sphinx-design==0.8.0",
   "sphinx-togglebutton==0.4.5",
   "sphinx-paramlinks==0.6.0",
   "auto-pytabs[sphinx]==0.5.0",
