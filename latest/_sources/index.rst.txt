@@ -12,12 +12,6 @@ native OS detection.
    usage
    modules
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Maintainer guide
-
-   maintaining/setup
-
 Motivation
 ----------
 
